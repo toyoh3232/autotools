@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CpyFcDel.NET
@@ -22,6 +23,8 @@ namespace CpyFcDel.NET
 
         private bool isTestRunning = false;
 
+        private Thread workThread;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -31,7 +34,6 @@ namespace CpyFcDel.NET
             {
                 ShowNewFolderButton = false
             };
-
             // load languge resource
             var name = Assembly.GetExecutingAssembly().GetName().Name;
             var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -58,7 +60,7 @@ namespace CpyFcDel.NET
             cur_time.Text = DateTime.Now.ToString(timeFormat);
 
             //set timer for updating current time 
-            timer = new Timer
+            timer = new System.Windows.Forms.Timer
             {
                 Interval = 5000
             };
@@ -106,12 +108,18 @@ namespace CpyFcDel.NET
                 {
                     start_time.Text = DateTime.Now.ToString(timeFormat);
                     ((Button)sender).Text = res_man.GetString("stop");
+
+                    //initialize work thread
+                    workThread = new Thread(new ThreadStart(DoWork));
                     isTestRunning = true;
+                    workThread.Start();
                 }
             }
             else
             {
                 ((Button)sender).Text = res_man.GetString("start");
+                isTestRunning = false;
+                workThread?.Abort();
             }
             //TODO
         }
@@ -125,6 +133,17 @@ namespace CpyFcDel.NET
             else
             {
                 bt_start.Enabled = true;
+            }
+        }
+
+        private void DoWork()
+        {
+            int i = 0;
+            while (true)
+            {
+                i++;
+                Thread.Sleep(1000);
+                count.Invoke((Action)(() => count.Text = i.ToString()));
             }
             
         }
