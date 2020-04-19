@@ -22,14 +22,14 @@ namespace CpyFcDel.NET {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class lang_ja {
+    internal class lang_en {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal lang_ja() {
+        internal lang_en() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace CpyFcDel.NET {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CpyFcDel.NET.lang_ja", typeof(lang_ja).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CpyFcDel.NET.lang_en", typeof(lang_en).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 参照....
+        ///   Looks up a localized string similar to browse....
         /// </summary>
         internal static string browse___ {
             get {
@@ -70,7 +70,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 比較：.
+        ///   Looks up a localized string similar to Compare:.
         /// </summary>
         internal static string compare_ {
             get {
@@ -79,7 +79,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to コピー：.
+        ///   Looks up a localized string similar to Copy:.
         /// </summary>
         internal static string copy_ {
             get {
@@ -88,7 +88,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 回.
+        ///   Looks up a localized string similar to pass.
         /// </summary>
         internal static string count {
             get {
@@ -97,7 +97,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 回数を制限する.
+        ///   Looks up a localized string similar to Limit to.
         /// </summary>
         internal static string count_limit_on {
             get {
@@ -106,7 +106,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 回数：.
+        ///   Looks up a localized string similar to pass:.
         /// </summary>
         internal static string counter_ {
             get {
@@ -115,7 +115,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 現在時刻：.
+        ///   Looks up a localized string similar to Current Time:.
         /// </summary>
         internal static string current_time_ {
             get {
@@ -124,7 +124,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 削除：.
+        ///   Looks up a localized string similar to Delete:.
         /// </summary>
         internal static string delete_ {
             get {
@@ -133,7 +133,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 該当の名前が存在しないか、ディレクトリではありません.
+        ///   Looks up a localized string similar to No corresponding directory or invalid name..
         /// </summary>
         internal static string error_info_1 {
             get {
@@ -142,7 +142,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 無効な数字.
+        ///   Looks up a localized string similar to Invalid number format.
         /// </summary>
         internal static string error_info_2 {
             get {
@@ -151,7 +151,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1以上の整数を入れてください.
+        ///   Looks up a localized string similar to the limited pass to be set must great than 0.
         /// </summary>
         internal static string error_info_3 {
             get {
@@ -160,7 +160,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to エラー.
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string error_title {
             get {
@@ -169,7 +169,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 情報.
+        ///   Looks up a localized string similar to Information.
         /// </summary>
         internal static string info {
             get {
@@ -178,7 +178,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 読込みキャッシュを有効する.
+        ///   Looks up a localized string similar to Enable Read Cache.
         /// </summary>
         internal static string read_cache_on {
             get {
@@ -187,7 +187,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 各種設定.
+        ///   Looks up a localized string similar to Settings.
         /// </summary>
         internal static string settings {
             get {
@@ -196,7 +196,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ソースディレクトリ.
+        ///   Looks up a localized string similar to Source Directory.
         /// </summary>
         internal static string source_dir {
             get {
@@ -205,7 +205,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 開始.
+        ///   Looks up a localized string similar to Start.
         /// </summary>
         internal static string start {
             get {
@@ -214,7 +214,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 開始時刻：.
+        ///   Looks up a localized string similar to Start Time:.
         /// </summary>
         internal static string start_time_ {
             get {
@@ -223,7 +223,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 中止.
+        ///   Looks up a localized string similar to Stop.
         /// </summary>
         internal static string stop {
             get {
@@ -232,7 +232,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ターゲットディレクトリ.
+        ///   Looks up a localized string similar to Destination Directory.
         /// </summary>
         internal static string target_dir {
             get {
@@ -241,7 +241,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 試験時間：.
+        ///   Looks up a localized string similar to Duration:.
         /// </summary>
         internal static string time_duration_ {
             get {
@@ -250,7 +250,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 書込みキャッシュを有効する.
+        ///   Looks up a localized string similar to Enable Write Cache.
         /// </summary>
         internal static string write_cache_on {
             get {

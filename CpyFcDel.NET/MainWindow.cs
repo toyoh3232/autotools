@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -21,9 +22,10 @@ namespace CpyFcDel.NET
 
         private readonly ResourceManager res_man;
 
-        private bool isTestRunning = false;
+        private readonly ElapsedTimer elapsedTimer;
+        private readonly System.Windows.Forms.Timer timer;
 
-        private Thread workThread;
+        private Thread workingThread;
 
         public MainWindow()
         {
@@ -38,114 +40,231 @@ namespace CpyFcDel.NET
             var name = Assembly.GetExecutingAssembly().GetName().Name;
             var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             res_man = new ResourceManager(name + ".lang_" + lang, Assembly.GetExecutingAssembly());
-            
+
             //language localization for each control
-            label_sd.Text = res_man.GetString("source_dir");
-            label_td.Text = res_man.GetString("target_dir");
-            bt_set_sd.Text = res_man.GetString("browse");
-            bt_set_td.Text = res_man.GetString("browse");
+            lbcSrcDir.Text = res_man.GetString("source_dir");
+            lbcTgtDir.Text = res_man.GetString("target_dir");
+            btSetSrcDir.Text = res_man.GetString("browse...");
+            btSetTgtDir.Text = res_man.GetString("browse...");
             gb_settings.Text = res_man.GetString("settings");
             gb_time.Text = res_man.GetString("info");
-            bt_start.Text = res_man.GetString("start");
-            label_start_t.Text = res_man.GetString("start_time");
-            label_cur_t.Text = res_man.GetString("current_time");
-            label_t_dur.Text = res_man.GetString("time_duration");
-            label_count_limit.Text = res_man.GetString("count");
-            label_counter.Text = res_man.GetString("counter");
+            btStart.Text = res_man.GetString("start");
+            lbcStartTime.Text = res_man.GetString("start_time:");
+            lbcCurTime.Text = res_man.GetString("current_time:");
+            lbcPassedTime.Text = res_man.GetString("time_duration:");
+            lbcLimitCount.Text = res_man.GetString("count");
+            lbcCount.Text = res_man.GetString("counter:");
+            ckbCountLimOn.Text = res_man.GetString("count_limit_on");
+            ckbRCacheOn.Text = res_man.GetString("read_cache_on");
+            ckbWCacheOn.Text = res_man.GetString("write_cache_on");
 
-            //TODO
-            status.Text = "正常に作動";
+            //set default value
+            lbStartTime.Text = "";
+            lbPassedTime.Text = "";
+            lbStatus.Text = "";
+            lbCount.Text = "";
+
+            //resize controls for language localization
+            tbLimitCount.Location = new Point(ckbCountLimOn.Location.X + ckbCountLimOn.Size.Width + 3, tbLimitCount.Location.Y);
+            lbcLimitCount.Location = new Point(tbLimitCount.Location.X + tbLimitCount.Size.Width + 3, lbcLimitCount.Location.Y);
+            //left align
+            var newX = new Control[] { lbcStartTime, lbcCurTime,lbcPassedTime }.Max(x => x.Location.X + x.Size.Width);
+            lbStartTime.Location = new Point(newX + 3, lbStartTime.Location.Y);
+            lbCurTime.Location = new Point(newX + 3, lbCurTime.Location.Y);
+            lbPassedTime.Location = new Point(newX + 3, lbPassedTime.Location.Y);
+            //little location fix for engllish
+            if (lang == "en")
+                lbcLimitCount.Location = new Point(lbcLimitCount.Location.X, ckbCountLimOn.Location.Y);
 
             //set initial currnt time 
-            cur_time.Text = DateTime.Now.ToString(timeFormat);
+            lbCurTime.Text = DateTime.Now.ToString(timeFormat);
 
             //set timer for updating current time 
             timer = new System.Windows.Forms.Timer
             {
                 Interval = 5000
             };
+            timer.Tick += (s, e) => lbCurTime.Text = DateTime.Now.ToString(timeFormat);
 
-            timer.Tick += SystemTime_Change;
+            //set timer for updating test time
+            elapsedTimer = new ElapsedTimer
+            {
+                Interval = 1000
+            };
+            elapsedTimer.Tick += (s, e) => lbPassedTime.Text = TimeSpan.FromSeconds(elapsedTimer.ElapsedSeconds).ToString();
+
         }
         private void MainWindow_Load(object sender, EventArgs e)
         {
             timer.Start();
         }
 
-        private void SystemTime_Change(object sender, EventArgs e)
-        {
-            cur_time.Text = DateTime.Now.ToString(timeFormat);
-        }
-
-        private void Bt_set_sd_Click(object sender, EventArgs e)
+        private void BtSetSrcDir_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                source_dirs.Items.Add(folderBrowserDialog.SelectedPath);
-                source_dirs.SelectedItem = folderBrowserDialog.SelectedPath;
+                cbSrcDirs.Items.Add(folderBrowserDialog.SelectedPath);
+                cbSrcDirs.SelectedItem = folderBrowserDialog.SelectedPath;
             }
         }
 
-        private void Bt_set_td_Click(object sender, EventArgs e)
+        private void BtSetTgtDir_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                target_dirs.Items.Add(folderBrowserDialog.SelectedPath);
-                target_dirs.SelectedItem = folderBrowserDialog.SelectedPath;
+                cbTgtDirs.Items.Add(folderBrowserDialog.SelectedPath);
+                cbTgtDirs.SelectedItem = folderBrowserDialog.SelectedPath;
             }
         }
 
-        private void Bt_start_Click(object sender, EventArgs e)
+        private void BtStart_Click(object sender, EventArgs e)
         {
-            if (!isTestRunning)
+            // Validate
+            if (!Directory.Exists(cbTgtDirs.Text))
             {
-                if (!Directory.Exists(target_dirs.Text) || !Directory.Exists(source_dirs.Text))
+                MessageBox.Show(res_man.GetString("error_info_1"), res_man.GetString("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cbTgtDirs.Text = "";
+                return;
+            }
+            if (!Directory.Exists(cbSrcDirs.Text)) 
+            {
+                MessageBox.Show(res_man.GetString("error_info_1"), res_man.GetString("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cbSrcDirs.Text = "";
+                return;
+            }
+            int limitCount = -1;
+            if (ckbCountLimOn.Checked)
+            {
+                try
                 {
-                    MessageBox.Show(res_man.GetString("error_info_1"), res_man.GetString("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    target_dirs.Text = source_dirs.Text = "";
+                    limitCount = int.Parse(tbLimitCount.Text);
                 }
-                else
+                catch (Exception)
                 {
-                    start_time.Text = DateTime.Now.ToString(timeFormat);
-                    ((Button)sender).Text = res_man.GetString("stop");
+                    MessageBox.Show(res_man.GetString("error_info_2"), res_man.GetString("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tbLimitCount.Text = "";
+                    return;
+                }
+                if (limitCount <= 0)
+                {
+                    MessageBox.Show(res_man.GetString("error_info_3"), res_man.GetString("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tbLimitCount.Text = "";
+                    return;
+                }
+            }
 
-                    //initialize work thread
-                    workThread = new Thread(new ThreadStart(DoWork));
-                    isTestRunning = true;
-                    workThread.Start();
-                }
+            if (workingThread?.IsAlive ?? false)
+            {
+                workingThread.Abort();
+                UpdateControls(false);
+                
             }
             else
             {
-                ((Button)sender).Text = res_man.GetString("start");
-                isTestRunning = false;
-                workThread?.Abort();
+                //set thread parameters
+                var tuple = Tuple.Create(cbSrcDirs.Text, cbTgtDirs.Text, ckbRCacheOn.Checked, ckbWCacheOn.Checked, ckbCountLimOn.Checked, limitCount);
+                //initialize working thread
+                workingThread = new Thread(new ParameterizedThreadStart(DoWork));
+                workingThread.Start(tuple);
+                UpdateControls(true);
+                
             }
-            //TODO
         }
 
         private void Dirs_TextChanged(object sender, EventArgs e)
         {
-            if (source_dirs.Text == ""　|| target_dirs.Text == "")
+            if (cbSrcDirs.Text == ""　|| cbTgtDirs.Text == "")
             {
-                bt_start.Enabled = false;
+                btStart.Enabled = false;
             }
             else
             {
-                bt_start.Enabled = true;
+                btStart.Enabled = true;
             }
         }
 
-        private void DoWork()
+        // switch controls state 
+        // corresponding to working thread
+        private void UpdateControls(bool isThreadStart)
         {
-            int i = 0;
-            while (true)
+            var ctrls = new Control[] { btSetSrcDir, btSetTgtDir, cbSrcDirs, cbTgtDirs };
+            if (isThreadStart)
             {
-                i++;
-                Thread.Sleep(1000);
-                count.Invoke((Action)(() => count.Text = i.ToString()));
+                foreach (var ctl in ctrls)
+                {
+                    ctl.Enabled = false;
+                }
+                btStart.Text = res_man.GetString("stop");
+                lbStartTime.Text = lbCurTime.Text;
+                lbPassedTime.Text = TimeSpan.FromSeconds(0).ToString();
+                elapsedTimer.Start();
             }
             
+            else
+            {
+                foreach (var ctl in ctrls)
+                {
+                    ctl.Enabled = Enabled;
+                }
+                btStart.Text = res_man.GetString("start");
+                elapsedTimer.Stop();
+            }
+            
+        }
+
+        private void DoWork(object data)
+        {
+            var tuple = (Tuple<string, string, bool, bool, bool, int>)data;
+            var srcDir = tuple.Item1;
+            var tgtDir = tuple.Item2;
+            var isWCacheOn = tuple.Item3;
+            var isRcacheOn = tuple.Item4;
+            var isCountLimitOn = tuple.Item5;
+            var count = tuple.Item6;
+            var curCount = 0;
+            var files = Directory.GetFiles(srcDir);
+            this.Invoke(new Action(() => lbCount.Text = curCount.ToString()));
+            while (true)
+            {
+                // TODO
+                foreach (var file in files)
+                {
+                    var fileInfo = new FileInfo(file);
+                    // TODO
+
+                    // copy
+
+                    Thread.Sleep(100);
+                    // update label status
+                    this.Invoke(new Action(()=>lbStatus.Text = res_man.GetString("copy:") + fileInfo.Name));
+
+                    //compare
+                    Thread.Sleep(100);
+                    // update label status
+                    this.Invoke(new Action(() => lbStatus.Text = res_man.GetString("compare:") + fileInfo.Name));
+                    //delete
+                    Thread.Sleep(100);
+                    // update label status
+                    this.Invoke(new Action(() => lbStatus.Text = res_man.GetString("delete:") + fileInfo.Name));
+                }
+                //update counter
+                curCount++;
+                this.Invoke(new Action(() => lbCount.Text = curCount.ToString()));
+                if (!isCountLimitOn) continue;
+                count--;
+                if (count == 0) break;
+            }
+            this.Invoke(new Action(() => this.UpdateControls(false)));
+
+        }
+
+        private void CkbCountLimOn_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ckbCountLimOn.Checked)
+                tbLimitCount.Enabled = true;
+            else
+
+                tbLimitCount.Enabled = false;
         }
     }
 }
