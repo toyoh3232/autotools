@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.lbProgramName = new System.Windows.Forms.Label();
             this.lbcSrcDir = new System.Windows.Forms.Label();
             this.btSetSrcDir = new System.Windows.Forms.Button();
@@ -37,44 +36,39 @@
             this.lbcTgtDir = new System.Windows.Forms.Label();
             this.cbTgtDirs = new System.Windows.Forms.ComboBox();
             this.btSetTgtDir = new System.Windows.Forms.Button();
-            this.gb_settings = new System.Windows.Forms.GroupBox();
+            this.gbCacheSettings = new System.Windows.Forms.GroupBox();
+            this.ckbRCacheOn = new System.Windows.Forms.CheckBox();
+            this.ckbWCacheOn = new System.Windows.Forms.CheckBox();
             this.lbcLimitCount = new System.Windows.Forms.Label();
             this.tbLimitCount = new System.Windows.Forms.TextBox();
             this.ckbCountLimOn = new System.Windows.Forms.CheckBox();
-            this.ckbRCacheOn = new System.Windows.Forms.CheckBox();
-            this.ckbWCacheOn = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.lbStatus = new System.Windows.Forms.Label();
             this.lbCount = new System.Windows.Forms.Label();
             this.lbcCount = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.btStart = new System.Windows.Forms.Button();
-            this.gb_time = new System.Windows.Forms.GroupBox();
+            this.gbTimeInfo = new System.Windows.Forms.GroupBox();
             this.lbPassedTime = new System.Windows.Forms.Label();
-            this.lbCurTime = new System.Windows.Forms.Label();
             this.lbStartTime = new System.Windows.Forms.Label();
             this.lbcPassedTime = new System.Windows.Forms.Label();
-            this.lbcCurTime = new System.Windows.Forms.Label();
             this.lbcStartTime = new System.Windows.Forms.Label();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.gb_settings.SuspendLayout();
-            this.gb_time.SuspendLayout();
+            this.gbOtherSettings = new System.Windows.Forms.GroupBox();
+            this.ckbAutoExit = new System.Windows.Forms.CheckBox();
+            this.gbStatusInfo = new System.Windows.Forms.GroupBox();
+            this.tbStatusInfo = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.gbCacheSettings.SuspendLayout();
+            this.gbTimeInfo.SuspendLayout();
+            this.gbOtherSettings.SuspendLayout();
+            this.gbStatusInfo.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // checkedListBox1
-            // 
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(1337, 540);
-            this.checkedListBox1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(197, 114);
-            this.checkedListBox1.TabIndex = 0;
             // 
             // lbProgramName
             // 
             this.lbProgramName.AutoSize = true;
-            this.lbProgramName.Location = new System.Drawing.Point(326, 9);
-            this.lbProgramName.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbProgramName.Location = new System.Drawing.Point(270, 9);
+            this.lbProgramName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbProgramName.Name = "lbProgramName";
             this.lbProgramName.Size = new System.Drawing.Size(166, 18);
             this.lbProgramName.TabIndex = 1;
@@ -83,8 +77,8 @@
             // lbcSrcDir
             // 
             this.lbcSrcDir.AutoSize = true;
-            this.lbcSrcDir.Location = new System.Drawing.Point(20, 38);
-            this.lbcSrcDir.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbcSrcDir.Location = new System.Drawing.Point(20, 37);
+            this.lbcSrcDir.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbcSrcDir.Name = "lbcSrcDir";
             this.lbcSrcDir.Size = new System.Drawing.Size(37, 18);
             this.lbcSrcDir.TabIndex = 2;
@@ -92,10 +86,10 @@
             // 
             // btSetSrcDir
             // 
-            this.btSetSrcDir.Location = new System.Drawing.Point(670, 55);
-            this.btSetSrcDir.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.btSetSrcDir.Location = new System.Drawing.Point(669, 55);
+            this.btSetSrcDir.Margin = new System.Windows.Forms.Padding(4);
             this.btSetSrcDir.Name = "btSetSrcDir";
-            this.btSetSrcDir.Size = new System.Drawing.Size(125, 34);
+            this.btSetSrcDir.Size = new System.Drawing.Size(124, 35);
             this.btSetSrcDir.TabIndex = 4;
             this.btSetSrcDir.Text = "text";
             this.btSetSrcDir.UseVisualStyleBackColor = true;
@@ -105,9 +99,9 @@
             // 
             this.cbSrcDirs.FormattingEnabled = true;
             this.cbSrcDirs.Location = new System.Drawing.Point(20, 60);
-            this.cbSrcDirs.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.cbSrcDirs.Margin = new System.Windows.Forms.Padding(4);
             this.cbSrcDirs.Name = "cbSrcDirs";
-            this.cbSrcDirs.Size = new System.Drawing.Size(639, 26);
+            this.cbSrcDirs.Size = new System.Drawing.Size(641, 26);
             this.cbSrcDirs.TabIndex = 5;
             this.cbSrcDirs.TextChanged += new System.EventHandler(this.Dirs_TextChanged);
             // 
@@ -115,7 +109,7 @@
             // 
             this.lbcTgtDir.AutoSize = true;
             this.lbcTgtDir.Location = new System.Drawing.Point(20, 94);
-            this.lbcTgtDir.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbcTgtDir.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbcTgtDir.Name = "lbcTgtDir";
             this.lbcTgtDir.Size = new System.Drawing.Size(37, 18);
             this.lbcTgtDir.TabIndex = 6;
@@ -124,78 +118,44 @@
             // cbTgtDirs
             // 
             this.cbTgtDirs.FormattingEnabled = true;
-            this.cbTgtDirs.Location = new System.Drawing.Point(20, 117);
-            this.cbTgtDirs.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.cbTgtDirs.Location = new System.Drawing.Point(20, 116);
+            this.cbTgtDirs.Margin = new System.Windows.Forms.Padding(4);
             this.cbTgtDirs.Name = "cbTgtDirs";
-            this.cbTgtDirs.Size = new System.Drawing.Size(639, 26);
+            this.cbTgtDirs.Size = new System.Drawing.Size(641, 26);
             this.cbTgtDirs.TabIndex = 7;
             this.cbTgtDirs.TextChanged += new System.EventHandler(this.Dirs_TextChanged);
             // 
             // btSetTgtDir
             // 
-            this.btSetTgtDir.Location = new System.Drawing.Point(670, 112);
-            this.btSetTgtDir.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.btSetTgtDir.Location = new System.Drawing.Point(669, 111);
+            this.btSetTgtDir.Margin = new System.Windows.Forms.Padding(4);
             this.btSetTgtDir.Name = "btSetTgtDir";
-            this.btSetTgtDir.Size = new System.Drawing.Size(125, 34);
+            this.btSetTgtDir.Size = new System.Drawing.Size(124, 35);
             this.btSetTgtDir.TabIndex = 8;
             this.btSetTgtDir.Text = "text";
             this.btSetTgtDir.UseVisualStyleBackColor = true;
             this.btSetTgtDir.Click += new System.EventHandler(this.BtSetTgtDir_Click);
             // 
-            // gb_settings
+            // gbCacheSettings
             // 
-            this.gb_settings.Controls.Add(this.lbcLimitCount);
-            this.gb_settings.Controls.Add(this.tbLimitCount);
-            this.gb_settings.Controls.Add(this.ckbCountLimOn);
-            this.gb_settings.Controls.Add(this.ckbRCacheOn);
-            this.gb_settings.Controls.Add(this.ckbWCacheOn);
-            this.gb_settings.Location = new System.Drawing.Point(20, 160);
-            this.gb_settings.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.gb_settings.Name = "gb_settings";
-            this.gb_settings.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.gb_settings.Size = new System.Drawing.Size(299, 126);
-            this.gb_settings.TabIndex = 9;
-            this.gb_settings.TabStop = false;
-            this.gb_settings.Text = "text";
-            // 
-            // lbcLimitCount
-            // 
-            this.lbcLimitCount.AutoSize = true;
-            this.lbcLimitCount.Location = new System.Drawing.Point(258, 103);
-            this.lbcLimitCount.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lbcLimitCount.Name = "lbcLimitCount";
-            this.lbcLimitCount.Size = new System.Drawing.Size(14, 18);
-            this.lbcLimitCount.TabIndex = 4;
-            this.lbcLimitCount.Text = "t";
-            // 
-            // tbLimitCount
-            // 
-            this.tbLimitCount.Enabled = false;
-            this.tbLimitCount.Location = new System.Drawing.Point(183, 93);
-            this.tbLimitCount.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.tbLimitCount.Name = "tbLimitCount";
-            this.tbLimitCount.Size = new System.Drawing.Size(55, 25);
-            this.tbLimitCount.TabIndex = 3;
-            // 
-            // ckbCountLimOn
-            // 
-            this.ckbCountLimOn.AutoSize = true;
-            this.ckbCountLimOn.Location = new System.Drawing.Point(10, 93);
-            this.ckbCountLimOn.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.ckbCountLimOn.Name = "ckbCountLimOn";
-            this.ckbCountLimOn.Size = new System.Drawing.Size(158, 22);
-            this.ckbCountLimOn.TabIndex = 2;
-            this.ckbCountLimOn.Text = "ckbCountLimOn:";
-            this.ckbCountLimOn.UseVisualStyleBackColor = true;
-            this.ckbCountLimOn.CheckedChanged += new System.EventHandler(this.CkbCountLimOn_CheckedChanged);
+            this.gbCacheSettings.Controls.Add(this.ckbRCacheOn);
+            this.gbCacheSettings.Controls.Add(this.ckbWCacheOn);
+            this.gbCacheSettings.Location = new System.Drawing.Point(383, 154);
+            this.gbCacheSettings.Margin = new System.Windows.Forms.Padding(4);
+            this.gbCacheSettings.Name = "gbCacheSettings";
+            this.gbCacheSettings.Padding = new System.Windows.Forms.Padding(4);
+            this.gbCacheSettings.Size = new System.Drawing.Size(278, 93);
+            this.gbCacheSettings.TabIndex = 9;
+            this.gbCacheSettings.TabStop = false;
+            this.gbCacheSettings.Text = "text";
             // 
             // ckbRCacheOn
             // 
             this.ckbRCacheOn.AutoSize = true;
             this.ckbRCacheOn.Checked = true;
             this.ckbRCacheOn.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckbRCacheOn.Location = new System.Drawing.Point(10, 60);
-            this.ckbRCacheOn.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.ckbRCacheOn.Location = new System.Drawing.Point(10, 63);
+            this.ckbRCacheOn.Margin = new System.Windows.Forms.Padding(4);
             this.ckbRCacheOn.Name = "ckbRCacheOn";
             this.ckbRCacheOn.Size = new System.Drawing.Size(141, 22);
             this.ckbRCacheOn.TabIndex = 1;
@@ -207,39 +167,72 @@
             this.ckbWCacheOn.AutoSize = true;
             this.ckbWCacheOn.Checked = true;
             this.ckbWCacheOn.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckbWCacheOn.Location = new System.Drawing.Point(10, 27);
-            this.ckbWCacheOn.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.ckbWCacheOn.Location = new System.Drawing.Point(10, 28);
+            this.ckbWCacheOn.Margin = new System.Windows.Forms.Padding(4);
             this.ckbWCacheOn.Name = "ckbWCacheOn";
             this.ckbWCacheOn.Size = new System.Drawing.Size(143, 22);
             this.ckbWCacheOn.TabIndex = 0;
             this.ckbWCacheOn.Text = "ckbWCacheOn";
             this.ckbWCacheOn.UseVisualStyleBackColor = true;
             // 
+            // lbcLimitCount
+            // 
+            this.lbcLimitCount.AutoSize = true;
+            this.lbcLimitCount.Location = new System.Drawing.Point(217, 35);
+            this.lbcLimitCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbcLimitCount.Name = "lbcLimitCount";
+            this.lbcLimitCount.Size = new System.Drawing.Size(14, 18);
+            this.lbcLimitCount.TabIndex = 4;
+            this.lbcLimitCount.Text = "t";
+            // 
+            // tbLimitCount
+            // 
+            this.tbLimitCount.Enabled = false;
+            this.tbLimitCount.Location = new System.Drawing.Point(154, 28);
+            this.tbLimitCount.Margin = new System.Windows.Forms.Padding(4);
+            this.tbLimitCount.Name = "tbLimitCount";
+            this.tbLimitCount.Size = new System.Drawing.Size(55, 25);
+            this.tbLimitCount.TabIndex = 3;
+            // 
+            // ckbCountLimOn
+            // 
+            this.ckbCountLimOn.AutoSize = true;
+            this.ckbCountLimOn.Location = new System.Drawing.Point(14, 28);
+            this.ckbCountLimOn.Margin = new System.Windows.Forms.Padding(4);
+            this.ckbCountLimOn.Name = "ckbCountLimOn";
+            this.ckbCountLimOn.Size = new System.Drawing.Size(132, 22);
+            this.ckbCountLimOn.TabIndex = 2;
+            this.ckbCountLimOn.Text = "CountLimOn:";
+            this.ckbCountLimOn.UseVisualStyleBackColor = true;
+            this.ckbCountLimOn.CheckedChanged += new System.EventHandler(this.CkbCountLimOn_CheckedChanged);
+            // 
             // label2
             // 
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label2.Location = new System.Drawing.Point(3, 305);
-            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label2.Location = new System.Drawing.Point(0, 363);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(810, 3);
+            this.label2.Size = new System.Drawing.Size(800, 3);
             this.label2.TabIndex = 10;
             this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // lbStatus
             // 
             this.lbStatus.AutoSize = true;
-            this.lbStatus.Location = new System.Drawing.Point(0, 312);
-            this.lbStatus.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbStatus.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.lbStatus.Location = new System.Drawing.Point(20, 372);
+            this.lbStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbStatus.Name = "lbStatus";
             this.lbStatus.Size = new System.Drawing.Size(70, 18);
             this.lbStatus.TabIndex = 11;
             this.lbStatus.Text = "lbStatus";
+            this.lbStatus.TextChanged += new System.EventHandler(this.LbStatus_TextChanged);
             // 
             // lbCount
             // 
             this.lbCount.AutoSize = true;
-            this.lbCount.Location = new System.Drawing.Point(722, 312);
-            this.lbCount.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbCount.Location = new System.Drawing.Point(702, 372);
+            this.lbCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbCount.Name = "lbCount";
             this.lbCount.Size = new System.Drawing.Size(66, 18);
             this.lbCount.TabIndex = 12;
@@ -248,77 +241,55 @@
             // lbcCount
             // 
             this.lbcCount.AutoSize = true;
-            this.lbcCount.Location = new System.Drawing.Point(660, 312);
-            this.lbcCount.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbcCount.Location = new System.Drawing.Point(620, 372);
+            this.lbcCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbcCount.Name = "lbcCount";
             this.lbcCount.Size = new System.Drawing.Size(41, 18);
             this.lbcCount.TabIndex = 13;
             this.lbcCount.Text = "text:";
             // 
-            // label3
-            // 
-            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label3.Location = new System.Drawing.Point(646, 308);
-            this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(3, 45);
-            this.label3.TabIndex = 14;
-            this.label3.Text = "label3";
-            // 
             // btStart
             // 
             this.btStart.Enabled = false;
-            this.btStart.Location = new System.Drawing.Point(670, 169);
-            this.btStart.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.btStart.Location = new System.Drawing.Point(669, 159);
+            this.btStart.Margin = new System.Windows.Forms.Padding(4);
             this.btStart.Name = "btStart";
-            this.btStart.Size = new System.Drawing.Size(125, 117);
+            this.btStart.Size = new System.Drawing.Size(124, 192);
             this.btStart.TabIndex = 15;
             this.btStart.Text = "text";
             this.btStart.UseVisualStyleBackColor = true;
             this.btStart.Click += new System.EventHandler(this.BtStart_Click);
             // 
-            // gb_time
+            // gbTimeInfo
             // 
-            this.gb_time.Controls.Add(this.lbPassedTime);
-            this.gb_time.Controls.Add(this.lbCurTime);
-            this.gb_time.Controls.Add(this.lbStartTime);
-            this.gb_time.Controls.Add(this.lbcPassedTime);
-            this.gb_time.Controls.Add(this.lbcCurTime);
-            this.gb_time.Controls.Add(this.lbcStartTime);
-            this.gb_time.Location = new System.Drawing.Point(329, 160);
-            this.gb_time.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.gb_time.Name = "gb_time";
-            this.gb_time.Padding = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.gb_time.Size = new System.Drawing.Size(330, 126);
-            this.gb_time.TabIndex = 16;
-            this.gb_time.TabStop = false;
-            this.gb_time.Text = "text";
+            this.gbTimeInfo.Controls.Add(this.lbPassedTime);
+            this.gbTimeInfo.Controls.Add(this.lbStartTime);
+            this.gbTimeInfo.Controls.Add(this.lbcPassedTime);
+            this.gbTimeInfo.Controls.Add(this.lbcStartTime);
+            this.gbTimeInfo.Location = new System.Drawing.Point(20, 250);
+            this.gbTimeInfo.Margin = new System.Windows.Forms.Padding(4);
+            this.gbTimeInfo.Name = "gbTimeInfo";
+            this.gbTimeInfo.Padding = new System.Windows.Forms.Padding(4);
+            this.gbTimeInfo.Size = new System.Drawing.Size(355, 104);
+            this.gbTimeInfo.TabIndex = 16;
+            this.gbTimeInfo.TabStop = false;
+            this.gbTimeInfo.Text = "text";
             // 
             // lbPassedTime
             // 
             this.lbPassedTime.AutoSize = true;
-            this.lbPassedTime.Location = new System.Drawing.Point(160, 93);
-            this.lbPassedTime.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbPassedTime.Location = new System.Drawing.Point(83, 62);
+            this.lbPassedTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbPassedTime.Name = "lbPassedTime";
             this.lbPassedTime.Size = new System.Drawing.Size(112, 18);
             this.lbPassedTime.TabIndex = 5;
             this.lbPassedTime.Text = "lbPassedTime";
             // 
-            // lbCurTime
-            // 
-            this.lbCurTime.AutoSize = true;
-            this.lbCurTime.Location = new System.Drawing.Point(160, 62);
-            this.lbCurTime.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lbCurTime.Name = "lbCurTime";
-            this.lbCurTime.Size = new System.Drawing.Size(85, 18);
-            this.lbCurTime.TabIndex = 4;
-            this.lbCurTime.Text = "lbCurTime";
-            // 
             // lbStartTime
             // 
             this.lbStartTime.AutoSize = true;
-            this.lbStartTime.Location = new System.Drawing.Point(160, 28);
-            this.lbStartTime.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbStartTime.Location = new System.Drawing.Point(83, 29);
+            this.lbStartTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbStartTime.Name = "lbStartTime";
             this.lbStartTime.Size = new System.Drawing.Size(96, 18);
             this.lbStartTime.TabIndex = 3;
@@ -327,46 +298,97 @@
             // lbcPassedTime
             // 
             this.lbcPassedTime.AutoSize = true;
-            this.lbcPassedTime.Location = new System.Drawing.Point(13, 93);
-            this.lbcPassedTime.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbcPassedTime.Location = new System.Drawing.Point(13, 62);
+            this.lbcPassedTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbcPassedTime.Name = "lbcPassedTime";
             this.lbcPassedTime.Size = new System.Drawing.Size(41, 18);
             this.lbcPassedTime.TabIndex = 2;
             this.lbcPassedTime.Text = "text:";
             // 
-            // lbcCurTime
-            // 
-            this.lbcCurTime.AutoSize = true;
-            this.lbcCurTime.Location = new System.Drawing.Point(13, 62);
-            this.lbcCurTime.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lbcCurTime.Name = "lbcCurTime";
-            this.lbcCurTime.Size = new System.Drawing.Size(41, 18);
-            this.lbcCurTime.TabIndex = 1;
-            this.lbcCurTime.Text = "text:";
-            // 
             // lbcStartTime
             // 
             this.lbcStartTime.AutoSize = true;
-            this.lbcStartTime.Location = new System.Drawing.Point(13, 28);
-            this.lbcStartTime.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbcStartTime.Location = new System.Drawing.Point(13, 29);
+            this.lbcStartTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbcStartTime.Name = "lbcStartTime";
             this.lbcStartTime.Size = new System.Drawing.Size(41, 18);
             this.lbcStartTime.TabIndex = 0;
             this.lbcStartTime.Text = "text:";
             // 
+            // gbOtherSettings
+            // 
+            this.gbOtherSettings.Controls.Add(this.ckbAutoExit);
+            this.gbOtherSettings.Controls.Add(this.tbLimitCount);
+            this.gbOtherSettings.Controls.Add(this.lbcLimitCount);
+            this.gbOtherSettings.Controls.Add(this.ckbCountLimOn);
+            this.gbOtherSettings.Location = new System.Drawing.Point(20, 154);
+            this.gbOtherSettings.Margin = new System.Windows.Forms.Padding(4);
+            this.gbOtherSettings.Name = "gbOtherSettings";
+            this.gbOtherSettings.Padding = new System.Windows.Forms.Padding(4);
+            this.gbOtherSettings.Size = new System.Drawing.Size(355, 93);
+            this.gbOtherSettings.TabIndex = 17;
+            this.gbOtherSettings.TabStop = false;
+            this.gbOtherSettings.Text = "text";
+            // 
+            // ckbAutoExit
+            // 
+            this.ckbAutoExit.AutoSize = true;
+            this.ckbAutoExit.Enabled = false;
+            this.ckbAutoExit.Location = new System.Drawing.Point(14, 63);
+            this.ckbAutoExit.Margin = new System.Windows.Forms.Padding(4);
+            this.ckbAutoExit.Name = "ckbAutoExit";
+            this.ckbAutoExit.Size = new System.Drawing.Size(95, 22);
+            this.ckbAutoExit.TabIndex = 5;
+            this.ckbAutoExit.Text = "autoExit";
+            this.ckbAutoExit.UseVisualStyleBackColor = true;
+            // 
+            // gbStatusInfo
+            // 
+            this.gbStatusInfo.Controls.Add(this.tbStatusInfo);
+            this.gbStatusInfo.Location = new System.Drawing.Point(383, 250);
+            this.gbStatusInfo.Name = "gbStatusInfo";
+            this.gbStatusInfo.Size = new System.Drawing.Size(279, 104);
+            this.gbStatusInfo.TabIndex = 18;
+            this.gbStatusInfo.TabStop = false;
+            this.gbStatusInfo.Text = "text";
+            // 
+            // tbStatusInfo
+            // 
+            this.tbStatusInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tbStatusInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbStatusInfo.Location = new System.Drawing.Point(6, 24);
+            this.tbStatusInfo.Multiline = true;
+            this.tbStatusInfo.Name = "tbStatusInfo";
+            this.tbStatusInfo.Size = new System.Drawing.Size(247, 58);
+            this.tbStatusInfo.TabIndex = 0;
+            this.tbStatusInfo.Text = "info";
+            // 
+            // label1
+            // 
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label1.Location = new System.Drawing.Point(613, 363);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(3, 35);
+            this.label1.TabIndex = 19;
+            this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(809, 336);
-            this.Controls.Add(this.gb_time);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(803, 396);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.gbStatusInfo);
+            this.Controls.Add(this.gbOtherSettings);
+            this.Controls.Add(this.gbTimeInfo);
             this.Controls.Add(this.btStart);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.lbcCount);
             this.Controls.Add(this.lbCount);
             this.Controls.Add(this.lbStatus);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.gb_settings);
+            this.Controls.Add(this.gbCacheSettings);
             this.Controls.Add(this.btSetTgtDir);
             this.Controls.Add(this.cbTgtDirs);
             this.Controls.Add(this.lbcTgtDir);
@@ -374,25 +396,27 @@
             this.Controls.Add(this.btSetSrcDir);
             this.Controls.Add(this.lbcSrcDir);
             this.Controls.Add(this.lbProgramName);
-            this.Controls.Add(this.checkedListBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.Text = "CpyFcDel.NET";
             this.Load += new System.EventHandler(this.MainWindow_Load);
-            this.gb_settings.ResumeLayout(false);
-            this.gb_settings.PerformLayout();
-            this.gb_time.ResumeLayout(false);
-            this.gb_time.PerformLayout();
+            this.gbCacheSettings.ResumeLayout(false);
+            this.gbCacheSettings.PerformLayout();
+            this.gbTimeInfo.ResumeLayout(false);
+            this.gbTimeInfo.PerformLayout();
+            this.gbOtherSettings.ResumeLayout(false);
+            this.gbOtherSettings.PerformLayout();
+            this.gbStatusInfo.ResumeLayout(false);
+            this.gbStatusInfo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.Label lbProgramName;
         private System.Windows.Forms.Label lbcSrcDir;
         private System.Windows.Forms.Button btSetSrcDir;
@@ -400,7 +424,7 @@
         private System.Windows.Forms.Label lbcTgtDir;
         private System.Windows.Forms.ComboBox cbTgtDirs;
         private System.Windows.Forms.Button btSetTgtDir;
-        private System.Windows.Forms.GroupBox gb_settings;
+        private System.Windows.Forms.GroupBox gbCacheSettings;
         private System.Windows.Forms.CheckBox ckbCountLimOn;
         private System.Windows.Forms.CheckBox ckbRCacheOn;
         private System.Windows.Forms.CheckBox ckbWCacheOn;
@@ -408,18 +432,20 @@
         private System.Windows.Forms.Label lbStatus;
         private System.Windows.Forms.Label lbCount;
         private System.Windows.Forms.Label lbcCount;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btStart;
-        private System.Windows.Forms.GroupBox gb_time;
+        private System.Windows.Forms.GroupBox gbTimeInfo;
         private System.Windows.Forms.Label lbcPassedTime;
-        private System.Windows.Forms.Label lbcCurTime;
         private System.Windows.Forms.Label lbcStartTime;
         private System.Windows.Forms.Label lbPassedTime;
-        private System.Windows.Forms.Label lbCurTime;
         private System.Windows.Forms.Label lbStartTime;
         private System.Windows.Forms.TextBox tbLimitCount;
         private System.Windows.Forms.Label lbcLimitCount;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.GroupBox gbOtherSettings;
+        private System.Windows.Forms.CheckBox ckbAutoExit;
+        private System.Windows.Forms.GroupBox gbStatusInfo;
+        private System.Windows.Forms.TextBox tbStatusInfo;
+        private System.Windows.Forms.Label label1;
     }
 }
 

@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="app_info_1" xml:space="preserve">
+    <value>Program will terminate in a few secs</value>
+  </data>
+  <data name="auto_exit" xml:space="preserve">
+    <value>Auto Shutdown when finished sucessfully</value>
+  </data>
   <data name="browse..." xml:space="preserve">
     <value>browse...</value>
+  </data>
+  <data name="cache_settings" xml:space="preserve">
+    <value>Cache Settings</value>
   </data>
   <data name="compare:" xml:space="preserve">
     <value>Compare:</value>
@@ -153,14 +162,11 @@
   <data name="error_title" xml:space="preserve">
     <value>Error</value>
   </data>
-  <data name="info" xml:space="preserve">
-    <value>Information</value>
+  <data name="other_settings" xml:space="preserve">
+    <value>Settings</value>
   </data>
   <data name="read_cache_on" xml:space="preserve">
     <value>Enable Read Cache</value>
-  </data>
-  <data name="settings" xml:space="preserve">
-    <value>Settings</value>
   </data>
   <data name="source_dir" xml:space="preserve">
     <value>Source Directory</value>
@@ -171,6 +177,9 @@
   <data name="start_time:" xml:space="preserve">
     <value>Start Time:</value>
   </data>
+  <data name="status_info" xml:space="preserve">
+    <value>Status</value>
+  </data>
   <data name="stop" xml:space="preserve">
     <value>Stop</value>
   </data>
@@ -179,6 +188,9 @@
   </data>
   <data name="time_duration:" xml:space="preserve">
     <value>Duration:</value>
+  </data>
+  <data name="time_info" xml:space="preserve">
+    <value>Time</value>
   </data>
   <data name="write_cache_on" xml:space="preserve">
     <value>Enable Write Cache</value>

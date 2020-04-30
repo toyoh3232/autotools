@@ -61,11 +61,38 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to プログラムは数秒後に終了する.
+        /// </summary>
+        internal static string app_info_1 {
+            get {
+                return ResourceManager.GetString("app_info_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正常終了次第、自動シャットダウン.
+        /// </summary>
+        internal static string auto_exit {
+            get {
+                return ResourceManager.GetString("auto_exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 参照....
         /// </summary>
         internal static string browse___ {
             get {
                 return ResourceManager.GetString("browse...", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to キャッシュ設定.
+        /// </summary>
+        internal static string cache_settings {
+            get {
+                return ResourceManager.GetString("cache_settings", resourceCulture);
             }
         }
         
@@ -169,11 +196,11 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 情報.
+        ///   Looks up a localized string similar to 各種設定.
         /// </summary>
-        internal static string info {
+        internal static string other_settings {
             get {
-                return ResourceManager.GetString("info", resourceCulture);
+                return ResourceManager.GetString("other_settings", resourceCulture);
             }
         }
         
@@ -183,15 +210,6 @@ namespace CpyFcDel.NET {
         internal static string read_cache_on {
             get {
                 return ResourceManager.GetString("read_cache_on", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 各種設定.
-        /// </summary>
-        internal static string settings {
-            get {
-                return ResourceManager.GetString("settings", resourceCulture);
             }
         }
         
@@ -223,6 +241,15 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ステータス.
+        /// </summary>
+        internal static string status_info {
+            get {
+                return ResourceManager.GetString("status_info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 中止.
         /// </summary>
         internal static string stop {
@@ -246,6 +273,15 @@ namespace CpyFcDel.NET {
         internal static string time_duration_ {
             get {
                 return ResourceManager.GetString("time_duration:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 時刻.
+        /// </summary>
+        internal static string time_info {
+            get {
+                return ResourceManager.GetString("time_info", resourceCulture);
             }
         }
         

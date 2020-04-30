@@ -23,7 +23,8 @@ namespace CpyFcDel.NET
         private readonly ResourceManager res_man;
 
         private readonly ElapsedTimer elapsedTimer;
-        private readonly System.Windows.Forms.Timer timer;
+
+        private readonly System.Timers.Timer timer;
 
         private Thread workingThread;
 
@@ -46,46 +47,31 @@ namespace CpyFcDel.NET
             lbcTgtDir.Text = res_man.GetString("target_dir");
             btSetSrcDir.Text = res_man.GetString("browse...");
             btSetTgtDir.Text = res_man.GetString("browse...");
-            gb_settings.Text = res_man.GetString("settings");
-            gb_time.Text = res_man.GetString("info");
+            gbCacheSettings.Text = res_man.GetString("cache_settings");
+            gbOtherSettings.Text = res_man.GetString("other_settings");
+            gbTimeInfo.Text = res_man.GetString("time_info");
+            gbStatusInfo.Text = res_man.GetString("status_info");
             btStart.Text = res_man.GetString("start");
             lbcStartTime.Text = res_man.GetString("start_time:");
-            lbcCurTime.Text = res_man.GetString("current_time:");
             lbcPassedTime.Text = res_man.GetString("time_duration:");
             lbcLimitCount.Text = res_man.GetString("count");
             lbcCount.Text = res_man.GetString("counter:");
             ckbCountLimOn.Text = res_man.GetString("count_limit_on");
             ckbRCacheOn.Text = res_man.GetString("read_cache_on");
             ckbWCacheOn.Text = res_man.GetString("write_cache_on");
-
+            ckbAutoExit.Text = res_man.GetString("auto_exit");
             //set default value
-            lbStartTime.Text = "";
-            lbPassedTime.Text = "";
-            lbStatus.Text = "";
-            lbCount.Text = "";
-
-            //resize controls for language localization
-            tbLimitCount.Location = new Point(ckbCountLimOn.Location.X + ckbCountLimOn.Size.Width + 3, tbLimitCount.Location.Y);
-            lbcLimitCount.Location = new Point(tbLimitCount.Location.X + tbLimitCount.Size.Width + 3, lbcLimitCount.Location.Y);
-            //left align
-            var newX = new Control[] { lbcStartTime, lbcCurTime,lbcPassedTime }.Max(x => x.Location.X + x.Size.Width);
-            lbStartTime.Location = new Point(newX + 3, lbStartTime.Location.Y);
-            lbCurTime.Location = new Point(newX + 3, lbCurTime.Location.Y);
-            lbPassedTime.Location = new Point(newX + 3, lbPassedTime.Location.Y);
-            //little location fix for engllish
-            if (lang == "en")
-                lbcLimitCount.Location = new Point(lbcLimitCount.Location.X, ckbCountLimOn.Location.Y);
-
-            //set initial currnt time 
-            lbCurTime.Text = DateTime.Now.ToString(timeFormat);
-
-            //set timer for updating current time 
-            timer = new System.Windows.Forms.Timer
+            foreach (var ctl in new Control[] { lbStartTime, lbPassedTime, lbStatus, lbCount, tbStatusInfo})
             {
-                Interval = 5000
+                ctl.Text = "";
+            }
+            //set timder for deleting app info only for one time
+            timer = new System.Timers.Timer
+            {
+                Interval = 2000,
+                AutoReset = false
             };
-            timer.Tick += (s, e) => lbCurTime.Text = DateTime.Now.ToString(timeFormat);
-
+            timer.Elapsed += (s, e) => this.Invoke(new Action(() => lbStatus.Text = ""));
             //set timer for updating test time
             elapsedTimer = new ElapsedTimer
             {
@@ -96,7 +82,16 @@ namespace CpyFcDel.NET
         }
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            timer.Start();
+            //resize controls for language localization
+            tbLimitCount.Location = new Point(ckbCountLimOn.Location.X + ckbCountLimOn.Size.Width + 3, tbLimitCount.Location.Y);
+            lbcLimitCount.Location = new Point(tbLimitCount.Location.X + tbLimitCount.Size.Width + 3, lbcLimitCount.Location.Y);
+            //left align
+            var newX = new Control[] { lbcStartTime, lbcPassedTime }.Max(x => x.Location.X + x.Size.Width);
+            lbStartTime.Location = new Point(newX + 3, lbStartTime.Location.Y);
+            lbPassedTime.Location = new Point(newX + 3, lbPassedTime.Location.Y);
+            //little fix for location of control when it is in engllish
+            if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en")
+                lbcLimitCount.Location = new Point(lbcLimitCount.Location.X, ckbCountLimOn.Location.Y);
         }
 
         private void BtSetSrcDir_Click(object sender, EventArgs e)
@@ -162,9 +157,11 @@ namespace CpyFcDel.NET
             else
             {
                 //set thread parameters
-                var tuple = Tuple.Create(cbSrcDirs.Text, cbTgtDirs.Text, ckbRCacheOn.Checked, ckbWCacheOn.Checked, ckbCountLimOn.Checked, limitCount);
+                var tuple = Tuple.Create(cbSrcDirs.Text, cbTgtDirs.Text, ckbRCacheOn.Checked, ckbWCacheOn.Checked, ckbCountLimOn.Checked, limitCount, ckbAutoExit.Checked);
                 //initialize working thread
                 workingThread = new Thread(new ParameterizedThreadStart(DoWork));
+                //set background property 
+                workingThread.IsBackground = true;
                 workingThread.Start(tuple);
                 UpdateControls(true);
                 
@@ -195,7 +192,7 @@ namespace CpyFcDel.NET
                     ctl.Enabled = false;
                 }
                 btStart.Text = res_man.GetString("stop");
-                lbStartTime.Text = lbCurTime.Text;
+                lbStartTime.Text = DateTime.Now.ToString(timeFormat);
                 lbPassedTime.Text = TimeSpan.FromSeconds(0).ToString();
                 elapsedTimer.Start();
             }
@@ -212,20 +209,42 @@ namespace CpyFcDel.NET
             
         }
 
+        private void CkbCountLimOn_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ckbCountLimOn.Checked)
+            {
+                tbLimitCount.Enabled = true;
+                ckbAutoExit.Enabled = true;
+            }
+            else
+            {
+                tbLimitCount.Enabled = false;
+                ckbAutoExit.Enabled = false;
+            }
+        }
+
+        private void LbStatus_TextChanged(object sender, EventArgs e)
+        {
+            timer?.Start();
+        }
+
+
         private void DoWork(object data)
         {
-            var tuple = (Tuple<string, string, bool, bool, bool, int>)data;
+            var tuple = (Tuple<string, string, bool, bool, bool, int, bool>)data;
             var srcDir = tuple.Item1;
             var tgtDir = tuple.Item2;
             var isWCacheOn = tuple.Item3;
             var isRcacheOn = tuple.Item4;
             var isCountLimitOn = tuple.Item5;
             var count = tuple.Item6;
-            var curCount = 0;
+            var isAutoExit = tuple.Item7;
+
+            var curCount = 1;
             var files = Directory.GetFiles(srcDir);
-            this.Invoke(new Action(() => lbCount.Text = curCount.ToString()));
             while (true)
             {
+                this.Invoke(new Action(() => lbCount.Text = curCount.ToString()));
                 // TODO
                 foreach (var file in files)
                 {
@@ -235,36 +254,35 @@ namespace CpyFcDel.NET
                     // copy
 
                     Thread.Sleep(100);
-                    // update label status
-                    this.Invoke(new Action(()=>lbStatus.Text = res_man.GetString("copy:") + fileInfo.Name));
+                    // update status
+                    this.Invoke(new Action(() => tbStatusInfo.Text = res_man.GetString("copy:") + fileInfo.Name));
 
                     //compare
                     Thread.Sleep(100);
-                    // update label status
-                    this.Invoke(new Action(() => lbStatus.Text = res_man.GetString("compare:") + fileInfo.Name));
+                    // update status
+                    this.Invoke(new Action(() => tbStatusInfo.Text = res_man.GetString("compare:") + fileInfo.Name));
                     //delete
                     Thread.Sleep(100);
-                    // update label status
-                    this.Invoke(new Action(() => lbStatus.Text = res_man.GetString("delete:") + fileInfo.Name));
+                    // update status
+                    this.Invoke(new Action(() => tbStatusInfo.Text = res_man.GetString("delete:") + fileInfo.Name));
                 }
                 //update counter
                 curCount++;
-                this.Invoke(new Action(() => lbCount.Text = curCount.ToString()));
                 if (!isCountLimitOn) continue;
                 count--;
                 if (count == 0) break;
             }
             this.Invoke(new Action(() => this.UpdateControls(false)));
+            // comment
+            // Invoke method is blocking. If the working thread is foreground,
+            // following code fails (different to BeginInvoke() method)
+            if (isAutoExit)
+            {
+                this.Invoke(new Action(() => lbStatus.Text = res_man.GetString("app_info_1")));
+                Thread.Sleep(2000);
+                this.Invoke(new Action(() => Application.Exit()));
+            }
 
-        }
-
-        private void CkbCountLimOn_CheckedChanged(object sender, EventArgs e)
-        {
-            if (ckbCountLimOn.Checked)
-                tbLimitCount.Enabled = true;
-            else
-
-                tbLimitCount.Enabled = false;
         }
     }
 }

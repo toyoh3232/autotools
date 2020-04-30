@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="app_info_1" xml:space="preserve">
+    <value>プログラムは数秒後に終了する</value>
+  </data>
+  <data name="auto_exit" xml:space="preserve">
+    <value>正常終了次第、自動シャットダウン</value>
+  </data>
   <data name="browse..." xml:space="preserve">
     <value>参照...</value>
+  </data>
+  <data name="cache_settings" xml:space="preserve">
+    <value>キャッシュ設定</value>
   </data>
   <data name="compare:" xml:space="preserve">
     <value>比較：</value>
@@ -153,14 +162,11 @@
   <data name="error_title" xml:space="preserve">
     <value>エラー</value>
   </data>
-  <data name="info" xml:space="preserve">
-    <value>情報</value>
+  <data name="other_settings" xml:space="preserve">
+    <value>各種設定</value>
   </data>
   <data name="read_cache_on" xml:space="preserve">
     <value>読込みキャッシュを有効する</value>
-  </data>
-  <data name="settings" xml:space="preserve">
-    <value>各種設定</value>
   </data>
   <data name="source_dir" xml:space="preserve">
     <value>ソースディレクトリ</value>
@@ -171,6 +177,9 @@
   <data name="start_time:" xml:space="preserve">
     <value>開始時刻：</value>
   </data>
+  <data name="status_info" xml:space="preserve">
+    <value>ステータス</value>
+  </data>
   <data name="stop" xml:space="preserve">
     <value>中止</value>
   </data>
@@ -179,6 +188,9 @@
   </data>
   <data name="time_duration:" xml:space="preserve">
     <value>試験時間：</value>
+  </data>
+  <data name="time_info" xml:space="preserve">
+    <value>時刻</value>
   </data>
   <data name="write_cache_on" xml:space="preserve">
     <value>書込みキャッシュを有効する</value>
