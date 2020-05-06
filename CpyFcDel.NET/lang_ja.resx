@@ -162,6 +162,9 @@
   <data name="error_title" xml:space="preserve">
     <value>エラー</value>
   </data>
+  <data name="if_continue?" xml:space="preserve">
+    <value>続きますか？</value>
+  </data>
   <data name="other_settings" xml:space="preserve">
     <value>各種設定</value>
   </data>

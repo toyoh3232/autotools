@@ -162,6 +162,9 @@
   <data name="error_title" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="if_continue?" xml:space="preserve">
+    <value>Continue ?</value>
+  </data>
   <data name="other_settings" xml:space="preserve">
     <value>Settings</value>
   </data>

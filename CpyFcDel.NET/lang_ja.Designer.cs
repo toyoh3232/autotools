@@ -196,6 +196,15 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 続きますか？.
+        /// </summary>
+        internal static string if_continue_ {
+            get {
+                return ResourceManager.GetString("if_continue?", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 各種設定.
         /// </summary>
         internal static string other_settings {

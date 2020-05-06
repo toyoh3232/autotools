@@ -226,7 +226,6 @@
             this.lbStatus.Size = new System.Drawing.Size(70, 18);
             this.lbStatus.TabIndex = 11;
             this.lbStatus.Text = "lbStatus";
-            this.lbStatus.TextChanged += new System.EventHandler(this.LbStatus_TextChanged);
             // 
             // lbCount
             // 
@@ -356,11 +355,14 @@
             // 
             this.tbStatusInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.tbStatusInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbStatusInfo.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.tbStatusInfo.Location = new System.Drawing.Point(6, 24);
             this.tbStatusInfo.Multiline = true;
             this.tbStatusInfo.Name = "tbStatusInfo";
+            this.tbStatusInfo.ReadOnly = true;
             this.tbStatusInfo.Size = new System.Drawing.Size(247, 58);
             this.tbStatusInfo.TabIndex = 0;
+            this.tbStatusInfo.TabStop = false;
             this.tbStatusInfo.Text = "info";
             // 
             // label1

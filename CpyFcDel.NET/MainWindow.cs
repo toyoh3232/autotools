@@ -1,15 +1,11 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -20,11 +16,11 @@ namespace CpyFcDel.NET
     {
         private const string timeFormat = "yyyy-MM-dd HH:mm";
 
-        private readonly ResourceManager res_man;
+        private readonly ResourceManager resManager;
 
         private readonly ElapsedTimer elapsedTimer;
 
-        private readonly System.Timers.Timer timer;
+        private readonly System.Timers.Timer updateStsTimer, exitTimer;
 
         private Thread workingThread;
 
@@ -32,7 +28,7 @@ namespace CpyFcDel.NET
         {
             InitializeComponent();
 
-            //initialize folderDialog
+            // initialize folderDialog
             folderBrowserDialog = new FolderBrowserDialog
             {
                 ShowNewFolderButton = false
@@ -40,39 +36,46 @@ namespace CpyFcDel.NET
             // load languge resource
             var name = Assembly.GetExecutingAssembly().GetName().Name;
             var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            res_man = new ResourceManager(name + ".lang_" + lang, Assembly.GetExecutingAssembly());
+            resManager = new ResourceManager(name + ".lang_" + lang, Assembly.GetExecutingAssembly());
 
-            //language localization for each control
-            lbcSrcDir.Text = res_man.GetString("source_dir");
-            lbcTgtDir.Text = res_man.GetString("target_dir");
-            btSetSrcDir.Text = res_man.GetString("browse...");
-            btSetTgtDir.Text = res_man.GetString("browse...");
-            gbCacheSettings.Text = res_man.GetString("cache_settings");
-            gbOtherSettings.Text = res_man.GetString("other_settings");
-            gbTimeInfo.Text = res_man.GetString("time_info");
-            gbStatusInfo.Text = res_man.GetString("status_info");
-            btStart.Text = res_man.GetString("start");
-            lbcStartTime.Text = res_man.GetString("start_time:");
-            lbcPassedTime.Text = res_man.GetString("time_duration:");
-            lbcLimitCount.Text = res_man.GetString("count");
-            lbcCount.Text = res_man.GetString("counter:");
-            ckbCountLimOn.Text = res_man.GetString("count_limit_on");
-            ckbRCacheOn.Text = res_man.GetString("read_cache_on");
-            ckbWCacheOn.Text = res_man.GetString("write_cache_on");
-            ckbAutoExit.Text = res_man.GetString("auto_exit");
-            //set default value
-            foreach (var ctl in new Control[] { lbStartTime, lbPassedTime, lbStatus, lbCount, tbStatusInfo})
+            // language localization for each control
+            lbcSrcDir.Text = resManager.GetString("source_dir");
+            lbcTgtDir.Text = resManager.GetString("target_dir");
+            btSetSrcDir.Text = resManager.GetString("browse...");
+            btSetTgtDir.Text = resManager.GetString("browse...");
+            gbCacheSettings.Text = resManager.GetString("cache_settings");
+            gbOtherSettings.Text = resManager.GetString("other_settings");
+            gbTimeInfo.Text = resManager.GetString("time_info");
+            gbStatusInfo.Text = resManager.GetString("status_info");
+            btStart.Text = resManager.GetString("start");
+            lbcStartTime.Text = resManager.GetString("start_time:");
+            lbcPassedTime.Text = resManager.GetString("time_duration:");
+            lbcLimitCount.Text = resManager.GetString("count");
+            lbcCount.Text = resManager.GetString("counter:");
+            ckbCountLimOn.Text = resManager.GetString("count_limit_on");
+            ckbRCacheOn.Text = resManager.GetString("read_cache_on");
+            ckbWCacheOn.Text = resManager.GetString("write_cache_on");
+            ckbAutoExit.Text = resManager.GetString("auto_exit");
+            // set default value
+            foreach (var ctl in new Control[] { lbStartTime, lbPassedTime, lbStatus, lbCount, tbStatusInfo })
             {
                 ctl.Text = "";
             }
-            //set timder for deleting app info only for one time
-            timer = new System.Timers.Timer
+            // set timer for cleaning app status for one time
+            updateStsTimer = new System.Timers.Timer
             {
                 Interval = 2000,
                 AutoReset = false
             };
-            timer.Elapsed += (s, e) => this.Invoke(new Action(() => lbStatus.Text = ""));
-            //set timer for updating test time
+            updateStsTimer.Elapsed += (s, e) => this.Invoke(new Action(() => lbStatus.Text = ""));
+            // set timer for deleting app info only for one time
+            exitTimer = new System.Timers.Timer
+            {
+                Interval = 2000,
+                AutoReset = false
+            };
+            exitTimer.Elapsed += (s, e) => this.Invoke(new Action(() => Application.Exit()));
+            // set timer for updating test time
             elapsedTimer = new ElapsedTimer
             {
                 Interval = 1000
@@ -82,14 +85,14 @@ namespace CpyFcDel.NET
         }
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            //resize controls for language localization
+            // resize controls for language localization
             tbLimitCount.Location = new Point(ckbCountLimOn.Location.X + ckbCountLimOn.Size.Width + 3, tbLimitCount.Location.Y);
             lbcLimitCount.Location = new Point(tbLimitCount.Location.X + tbLimitCount.Size.Width + 3, lbcLimitCount.Location.Y);
-            //left align
+            // left align
             var newX = new Control[] { lbcStartTime, lbcPassedTime }.Max(x => x.Location.X + x.Size.Width);
             lbStartTime.Location = new Point(newX + 3, lbStartTime.Location.Y);
             lbPassedTime.Location = new Point(newX + 3, lbPassedTime.Location.Y);
-            //little fix for location of control when it is in engllish
+            // little fix for location of control when it is in engllish
             if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en")
                 lbcLimitCount.Location = new Point(lbcLimitCount.Location.X, ckbCountLimOn.Location.Y);
         }
@@ -117,13 +120,15 @@ namespace CpyFcDel.NET
             // Validate
             if (!Directory.Exists(cbTgtDirs.Text))
             {
-                MessageBox.Show(res_man.GetString("error_info_1"), res_man.GetString("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(resManager.GetString("error_info_1"), resManager.GetString("error_title"), 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cbTgtDirs.Text = "";
                 return;
             }
-            if (!Directory.Exists(cbSrcDirs.Text)) 
+            if (!Directory.Exists(cbSrcDirs.Text))
             {
-                MessageBox.Show(res_man.GetString("error_info_1"), res_man.GetString("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(resManager.GetString("error_info_1"), resManager.GetString("error_title"), 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cbSrcDirs.Text = "";
                 return;
             }
@@ -136,13 +141,15 @@ namespace CpyFcDel.NET
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show(res_man.GetString("error_info_2"), res_man.GetString("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(resManager.GetString("error_info_2"), resManager.GetString("error_title"), 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                     tbLimitCount.Text = "";
                     return;
                 }
                 if (limitCount <= 0)
                 {
-                    MessageBox.Show(res_man.GetString("error_info_3"), res_man.GetString("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(resManager.GetString("error_info_3"), resManager.GetString("error_title"), 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                     tbLimitCount.Text = "";
                     return;
                 }
@@ -152,25 +159,28 @@ namespace CpyFcDel.NET
             {
                 workingThread.Abort();
                 UpdateControls(false);
-                
             }
             else
             {
-                //set thread parameters
-                var tuple = Tuple.Create(cbSrcDirs.Text, cbTgtDirs.Text, ckbRCacheOn.Checked, ckbWCacheOn.Checked, ckbCountLimOn.Checked, limitCount, ckbAutoExit.Checked);
-                //initialize working thread
-                workingThread = new Thread(new ParameterizedThreadStart(DoWork));
-                //set background property 
-                workingThread.IsBackground = true;
+                // set thread parameters
+                var tuple = Tuple.Create(cbSrcDirs.Text, cbTgtDirs.Text, ckbRCacheOn.Checked, ckbWCacheOn.Checked, 
+                    ckbCountLimOn.Checked, limitCount, ckbAutoExit.Checked);
+                // initialize working thread
+                // set background property 
+                workingThread = new Thread(new ParameterizedThreadStart(DoWork))
+                {
+                    IsBackground = true
+                };
+
                 workingThread.Start(tuple);
                 UpdateControls(true);
-                
+
             }
         }
 
         private void Dirs_TextChanged(object sender, EventArgs e)
         {
-            if (cbSrcDirs.Text == ""　|| cbTgtDirs.Text == "")
+            if (cbSrcDirs.Text == "" || cbTgtDirs.Text == "")
             {
                 btStart.Enabled = false;
             }
@@ -191,22 +201,29 @@ namespace CpyFcDel.NET
                 {
                     ctl.Enabled = false;
                 }
-                btStart.Text = res_man.GetString("stop");
+                btStart.Text = resManager.GetString("stop");
+                // TODO
+                lbCount.ForeColor = Color.Red;
+                lbPassedTime.ForeColor = Color.Red;
                 lbStartTime.Text = DateTime.Now.ToString(timeFormat);
                 lbPassedTime.Text = TimeSpan.FromSeconds(0).ToString();
                 elapsedTimer.Start();
             }
-            
+
             else
             {
                 foreach (var ctl in ctrls)
                 {
                     ctl.Enabled = Enabled;
                 }
-                btStart.Text = res_man.GetString("start");
+                btStart.Text = resManager.GetString("start");
+                tbStatusInfo.Text = "";
+                // TODO
+                lbCount.ForeColor = Color.Black;
+                lbPassedTime.ForeColor = Color.Black;
                 elapsedTimer.Stop();
             }
-            
+
         }
 
         private void CkbCountLimOn_CheckedChanged(object sender, EventArgs e)
@@ -222,12 +239,6 @@ namespace CpyFcDel.NET
                 ckbAutoExit.Enabled = false;
             }
         }
-
-        private void LbStatus_TextChanged(object sender, EventArgs e)
-        {
-            timer?.Start();
-        }
-
 
         private void DoWork(object data)
         {
@@ -245,26 +256,104 @@ namespace CpyFcDel.NET
             while (true)
             {
                 this.Invoke(new Action(() => lbCount.Text = curCount.ToString()));
-                // TODO
                 foreach (var file in files)
                 {
-                    var fileInfo = new FileInfo(file);
-                    // TODO
+                    var srcFileInfo = new FileInfo(file);
+                    var tgtFileInfo = new FileInfo(Path.Combine(tgtDir, srcFileInfo.Name));
 
+                    #region COPY
+                    // update status to copy
+                    this.Invoke(new Action(() => tbStatusInfo.Text = resManager.GetString("copy:") + srcFileInfo.Name));
                     // copy
+                    try
+                    {
+                        using (var readStream = new FileStream(srcFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.
+                            ReadWrite, 4096, isRcacheOn ? (FileOptions)0x20000000 : FileOptions.None))
+                        using (var writeStream = new FileStream(tgtFileInfo.FullName, FileMode.Create,
+                            FileAccess.ReadWrite, FileShare.ReadWrite, 4096, isWCacheOn ? FileOptions.WriteThrough : FileOptions.None))
+                        {
 
-                    Thread.Sleep(100);
-                    // update status
-                    this.Invoke(new Action(() => tbStatusInfo.Text = res_man.GetString("copy:") + fileInfo.Name));
+                            int c = -1;
+                            while ((c = readStream.ReadByte()) != -1)
+                            {
+                                writeStream.WriteByte((byte)c);
+                            }
+                        }
+                    }
+                    catch (ThreadAbortException)
+                    {
+                        return;
+                    }
+                    catch (Exception e)
+                    {
+                        if (HandleorIgnoreException(e))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            // prepare ending this thread
+                            this.Invoke(new Action(() => this.UpdateControls(false)));
+                            return;
+                        }
+                    }
+                    #endregion
 
-                    //compare
-                    Thread.Sleep(100);
-                    // update status
-                    this.Invoke(new Action(() => tbStatusInfo.Text = res_man.GetString("compare:") + fileInfo.Name));
-                    //delete
-                    Thread.Sleep(100);
-                    // update status
-                    this.Invoke(new Action(() => tbStatusInfo.Text = res_man.GetString("delete:") + fileInfo.Name));
+                    #region COMPARE
+                    // update status to compare
+                    this.Invoke(new Action(() => tbStatusInfo.Text = resManager.GetString("compare:") + srcFileInfo.Name));
+                    // compare
+                    try
+                    {
+                        CompareMd5(srcFileInfo, tgtFileInfo);
+                    }
+                    catch (ThreadAbortException)
+                    {
+                        return;
+                    }
+                    catch (Exception e)
+                    {
+                        if (HandleorIgnoreException(e))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            // prepare ending this thread
+                            this.Invoke(new Action(() => this.UpdateControls(false)));
+                            return;
+                        }
+
+                    }
+                    #endregion
+
+                    #region DELETE
+                    // update status to delete
+                    this.Invoke(new Action(() => tbStatusInfo.Text = resManager.GetString("delete:") + srcFileInfo.Name));
+                    // delete
+                    try
+                    {
+                        tgtFileInfo.Delete();
+                    }
+                    catch (ThreadAbortException)
+                    {
+                        return;
+                    }
+                    catch (Exception e)
+                    {
+                        if (HandleorIgnoreException(e))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            // prepare ending this thread
+                            this.Invoke(new Action(() => this.UpdateControls(false)));
+                            return;
+                        }
+                    }
+                    #endregion
+
                 }
                 //update counter
                 curCount++;
@@ -272,17 +361,68 @@ namespace CpyFcDel.NET
                 count--;
                 if (count == 0) break;
             }
+            // prepare ending this thread
             this.Invoke(new Action(() => this.UpdateControls(false)));
-            // comment
+
+            // end main thread if necessary
+            // COMMENT
             // Invoke method is blocking. If the working thread is foreground,
             // following code fails (different to BeginInvoke() method)
             if (isAutoExit)
             {
-                this.Invoke(new Action(() => lbStatus.Text = res_man.GetString("app_info_1")));
-                Thread.Sleep(2000);
-                this.Invoke(new Action(() => Application.Exit()));
+                this.Invoke(new Action(() => this.UpdateAppStatus("app_info_1")));
+                this.BeginInvoke(new Action(() => this.exitTimer.Start()));
+            }
+        }
+
+        private void CompareMd5(FileInfo file1, FileInfo file2)
+        {
+            using (var md5Hash = MD5.Create())
+            using (var srcFileStream = file1.OpenRead())
+            using (var tgtFileStream = file2.OpenRead())
+            {
+                var md5Hash1 = GetMd5Hash(md5Hash, srcFileStream);
+                var md5Hash2 = GetMd5Hash(md5Hash, tgtFileStream);
+                if (md5Hash1 != md5Hash2)
+                {
+                    //TODO
+                    throw new Exception();
+                }
+            }
+        }
+
+        private string GetMd5Hash(MD5 md5Hash, Stream input)
+        {
+
+            // convert the input string to a byte array and compute the hash
+            input.Position = 0;
+            byte[] data = md5Hash.ComputeHash(input);
+
+            // create a new Stringbuilder to collect the bytes
+            // and create a string
+            StringBuilder sBuilder = new StringBuilder();
+
+            // loop through each byte of the hashed data
+            // and format each one as a hexadecimal string
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
             }
 
+            // return the hexadecimal string.
+            return sBuilder.ToString();
+        }
+
+        private bool HandleorIgnoreException(Exception e)
+        {
+            return DialogResult.Yes == MessageBox.Show(e.Message + "\n" +resManager.GetString("if_continue?"), 
+                resManager.GetString("error_title"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+        }
+
+        private void UpdateAppStatus(string statusName)
+        {
+            lbStatus.Text = resManager.GetString(statusName);
+            updateStsTimer.Start();
         }
     }
 }
