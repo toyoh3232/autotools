@@ -106,6 +106,15 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copied: .
+        /// </summary>
+        internal static string copied_ {
+            get {
+                return ResourceManager.GetString("copied:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy:.
         /// </summary>
         internal static string copy_ {
@@ -133,11 +142,11 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to pass:.
+        ///   Looks up a localized string similar to pass.
         /// </summary>
-        internal static string counter_ {
+        internal static string counter {
             get {
-                return ResourceManager.GetString("counter:", resourceCulture);
+                return ResourceManager.GetString("counter", resourceCulture);
             }
         }
         

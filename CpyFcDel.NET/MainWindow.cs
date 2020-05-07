@@ -51,7 +51,7 @@ namespace CpyFcDel.NET
             lbcStartTime.Text = resManager.GetString("start_time:");
             lbcPassedTime.Text = resManager.GetString("time_duration:");
             lbcLimitCount.Text = resManager.GetString("count");
-            lbcCount.Text = resManager.GetString("counter:");
+            lbcCount.Text = resManager.GetString("counter");
             ckbCountLimOn.Text = resManager.GetString("count_limit_on");
             ckbRCacheOn.Text = resManager.GetString("read_cache_on");
             ckbWCacheOn.Text = resManager.GetString("write_cache_on");
@@ -268,16 +268,26 @@ namespace CpyFcDel.NET
                     try
                     {
                         using (var readStream = new FileStream(srcFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.
-                            ReadWrite, 4096, isRcacheOn ? (FileOptions)0x20000000 : FileOptions.None))
+                            ReadWrite, 4096, isRcacheOn ? FileOptions.None : (FileOptions)0x20000000))
                         using (var writeStream = new FileStream(tgtFileInfo.FullName, FileMode.Create,
-                            FileAccess.ReadWrite, FileShare.ReadWrite, 4096, isWCacheOn ? FileOptions.WriteThrough : FileOptions.None))
+                            FileAccess.ReadWrite, FileShare.ReadWrite, 4096, isWCacheOn ? FileOptions.None : FileOptions.WriteThrough ))
                         {
 
                             int c = -1;
+                            long bytes = 0;
                             while ((c = readStream.ReadByte()) != -1)
                             {
                                 writeStream.WriteByte((byte)c);
+                                // show copy progress when file is greater than 200MB
+                                if (++bytes % (1024 * 1024) == 0 && readStream.Length > 1024 * 1024 * 200)
+                                {
+                                    this.BeginInvoke(new Action(() => UpdateAppStatus("copied:",
+                                        string.Format("{0:d}M / {1:d}M", bytes / 1024 / 1024, readStream.Length / 1024 / 1024),
+                                        false)));
+                                }
                             }
+                            // clean app status
+                            this.Invoke(new Action(() => lbStatus.Text = ""));
                         }
                     }
                     catch (ThreadAbortException)
@@ -370,7 +380,7 @@ namespace CpyFcDel.NET
             // following code fails (different to BeginInvoke() method)
             if (isAutoExit)
             {
-                this.Invoke(new Action(() => this.UpdateAppStatus("app_info_1")));
+                this.Invoke(new Action(() => this.UpdateAppStatus("app_info_1", "")));
                 this.BeginInvoke(new Action(() => this.exitTimer.Start()));
             }
         }
@@ -419,10 +429,11 @@ namespace CpyFcDel.NET
                 resManager.GetString("error_title"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
         }
 
-        private void UpdateAppStatus(string statusName)
+        private void UpdateAppStatus(string statusName, string info = "", bool isAutoDeleted = true)
         {
-            lbStatus.Text = resManager.GetString(statusName);
-            updateStsTimer.Start();
+            lbStatus.Text = resManager.GetString(statusName) + (info==string.Empty ? "": info);
+            if (isAutoDeleted)
+                updateStsTimer.Start();
         }
     }
 }

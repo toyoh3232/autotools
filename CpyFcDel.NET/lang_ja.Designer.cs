@@ -106,6 +106,15 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to コピーされた容量：.
+        /// </summary>
+        internal static string copied_ {
+            get {
+                return ResourceManager.GetString("copied:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to コピー：.
         /// </summary>
         internal static string copy_ {
@@ -133,11 +142,11 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 回数：.
+        ///   Looks up a localized string similar to 回目.
         /// </summary>
-        internal static string counter_ {
+        internal static string counter {
             get {
-                return ResourceManager.GetString("counter:", resourceCulture);
+                return ResourceManager.GetString("counter", resourceCulture);
             }
         }
         

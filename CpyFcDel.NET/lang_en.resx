@@ -132,14 +132,17 @@
   <data name="compare:" xml:space="preserve">
     <value>Compare:</value>
   </data>
+  <data name="copied:" xml:space="preserve">
+    <value>Copied: </value>
+  </data>
   <data name="copy:" xml:space="preserve">
     <value>Copy:</value>
   </data>
   <data name="count" xml:space="preserve">
     <value>pass</value>
   </data>
-  <data name="counter:" xml:space="preserve">
-    <value>pass:</value>
+  <data name="counter" xml:space="preserve">
+    <value>pass</value>
   </data>
   <data name="count_limit_on" xml:space="preserve">
     <value>Limit to</value>

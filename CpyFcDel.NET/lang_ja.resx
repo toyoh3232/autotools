@@ -132,14 +132,17 @@
   <data name="compare:" xml:space="preserve">
     <value>比較：</value>
   </data>
+  <data name="copied:" xml:space="preserve">
+    <value>コピーされた容量：</value>
+  </data>
   <data name="copy:" xml:space="preserve">
     <value>コピー：</value>
   </data>
   <data name="count" xml:space="preserve">
     <value>回</value>
   </data>
-  <data name="counter:" xml:space="preserve">
-    <value>回数：</value>
+  <data name="counter" xml:space="preserve">
+    <value>回目</value>
   </data>
   <data name="count_limit_on" xml:space="preserve">
     <value>回数を制限する</value>
