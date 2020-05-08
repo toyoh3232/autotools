@@ -103,7 +103,6 @@
             this.cbSrcDirs.Name = "cbSrcDirs";
             this.cbSrcDirs.Size = new System.Drawing.Size(386, 20);
             this.cbSrcDirs.TabIndex = 5;
-            this.cbSrcDirs.TextChanged += new System.EventHandler(this.Dirs_TextChanged);
             // 
             // lbcTgtDir
             // 
@@ -123,7 +122,6 @@
             this.cbTgtDirs.Name = "cbTgtDirs";
             this.cbTgtDirs.Size = new System.Drawing.Size(386, 20);
             this.cbTgtDirs.TabIndex = 7;
-            this.cbTgtDirs.TextChanged += new System.EventHandler(this.Dirs_TextChanged);
             // 
             // btSetTgtDir
             // 
@@ -251,7 +249,6 @@
             // 
             // btStart
             // 
-            this.btStart.Enabled = false;
             this.btStart.Location = new System.Drawing.Point(401, 106);
             this.btStart.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btStart.Name = "btStart";

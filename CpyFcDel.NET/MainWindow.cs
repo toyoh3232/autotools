@@ -61,6 +61,11 @@ namespace CpyFcDel.NET
             {
                 ctl.Text = "";
             }
+
+            //data bindings for combobox
+            cbSrcDirs.DataSource = Options.Instance.SourceDirs;
+            cbTgtDirs.DataSource = Options.Instance.TargetDirs;
+
             // set timer for cleaning app status for one time
             updateStsTimer = new System.Timers.Timer
             {
@@ -83,6 +88,7 @@ namespace CpyFcDel.NET
             elapsedTimer.Tick += (s, e) => lbPassedTime.Text = TimeSpan.FromSeconds(elapsedTimer.ElapsedSeconds).ToString();
 
         }
+        
         private void MainWindow_Load(object sender, EventArgs e)
         {
             // resize controls for language localization
@@ -95,6 +101,11 @@ namespace CpyFcDel.NET
             // little fix for location of control when it is in engllish
             if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en")
                 lbcLimitCount.Location = new Point(lbcLimitCount.Location.X, ckbCountLimOn.Location.Y);
+            
+            // fill controls if commandline is avaliable
+            var ops = Options.Instance;
+            ops.Parse(Environment.GetCommandLineArgs());
+
         }
 
         private void BtSetSrcDir_Click(object sender, EventArgs e)
@@ -117,7 +128,7 @@ namespace CpyFcDel.NET
 
         private void BtStart_Click(object sender, EventArgs e)
         {
-            // Validate
+            // validate
             if (!Directory.Exists(cbTgtDirs.Text))
             {
                 MessageBox.Show(resManager.GetString("error_info_1"), resManager.GetString("error_title"), 
@@ -132,6 +143,19 @@ namespace CpyFcDel.NET
                 cbSrcDirs.Text = "";
                 return;
             }
+            // add to data and select current
+            if (!Options.Instance.SourceDirs.Contains(cbSrcDirs.Text))
+            {
+                Options.Instance.SourceDirs.Insert(0, cbSrcDirs.Text.TrimEnd('\\') + "\\");
+                cbSrcDirs.SelectedIndex = 0;
+            }
+
+            if (!Options.Instance.TargetDirs.Contains(cbTgtDirs.Text))
+            {
+                Options.Instance.TargetDirs.Insert(0, cbTgtDirs.Text.TrimEnd('\\') + "\\");
+                cbTgtDirs.SelectedIndex = 0;
+            }
+            
             int limitCount = -1;
             if (ckbCountLimOn.Checked)
             {
@@ -175,18 +199,6 @@ namespace CpyFcDel.NET
                 workingThread.Start(tuple);
                 UpdateControls(true);
 
-            }
-        }
-
-        private void Dirs_TextChanged(object sender, EventArgs e)
-        {
-            if (cbSrcDirs.Text == "" || cbTgtDirs.Text == "")
-            {
-                btStart.Enabled = false;
-            }
-            else
-            {
-                btStart.Enabled = true;
             }
         }
 

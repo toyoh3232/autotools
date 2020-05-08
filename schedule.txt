@@ -1,5 +1,5 @@
-5.08（金）引数処理機能
-5.09（土）レジスターへ記録機能
+5.08（金）引数処理機能 (Options.Parse, Options.Load() Options.Save()）
+5.09（土）レジスターへ記録機能(JsonSerialize)
 5.10（日）例外処理機能
 5.11（月）AppStatus表示機能
 5.12（火）コード再構成
