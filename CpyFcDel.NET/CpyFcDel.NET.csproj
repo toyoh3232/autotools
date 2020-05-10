@@ -83,6 +83,7 @@
     <Compile Include="ElapsedTimer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TranslationManager.cs" />
     <Compile Include="Tuple.cs" />
     <EmbeddedResource Include="lang_en.resx">
       <Generator>ResXFileCodeGenerator</Generator>
