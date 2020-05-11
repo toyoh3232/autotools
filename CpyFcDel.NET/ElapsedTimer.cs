@@ -15,6 +15,11 @@ namespace CpyFcDel.NET
             base.Start();
         }
 
+        public void Resume()
+        {
+            base.Start();
+        }
+
         protected override void OnTick(EventArgs e)
         {
             ElapsedSeconds++;

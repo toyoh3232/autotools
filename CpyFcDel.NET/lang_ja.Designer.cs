@@ -286,6 +286,15 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to スレッド停止がリクエストされた.
+        /// </summary>
+        internal static string thread_terminating {
+            get {
+                return ResourceManager.GetString("thread_terminating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 試験時間：.
         /// </summary>
         internal static string time_duration_ {

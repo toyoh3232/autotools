@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="app_info_1" xml:space="preserve">
     <value>プログラムは数秒後に終了する</value>
@@ -191,6 +191,9 @@
   </data>
   <data name="target_dir" xml:space="preserve">
     <value>ターゲットディレクトリ</value>
+  </data>
+  <data name="thread_terminating" xml:space="preserve">
+    <value>スレッド停止がリクエストされた</value>
   </data>
   <data name="time_duration:" xml:space="preserve">
     <value>試験時間：</value>

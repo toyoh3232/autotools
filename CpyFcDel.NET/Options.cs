@@ -9,9 +9,35 @@ namespace CpyFcDel.NET
 {
     public class DirectoryBindingStack : BindingList<string>
     {
+        private string GetExactPathName(string pathName)
+        {
+            if (!(File.Exists(pathName) || Directory.Exists(pathName)))
+                return pathName;
+
+            // force special case "<DriveLetter>:" NOT to point to "<CurrentDirectory>" instead
+            // according to source code of class DirectoryInfo
+            if ((pathName.TrimEnd('\\').Length == 2) && (pathName[1] == ':'))
+            {
+                return pathName.ToUpper().TrimEnd('\\') + "\\";
+            }
+
+            var di = new DirectoryInfo(pathName);
+
+            if (di.Parent != null)
+            {
+                return Path.Combine(
+                    GetExactPathName(di.Parent.FullName),
+                    di.Parent.GetFileSystemInfos(di.Name)[0].Name).TrimEnd('\\') + "\\";
+            }
+            else
+            {
+                return di.FullName.ToLower().TrimEnd('\\') + "\\";
+            }
+        }
+
         public int Push(string path)
         {
-            path = path.ToUpper().TrimEnd('\\') + "\\";
+            path = GetExactPathName(path);
             if (!base.Contains(path))
             {
                 base.Insert(0, path);
@@ -31,6 +57,24 @@ namespace CpyFcDel.NET
 
         public DirectoryBindingStack SourceDirs { get; set; } = new DirectoryBindingStack();
         public DirectoryBindingStack TargetDirs { get; set; } = new DirectoryBindingStack();
+
+        public int AddSourceDir(string path)
+        {
+            var index = SourceDirs.Push(path);
+            CurrentSrcDirIndex = index;
+            return index;
+        }
+
+        public int AddTargetDir(string path)
+        {
+            var index = TargetDirs.Push(path);
+            CurrentTgtDirIndex = index;
+            return index;
+        }
+
+
+        public int CurrentSrcDirIndex { get; set; } = -1;
+        public int CurrentTgtDirIndex { get; set; } = -1;
 
         public bool IsWriteCacheOn { get; set; }
         public bool IsReadCacheOn { get; set; } 
@@ -102,11 +146,11 @@ namespace CpyFcDel.NET
             this.IsReadCacheOn = isReadCacheOn;
             this.IsWriteCacheOn = isWriteCacheOn;
             this.LimitCount = limitCount;
-            this.SourceDirs.Push(sourceDir);
-            this.SourceDirs.Push(targetDir);
+            this.CurrentSrcDirIndex = this.SourceDirs.Push(sourceDir);
+            this.CurrentTgtDirIndex = this.TargetDirs.Push(targetDir);
         }
 
-        public void Load()
+        public static Options Load()
         {
             var name = Assembly.GetExecutingAssembly().GetName().Name;
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), name + ".xml");
@@ -119,13 +163,9 @@ namespace CpyFcDel.NET
                 var options = (Options)reader.Deserialize(file);
                 file.Close();
 
-                this.IsAutoExit = options.IsAutoExit;
-                this.IsReadCacheOn = options.IsReadCacheOn;
-                this.IsWriteCacheOn = options.IsWriteCacheOn;
-                this.LimitCount = options.LimitCount;
-                this.SourceDirs = options.SourceDirs;
-                this.TargetDirs = options.TargetDirs;
+                return options;
             }
+            return new Options();
         }
         
         public void Save()
@@ -139,6 +179,8 @@ namespace CpyFcDel.NET
             writer.Serialize(file, this);
             file.Close();
         }
+
+
 
     }
 }

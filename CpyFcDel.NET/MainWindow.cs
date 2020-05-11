@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
+using TM = CpyFcDel.NET.TranslationManager;
+
 namespace CpyFcDel.NET
 {
     public partial class MainWindow : Form
@@ -20,7 +22,7 @@ namespace CpyFcDel.NET
 
         private Thread workingThread;
 
-        private readonly Options options = new Options();
+        private Options options;
 
         public MainWindow()
         {
@@ -33,23 +35,23 @@ namespace CpyFcDel.NET
             };
 
             // language localization for each control
-            lbcSrcDir.Text = TranslationManager.Translate("source_dir");
-            lbcTgtDir.Text = TranslationManager.Translate("target_dir");
-            btSetSrcDir.Text = TranslationManager.Translate("browse...");
-            btSetTgtDir.Text = TranslationManager.Translate("browse...");
-            gbCacheSettings.Text = TranslationManager.Translate("cache_settings");
-            gbOtherSettings.Text = TranslationManager.Translate("other_settings");
-            gbTimeInfo.Text = TranslationManager.Translate("time_info");
-            gbStatusInfo.Text = TranslationManager.Translate("status_info");
-            btStart.Text = TranslationManager.Translate("start");
-            lbcStartTime.Text = TranslationManager.Translate("start_time:");
-            lbcPassedTime.Text = TranslationManager.Translate("time_duration:");
-            lbcLimitCount.Text = TranslationManager.Translate("count");
-            lbcCount.Text = TranslationManager.Translate("counter");
-            ckbCountLimOn.Text = TranslationManager.Translate("count_limit_on");
-            ckbRCacheOn.Text = TranslationManager.Translate("read_cache_on");
-            ckbWCacheOn.Text = TranslationManager.Translate("write_cache_on");
-            ckbAutoExit.Text = TranslationManager.Translate("auto_exit");
+            lbcSrcDir.Text = TM.Translate("source_dir");
+            lbcTgtDir.Text = TM.Translate("target_dir");
+            btSetSrcDir.Text = TM.Translate("browse...");
+            btSetTgtDir.Text = TM.Translate("browse...");
+            gbCacheSettings.Text = TM.Translate("cache_settings");
+            gbOtherSettings.Text = TM.Translate("other_settings");
+            gbTimeInfo.Text = TM.Translate("time_info");
+            gbStatusInfo.Text = TM.Translate("status_info");
+            btStart.Text = TM.Translate("start");
+            lbcStartTime.Text = TM.Translate("start_time:");
+            lbcPassedTime.Text = TM.Translate("time_duration:");
+            lbcLimitCount.Text = TM.Translate("count");
+            lbcCount.Text = TM.Translate("counter");
+            ckbCountLimOn.Text = TM.Translate("count_limit_on");
+            ckbRCacheOn.Text = TM.Translate("read_cache_on");
+            ckbWCacheOn.Text = TM.Translate("write_cache_on");
+            ckbAutoExit.Text = TM.Translate("auto_exit");
             // set default value
             foreach (var ctl in new Control[] { lbStartTime, lbPassedTime, lbStatus, lbCount, tbStatusInfo })
             {
@@ -94,10 +96,8 @@ namespace CpyFcDel.NET
             if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en")
                 lbcLimitCount.Location = new Point(lbcLimitCount.Location.X, ckbCountLimOn.Location.Y);
 
-            // load options from file if exists
-            options.Load();
-
-
+            // load options from file if exists or default options
+            options = Options.Load();
 
             // parse commandline
             try
@@ -111,7 +111,10 @@ namespace CpyFcDel.NET
 
             // set data bindings for combobox
             cbSrcDirs.DataSource = options.SourceDirs;
+            cbSrcDirs.SelectedIndex = options.CurrentSrcDirIndex;
             cbTgtDirs.DataSource = options.TargetDirs;
+            cbTgtDirs.SelectedIndex = options.CurrentTgtDirIndex;
+            
             //fill controls from options
             ckbAutoExit.Checked = options.IsAutoExit;
             ckbRCacheOn.Checked = options.IsReadCacheOn;
@@ -127,8 +130,7 @@ namespace CpyFcDel.NET
         {
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                cbSrcDirs.Items.Add(folderBrowserDialog.SelectedPath);
-                cbSrcDirs.SelectedItem = folderBrowserDialog.SelectedPath;
+                cbSrcDirs.Text = folderBrowserDialog.SelectedPath;
             }
         }
 
@@ -136,24 +138,23 @@ namespace CpyFcDel.NET
         {
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                cbTgtDirs.Items.Add(folderBrowserDialog.SelectedPath);
-                cbTgtDirs.SelectedItem = folderBrowserDialog.SelectedPath;
+                cbTgtDirs.Text = folderBrowserDialog.SelectedPath;
             }
         }
 
         private void BtStart_Click(object sender, EventArgs e)
         {
             // validate
-            if (!Directory.Exists(cbTgtDirs.Text))
+             if (!Directory.Exists(cbTgtDirs.Text))
             {
-                MessageBox.Show(TranslationManager.Translate("error_info_1"), TranslationManager.Translate("error_title"), 
+                MessageBox.Show(TM.Translate("error_info_1"), TM.Translate("error_title"), 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cbTgtDirs.Text = "";
                 return;
             }
             if (!Directory.Exists(cbSrcDirs.Text))
             {
-                MessageBox.Show(TranslationManager.Translate("error_info_1"), TranslationManager.Translate("error_title"), 
+                MessageBox.Show(TM.Translate("error_info_1"), TM.Translate("error_title"), 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cbSrcDirs.Text = "";
                 return;
@@ -168,14 +169,14 @@ namespace CpyFcDel.NET
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show(TranslationManager.Translate("error_info_2"), TranslationManager.Translate("error_title"), 
+                    MessageBox.Show(TM.Translate("error_info_2"), TM.Translate("error_title"), 
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     tbLimitCount.Text = "";
                     return;
                 }
                 if (limitCount <= 0)
                 {
-                    MessageBox.Show(TranslationManager.Translate("error_info_3"), TranslationManager.Translate("error_title"), 
+                    MessageBox.Show(TM.Translate("error_info_3"), TM.Translate("error_title"), 
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     tbLimitCount.Text = "";
                     return;
@@ -183,12 +184,13 @@ namespace CpyFcDel.NET
             }
 
             // update options
-            cbSrcDirs.SelectedIndex = ((DirectoryBindingStack)cbSrcDirs.DataSource).Push(cbSrcDirs.Text);
-            cbTgtDirs.SelectedIndex = ((DirectoryBindingStack)cbTgtDirs.DataSource).Push(cbTgtDirs.Text);
+            cbSrcDirs.SelectedIndex = options.AddSourceDir(cbSrcDirs.Text);
+            cbTgtDirs.SelectedIndex = options.AddTargetDir(cbTgtDirs.Text);
+
             options.IsAutoExit = ckbAutoExit.Checked;
             options.IsReadCacheOn = ckbRCacheOn.Checked;
             options.IsWriteCacheOn = ckbWCacheOn.Checked;
-            options.LimitCount = ckbCountLimOn.Checked ? limitCount : null; 
+            options.LimitCount = limitCount; 
 
             if (workingThread?.IsAlive ?? false)
             {
@@ -197,9 +199,11 @@ namespace CpyFcDel.NET
             }
             else
             {
-                // set thread parameters
-                var tuple = Tuple.Create(cbSrcDirs.Text, cbTgtDirs.Text, ckbRCacheOn.Checked, ckbWCacheOn.Checked, 
-                    ckbCountLimOn.Checked, limitCount, ckbAutoExit.Checked);
+                // set parameters passing to thread
+                // pay attention to value type or reference type
+                var tuple = Tuple.Create(string.Copy(options.SourceDirs[options.CurrentSrcDirIndex]), 
+                    string.Copy(options.TargetDirs[options.CurrentTgtDirIndex]), options.IsReadCacheOn, options.IsWriteCacheOn, 
+                    options.LimitCount, options.IsAutoExit);
 
                 // initialize working thread
                 // set background property 
@@ -225,7 +229,7 @@ namespace CpyFcDel.NET
                 {
                     ctl.Enabled = false;
                 }
-                btStart.Text = TranslationManager.Translate("stop");
+                btStart.Text = TM.Translate("stop");
                 // TODO
                 lbCount.ForeColor = Color.Red;
                 lbPassedTime.ForeColor = Color.Red;
@@ -240,7 +244,8 @@ namespace CpyFcDel.NET
                 {
                     ctl.Enabled = Enabled;
                 }
-                btStart.Text = TranslationManager.Translate("start");
+                btStart.Text = TM.Translate("start");
+                lbStatus.Text = "";
                 tbStatusInfo.Text = "";
                 lbCount.ForeColor = Color.Black;
                 lbPassedTime.ForeColor = Color.Black;
@@ -265,14 +270,13 @@ namespace CpyFcDel.NET
 
         private void DoWork(object data)
         {
-            var tuple = (Tuple<string, string, bool, bool, bool, int?, bool>)data;
+            var tuple = (Tuple<string, string, bool, bool, int?, bool>)data;
             var srcDir = tuple.Item1;
             var tgtDir = tuple.Item2;
             var isWCacheOn = tuple.Item3;
             var isRcacheOn = tuple.Item4;
-            var isCountLimitOn = tuple.Item5;
-            var count = tuple.Item6;
-            var isAutoExit = tuple.Item7;
+            var count = tuple.Item5;
+            var isAutoExit = tuple.Item6;
 
             var curCount = 1;
             var files = Directory.GetFiles(srcDir);
@@ -286,7 +290,7 @@ namespace CpyFcDel.NET
 
                     #region COPY
                     // update status to copy
-                    this.Invoke(new Action(() => tbStatusInfo.Text = TranslationManager.Translate("copy:") + srcFileInfo.Name));
+                    this.Invoke(new Action(() => tbStatusInfo.Text = TM.Translate("copy:") + srcFileInfo.Name));
                     // copy
                     try
                     {
@@ -304,6 +308,7 @@ namespace CpyFcDel.NET
                                 // show copy progress when file is greater than 200MB
                                 if (++bytes % (1024 * 1024) == 0 && readStream.Length > 1024 * 1024 * 200)
                                 {
+                                    // BUG data race
                                     this.BeginInvoke(new Action(() => UpdateAppStatus("copied:",
                                         string.Format("{0:d}M / {1:d}M", bytes / 1024 / 1024, readStream.Length / 1024 / 1024),
                                         false)));
@@ -319,8 +324,10 @@ namespace CpyFcDel.NET
                     }
                     catch (Exception e)
                     {
+                        this.Invoke(new Action(() => elapsedTimer.Stop()));
                         if (HandleorIgnoreException(e))
                         {
+                            this.Invoke(new Action(() => elapsedTimer.Resume()));
                             continue;
                         }
                         else
@@ -334,7 +341,7 @@ namespace CpyFcDel.NET
 
                     #region COMPARE
                     // update status to compare
-                    this.Invoke(new Action(() => tbStatusInfo.Text = TranslationManager.Translate("compare:") + srcFileInfo.Name));
+                    this.Invoke(new Action(() => tbStatusInfo.Text = TM.Translate("compare:") + srcFileInfo.Name));
                     // compare
                     try
                     {
@@ -362,7 +369,7 @@ namespace CpyFcDel.NET
 
                     #region DELETE
                     // update status to delete
-                    this.Invoke(new Action(() => tbStatusInfo.Text = TranslationManager.Translate("delete:") + srcFileInfo.Name));
+                    this.Invoke(new Action(() => tbStatusInfo.Text = TM.Translate("delete:") + srcFileInfo.Name));
                     // delete
                     try
                     {
@@ -388,9 +395,10 @@ namespace CpyFcDel.NET
                     #endregion
 
                 }
-                //update counter
+                // update counter
                 curCount++;
-                if (!isCountLimitOn) continue;
+                // since count is nullable type following is necessary
+                // if (count == null) continue;
                 count--;
                 if (count == 0) break;
             }
@@ -448,8 +456,8 @@ namespace CpyFcDel.NET
 
         private bool HandleorIgnoreException(Exception e)
         {
-            return DialogResult.Yes == MessageBox.Show(e.Message + "\n" +TranslationManager.Translate("if_continue?"), 
-                TranslationManager.Translate("error_title"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+            return DialogResult.Yes == MessageBox.Show(e.Message + "\n" +TM.Translate("if_continue?"), 
+                TM.Translate("error_title"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
         }
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
@@ -459,7 +467,7 @@ namespace CpyFcDel.NET
 
         private void UpdateAppStatus(string statusName, string info = "", bool isAutoDeleted = true)
         {
-            lbStatus.Text = TranslationManager.Translate(statusName) + (info==string.Empty ? "": info);
+            lbStatus.Text = TM.Translate(statusName) + (info==string.Empty ? "": info);
             if (isAutoDeleted)
                 updateStsTimer.Start();
         }
