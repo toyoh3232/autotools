@@ -264,7 +264,10 @@ namespace CpyFcDel.NET
             else
             {
                 tbLimitCount.Enabled = false;
+                tbLimitCount.Text = "";
                 ckbAutoExit.Enabled = false;
+                ckbAutoExit.Checked = false;
+                
             }
         }
 
@@ -308,9 +311,10 @@ namespace CpyFcDel.NET
                                 // show copy progress when file is greater than 200MB
                                 if (++bytes % (1024 * 1024) == 0 && readStream.Length > 1024 * 1024 * 200)
                                 {
-                                    // BUG data race
+                                    // bug fix 3
+                                    var length = readStream.Length;
                                     this.BeginInvoke(new Action(() => UpdateAppStatus("copied:",
-                                        string.Format("{0:d}M / {1:d}M", bytes / 1024 / 1024, readStream.Length / 1024 / 1024),
+                                        string.Format("{0:d}M / {1:d}M", bytes / 1024 / 1024, length / 1024 / 1024),
                                         false)));
                                 }
                             }
