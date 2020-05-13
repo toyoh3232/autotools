@@ -29,7 +29,7 @@ using System.Threading;
 using Microsoft.Win32;
 
 
-namespace SmallDHCPServer_C
+namespace SmallDHCPServer
 {
     class UDP
 
@@ -141,8 +141,8 @@ namespace SmallDHCPServer_C
             try
             {
 
-                u = (UdpClient)((UdpState)(asyn.AsyncState)).u;
-                e = (IPEndPoint)((UdpState)(asyn.AsyncState)).e;
+                u = ((UdpState) asyn.AsyncState).u;
+                e = ((UdpState) asyn.AsyncState).e;
 
                 receiveBytes = u.EndReceive(asyn, ref e);
                 //raise the event with the data recieved

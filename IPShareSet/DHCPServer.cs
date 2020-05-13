@@ -28,7 +28,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 
-namespace SmallDHCPServer_C
+namespace SmallDHCPServer
 {
 
     #region "Enums" 
@@ -236,7 +236,7 @@ namespace SmallDHCPServer_C
     #endregion
 
 
-    class DHCP
+    class DHCPServer
     {
 
         #region "Events to Raise" 
@@ -268,13 +268,13 @@ namespace SmallDHCPServer_C
             cUdp = null;
 
         }
-        ~DHCP()
+        ~DHCPServer()
         {
 
             cUdp = null;
         }
 
-        public DHCP(string NetCard1)
+        public DHCPServer(string NetCard1)
         {
             NetCard = NetCard1;
         }

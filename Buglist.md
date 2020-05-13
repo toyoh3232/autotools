@@ -46,3 +46,10 @@
     **原　因**：上記2つのCheckBoxの相互制御関係が不明瞭
 
     **解決策**：制御コード追加
+***
+6.  **問　題**：Stopボタンをしたら、Freeze発生
+    
+    **原　因**：volatile 手法を採用したが、Sub ThreadがBlockなInvokeを使っている。WaitStopSleep状態になる
+
+    **解決策**：Sub ThreadがInvokeを使う必要な場合があるから、Abort手法に戻す。
+

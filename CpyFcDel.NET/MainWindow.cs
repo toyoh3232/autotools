@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -195,6 +196,12 @@ namespace CpyFcDel.NET
             if (workingThread?.IsAlive ?? false)
             {
                 workingThread.Abort();
+                this.Enabled = false;
+                while (workingThread.ThreadState  != ThreadState.AbortRequested)
+                {
+                    continue;
+                }
+                this.Enabled = true;
                 UpdateControls(false);
             }
             else
@@ -211,7 +218,6 @@ namespace CpyFcDel.NET
                 {
                     IsBackground = true
                 };
-
                 workingThread.Start(tuple);
                 UpdateControls(true);
 
@@ -291,16 +297,18 @@ namespace CpyFcDel.NET
                     var srcFileInfo = new FileInfo(file);
                     var tgtFileInfo = new FileInfo(Path.Combine(tgtDir, srcFileInfo.Name));
 
-                    #region COPY
-                    // update status to copy
-                    this.Invoke(new Action(() => tbStatusInfo.Text = TM.Translate("copy:") + srcFileInfo.Name));
-                    // copy
                     try
                     {
+                        #region COPY
+
+                        // update status to copy
+                        this.Invoke(new Action(() => tbStatusInfo.Text = TM.Translate("copy:") + srcFileInfo.Name));
+
+                        // copy
                         using (var readStream = new FileStream(srcFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.
                             ReadWrite, 4096, isRcacheOn ? FileOptions.None : (FileOptions)0x20000000))
                         using (var writeStream = new FileStream(tgtFileInfo.FullName, FileMode.Create,
-                            FileAccess.ReadWrite, FileShare.ReadWrite, 4096, isWCacheOn ? FileOptions.None : FileOptions.WriteThrough ))
+                            FileAccess.ReadWrite, FileShare.ReadWrite, 4096, isWCacheOn ? FileOptions.None : FileOptions.WriteThrough))
                         {
 
                             int c = -1;
@@ -311,7 +319,6 @@ namespace CpyFcDel.NET
                                 // show copy progress when file is greater than 200MB
                                 if (++bytes % (1024 * 1024) == 0 && readStream.Length > 1024 * 1024 * 200)
                                 {
-                                    // bug fix 3
                                     var length = readStream.Length;
                                     this.BeginInvoke(new Action(() => UpdateAppStatus("copied:",
                                         string.Format("{0:d}M / {1:d}M", bytes / 1024 / 1024, length / 1024 / 1024),
@@ -321,62 +328,22 @@ namespace CpyFcDel.NET
                             // clean app status
                             this.Invoke(new Action(() => lbStatus.Text = ""));
                         }
-                    }
-                    catch (ThreadAbortException)
-                    {
-                        return;
-                    }
-                    catch (Exception e)
-                    {
-                        this.Invoke(new Action(() => elapsedTimer.Stop()));
-                        if (HandleorIgnoreException(e))
-                        {
-                            this.Invoke(new Action(() => elapsedTimer.Resume()));
-                            continue;
-                        }
-                        else
-                        {
-                            // prepare ending this thread
-                            this.Invoke(new Action(() => this.UpdateControls(false)));
-                            return;
-                        }
-                    }
-                    #endregion
 
-                    #region COMPARE
-                    // update status to compare
-                    this.Invoke(new Action(() => tbStatusInfo.Text = TM.Translate("compare:") + srcFileInfo.Name));
-                    // compare
-                    try
-                    {
+
+                        #endregion
+
+                        #region COMPARE
+
+                        // update status to compare
+                        this.Invoke(new Action(() => tbStatusInfo.Text = TM.Translate("compare:") + srcFileInfo.Name));
+                        // compare
                         CompareMd5(srcFileInfo, tgtFileInfo);
-                    }
-                    catch (ThreadAbortException)
-                    {
-                        return;
-                    }
-                    catch (Exception e)
-                    {
-                        if (HandleorIgnoreException(e))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            // prepare ending this thread
-                            this.Invoke(new Action(() => this.UpdateControls(false)));
-                            return;
-                        }
+                        #endregion
 
-                    }
-                    #endregion
-
-                    #region DELETE
-                    // update status to delete
-                    this.Invoke(new Action(() => tbStatusInfo.Text = TM.Translate("delete:") + srcFileInfo.Name));
-                    // delete
-                    try
-                    {
+                        #region DELETE
+                        // update status to delete
+                        this.Invoke(new Action(() => tbStatusInfo.Text = TM.Translate("delete:") + srcFileInfo.Name));
+                        // delete
                         tgtFileInfo.Delete();
                     }
                     catch (ThreadAbortException)
@@ -385,7 +352,8 @@ namespace CpyFcDel.NET
                     }
                     catch (Exception e)
                     {
-                        if (HandleorIgnoreException(e))
+                        // raise the error messagebox at main thread to block the UI (Modal)
+                        if ((bool)this.Invoke(new Func<bool>(() => AskWhetherContinue(e.Message))))
                         {
                             continue;
                         }
@@ -397,7 +365,6 @@ namespace CpyFcDel.NET
                         }
                     }
                     #endregion
-
                 }
                 // update counter
                 curCount++;
@@ -458,10 +425,17 @@ namespace CpyFcDel.NET
             return sBuilder.ToString();
         }
 
-        private bool HandleorIgnoreException(Exception e)
+        private bool AskWhetherContinue(string msg)
         {
-            return DialogResult.Yes == MessageBox.Show(e.Message + "\n" +TM.Translate("if_continue?"), 
-                TM.Translate("error_title"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+            elapsedTimer.Stop();
+            if (DialogResult.Yes == MessageBox.Show(msg + TM.Translate("if_continue?"),
+                TM.Translate("error_title"), MessageBoxButtons.YesNo, MessageBoxIcon.Error))
+            {
+                elapsedTimer.Resume();
+                return true;
+            }
+            return false;
+            
         }
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)

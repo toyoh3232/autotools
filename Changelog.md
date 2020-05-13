@@ -20,9 +20,10 @@
 - [x] Bug listの編集
 
 ##### 20.05.13（水）
-- [ ] エラー処理とMessageBoxの表示（Modalにする）
-- [ ] 主スレッドがバックグラウンドスレッドを終わらせる方法を再考、
-      Abortはbad design. voilate を使用
+- [x] エラー処理とMessageBoxの表示（Modalにする）のちに別ThreadでShowMessageBoxを実装したためと判明
+- [x] 主スレッドがバックグラウンドスレッドを終わらせる方法を再考、
+      Abortはbad design. volatile を使用
+- [x] サブスレッドtry catch最適化
 
 ##### 20.05.14（木）
-- [ ] 
+- [ ] 異常、エラー処理と表示を統一化 
