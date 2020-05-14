@@ -1,24 +1,3 @@
-#region Copyright Information
-/*
- * (C)  2005-2007, Marcello Cauchi Savona
- *
- * For terms and usage, please see the LICENSE file
- * provided alongwith or contact marcello_c@hotmail.com
- * http://www.cheekyneedle.com
- * 
- * 
- */
-#endregion
-
-
-/*
- * clsUDP
- * shall start a listener, and raise an event every time data arrives on a port
- * shall also be able to send data via udp protocol
- * .Dispose shall remove all resources associated with the class
- */
-
-
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,54 +8,47 @@ using System.Threading;
 using Microsoft.Win32;
 
 
-namespace SmallDHCPServer
+namespace SmallDhcpServer
 {
-    class UDP
+    class UDPListener
 
     {
-        #region "Class Variables"
-        private Int32 PortToListenTo, PortToSendTo = 0;
+        #region Class Variables
+        private Int32 portToListenTo, portToSendTo = 0;
         private string rcvCardIP;
-        public bool IsListening;
-        // call backs for send/recieve!
-        public UdpState s;
+        private bool isListening;
+        private UdpState s;
         #endregion
 
-        #region "Class Events"
-        public delegate void DataRcvdEventHandler(byte[] DData, IPEndPoint RIpEndPoint);
-        public event DataRcvdEventHandler DataRcvd;
-        public delegate void ErrEventHandler(string Msg);
+        #region Delegates
+        public delegate void DataRcvdEventHandler(byte[] dData, IPEndPoint rIpEndPoint);
+       
+        public delegate void ErrEventHandler(string msg);
         #endregion
 
+        #region "Events"
+        public event DataRcvdEventHandler Reveived;
+        #endregion
         // class constructors
-        public UDP()
+        public UDPListener()
         {
-            IsListening = false;
+            isListening = false;
         }
         // overrides pass the port to listen to/sendto and startup
-        public UDP(Int32 PortToListenTo, Int32 PortToSendTo, string rcvCardIP)
+        public UDPListener(Int32 portListen, Int32 PortSent, string rcvCardIP)
         {
             try
             {
-                IsListening = false;
-                this.PortToListenTo = PortToListenTo;
-                this.PortToSendTo = PortToSendTo;
+                isListening = false;
+                this.portToListenTo = portListen;
+                this.portToSendTo = PortSent;
                 this.rcvCardIP = rcvCardIP;
                 StartListener();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("UDP:" + ex.Message);
 
-            }
-        }
-
-        // string property to contain the class name
-        private string ClassName
-        {
-            get
-            {
-                return "clsUDP";
             }
         }
 
@@ -87,36 +59,35 @@ namespace SmallDHCPServer
 
             try
             {
-                s.u.BeginSend(Data, Data.Length, "255.255.255.255", PortToSendTo, new AsyncCallback(OnDataSent), s);
-                // s.u.Send(Data, Data.Length, "255.255.255.255", PortToSendTo);
+                s.u.BeginSend(Data, Data.Length, "255.255.255.255", portToSendTo, new AsyncCallback(OnDataSent), s);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("SendData" + ex.Message);
             }
         }
 
         // This is the call back function, which will be invoked when a client is connected
-        public void OnDataSent(IAsyncResult asyn)
+        public void OnDataSent(IAsyncResult ar)
         {
-
             try
             {
                 // get the data
-                UdpClient ii = (UdpClient)asyn;
-                ii.EndSend(asyn); // stop the send call back
+                UdpClient ii = ((UdpState)ar.AsyncState).u;
+                // stop the send call back
+                ii.EndSend(ar); 
             }
             catch (Exception ex)
             {
-                if (IsListening == true)
-                    Console.WriteLine(ex.Message);
+                if (isListening == true)
+                    Console.WriteLine("OnDataSent" + ex.Message);
             }
         }
 
 
 
         // function to start the listener call back everytime something is recieved
-        private void IniListnerCallBack()
+        private void InitListenerCallBack()
         {
             try
             {
@@ -125,14 +96,14 @@ namespace SmallDHCPServer
             }
             catch (Exception ex)
             {
-                if (IsListening == true)
-                    Console.WriteLine(ex.Message);
+                if (isListening == true)
+                    Console.WriteLine("IniListnerCallBack" + ex.Message);
             }
         }
 
 
         // This is the call back function, which will be invoked when a client is connected
-        public void OnDataRecieved(IAsyncResult asyn)
+        public void OnDataRecieved(IAsyncResult ar)
         {
             Byte[] receiveBytes;
             UdpClient u;
@@ -141,68 +112,60 @@ namespace SmallDHCPServer
             try
             {
 
-                u = ((UdpState) asyn.AsyncState).u;
-                e = ((UdpState) asyn.AsyncState).e;
+                u = ((UdpState) ar.AsyncState).u;
+                e = ((UdpState) ar.AsyncState).e;
 
-                receiveBytes = u.EndReceive(asyn, ref e);
+                receiveBytes = u.EndReceive(ar, ref e);
                 //raise the event with the data recieved
-                DataRcvd(receiveBytes, e);
+                Reveived(receiveBytes, e);
             }
             catch (Exception ex)
             {
-                if (IsListening == true)
-                    Console.WriteLine(ex.Message);
+                if (isListening == true)
+                    Console.WriteLine("OnDataRecieved" +ex.Message);
             }
             finally
             {
-                u = null;
-                e = null;
-                receiveBytes = null;
                 // recall the call back
-                IniListnerCallBack();
+                InitListenerCallBack();
             }
 
         }
 
-
-
-
-
-        //function to start the listener 
-        //if the the listner is active, destroy it and restart
+        // function to start the listener 
+        // if the the listner is active, destroy it and restart
         // shall mark the flag that the listner is active
         private void StartListener()
         {
             // byte[] receiveBytes; // array of bytes where we shall store the data recieved
             IPAddress ipAddress;
             IPEndPoint ipLocalEndPoint;
-
-
             try
             {
 
-                IsListening = false;
+                isListening = false;
                 //resolve the net card ip address
                 ipAddress = IPAddress.Parse(rcvCardIP);
                 //get the ipEndPoint
-                ipLocalEndPoint = new IPEndPoint(ipAddress, PortToListenTo);
+                ipLocalEndPoint = new IPEndPoint(ipAddress, portToListenTo);
                 // if the udpclient interface is active destroy
                 if (s.u != null) s.u.Close();
-                s.u = null; s.e = null;
                 //re initialise the udp client
 
-                s = new UdpState();
-                s.e = ipLocalEndPoint;
-                s.u = new UdpClient(ipLocalEndPoint);
-
-                IsListening = true; // set to start listening
+                s = new UdpState
+                {
+                    e = ipLocalEndPoint,
+                    u = new UdpClient(ipLocalEndPoint)
+                };
+                // set to start listening
+                isListening = true; 
                 // wait for data
-                IniListnerCallBack();
+                InitListenerCallBack();
             }
             catch (Exception ex)
             {
-                if (IsListening == true)
-                    Console.WriteLine(ex.Message);
+                if (isListening == true)
+                    Console.WriteLine("StartListener"+ ex.Message);
             }
             finally
             {
@@ -210,11 +173,6 @@ namespace SmallDHCPServer
                 {
                     Thread.Sleep(1000);
                     StartListener();
-                }
-                else
-                {
-                    ipAddress = null;
-                    ipLocalEndPoint = null;
                 }
             }
         }
@@ -226,19 +184,19 @@ namespace SmallDHCPServer
         {
             try
             {
-                IsListening = false;
+                isListening = false;
                 if (s.u != null) s.u.Close();
-                s.u = null; s.e = null;
+                s.u = null; 
+                s.e = null;
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("StopListener" + ex.Message);
             }
         }
 
-        //dispose of all resources
-        ~UDP()
+        ~UDPListener()
         {
             try
             {
@@ -249,12 +207,12 @@ namespace SmallDHCPServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("~UDP" + ex.Message);
             }
         }
 
         //class that shall hold the reference of the call backs
-        public struct UdpState
+        struct UdpState
         {
             public IPEndPoint e; //define an end point
             public UdpClient u; //define a client

@@ -46,8 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Definition.cs" />
+    <Compile Include="DhcpData.cs" />
+    <Compile Include="DhcpPacketStruct.cs" />
     <Compile Include="DHCPServer.cs" />
-    <Compile Include="UdpAsync.cs" />
+    <Compile Include="DhcpSettings.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="UDPListener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
