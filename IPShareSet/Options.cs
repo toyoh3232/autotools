@@ -47,45 +47,44 @@ namespace SmallDhcpServer
             return null;
         }
 
-        internal void CreateOptionStruct(DhcpMessgeType messageType, DhcpSettings info)
+        internal void CreateOptionStruct(DhcpMessgeType messageType, DhcpServerSettings server)
         {
-            byte[] pReqList, t1, leaseTime, myIp;
-
+            byte[] t1, leaseTime, myIp;
             try
             {
                 //we look for the parameter request list
-                pReqList = GetOptionData(DhcpOptionType.ParameterRequestList);
+                var reqList = GetOptionData(DhcpOptionType.ParameterRequestList);
                 //erase the options array, and set the message type to ack
                 options = null;
                 CreateOptionElement(DhcpOptionType.DHCPMessageType, new byte[] { (byte)messageType }, ref options);
                 //server identifier, my IP
-                myIp = IPAddress.Parse(info.MyIP).GetAddressBytes();
+                myIp = IPAddress.Parse(server.MyIP).GetAddressBytes();
                 CreateOptionElement(DhcpOptionType.ServerIdentifier, myIp, ref options);
 
 
                 //PReqList contains the option data in a byte that is requested by the unit
-                foreach (byte i in pReqList)
+                foreach (byte i in reqList)
                 {
                     t1 = null;
                     switch ((DhcpOptionType)i)
                     {
                         case DhcpOptionType.SubnetMask:
-                            t1 = IPAddress.Parse(info.SubMask).GetAddressBytes();
+                            t1 = IPAddress.Parse(server.SubMask).GetAddressBytes();
                             break;
                         case DhcpOptionType.Router:
-                            t1 = IPAddress.Parse(info.RouterIP).GetAddressBytes();
+                            t1 = IPAddress.Parse(server.RouterIP).GetAddressBytes();
                             break;
                         case DhcpOptionType.DomainNameServer:
-                            t1 = IPAddress.Parse(info.DomainIP).GetAddressBytes();
+                            t1 = IPAddress.Parse(server.DomainIP).GetAddressBytes();
                             break;
                         case DhcpOptionType.DomainName:
-                            t1 = System.Text.Encoding.ASCII.GetBytes(info.ServerName);
+                            t1 = Encoding.ASCII.GetBytes(server.ServerName);
                             break;
                         case DhcpOptionType.ServerIdentifier:
-                            t1 = IPAddress.Parse(info.MyIP).GetAddressBytes();
+                            t1 = IPAddress.Parse(server.MyIP).GetAddressBytes();
                             break;
                         case DhcpOptionType.LogServer:
-                            t1 = System.Text.Encoding.ASCII.GetBytes(info.LogServerIP);
+                            t1 = System.Text.Encoding.ASCII.GetBytes(server.LogServerIP);
                             break;
                         case DhcpOptionType.NetBIOSoverTCPIPNameServer:
                             break;
@@ -97,10 +96,10 @@ namespace SmallDhcpServer
 
                 //lease time
                 leaseTime = new byte[4];
-                leaseTime[3] = (byte)(info.LeaseTime);
-                leaseTime[2] = (byte)(info.LeaseTime >> 8);
-                leaseTime[1] = (byte)(info.LeaseTime >> 16);
-                leaseTime[0] = (byte)(info.LeaseTime >> 24);
+                leaseTime[3] = (byte)(server.LeaseTime);
+                leaseTime[2] = (byte)(server.LeaseTime >> 8);
+                leaseTime[1] = (byte)(server.LeaseTime >> 16);
+                leaseTime[0] = (byte)(server.LeaseTime >> 24);
                 CreateOptionElement(DhcpOptionType.IPAddressLeaseTime, leaseTime, ref options);
                 CreateOptionElement(DhcpOptionType.RenewalTimeValue_T1, leaseTime, ref options);
                 CreateOptionElement(DhcpOptionType.RebindingTimeValue_T2, leaseTime, ref options);

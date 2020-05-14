@@ -1,31 +1,35 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
 using System.Net;
-using System.Net.Sockets;
-using System.IO;
-using System.Threading;
+using System.Windows.Forms;
 
 namespace SmallDhcpServer
 {
     public class DHCPServer
     {
-        public delegate void AnnouncedEventHandler(DhcpData data);
+        public delegate void AnnouncedEventHandler(DhcpClientSettings data);
         public delegate void ReleasedEventHandler();
-        public delegate void RequestEventHandler(DhcpData data);
+        public delegate void RequestEventHandler(DhcpClientSettings data);
         public delegate void AssignedEventHandler(string ipAdd);
 
         public event AnnouncedEventHandler Announced;
         public event RequestEventHandler Requested;
 
         private UDPListener udpListener; // the udp snd/rcv class
-        
-        private string serverIP;
 
-        public DHCPServer(string serverIP)
+        public DhcpServerSettings Settings;
+
+        public string[] clientSettingsPool;
+
+        public string GetAvailibleClientSettings()
         {
-            this.serverIP = serverIP;
+            // TODO
+            return clientSettingsPool[0];
+        }
+        public bool IsAuto = true;
+        public DHCPServer()
+        {
+            // TODO
+            clientSettingsPool = null;
         }
 
         ~DHCPServer()
@@ -40,7 +44,7 @@ namespace SmallDhcpServer
             try
             {   // start the DHCP server
                 // assign the event handlers
-                udpListener = new UDPListener(67, 68, serverIP);
+                udpListener = new UDPListener(67, 68, Settings.MyIP);
                 udpListener.Reveived += new UDPListener.DataRcvdEventHandler(UDPListener_Received);
 
             }
@@ -54,15 +58,22 @@ namespace SmallDhcpServer
         {
             try
             {
-                var dhcpData = new DhcpData(data);
+                var dhcpData = new DhcpData(data)
+                {
+                    RelatedServer = this
+                };
                 var msgType = dhcpData.GetDhcpMessageType();
                 switch (msgType)
                 {
                     case DhcpMessgeType.DHCP_DISCOVER:
-                        Announced(dhcpData);
+                        Announced(dhcpData.ToClientSettings());
+                        if (IsAuto)
+                            SendDHCPMessage(DhcpMessgeType.DHCP_OFFER, dhcpData);
                         break;
                     case DhcpMessgeType.DHCP_REQUEST:
-                        Requested(dhcpData);
+                        Requested(dhcpData.ToClientSettings());
+                        if (IsAuto)
+                            SendDHCPMessage(DhcpMessgeType.DHCP_ACK, dhcpData);
                         break;
                 }
 

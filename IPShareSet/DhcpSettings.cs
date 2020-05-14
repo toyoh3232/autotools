@@ -5,17 +5,22 @@ using System.Text;
 
 namespace SmallDhcpServer
 {
-    public class DhcpSettings
+    public struct DhcpServerSettings
     {
-        #region Exported Property
-        public string IPAddr { get; set; }
-        public string SubMask { get; set; }
-        public uint LeaseTime { get; set; }
-        public string ServerName { get; set; }
-        public string MyIP { get; set; }
-        public string RouterIP { get; set; }
-        public string DomainIP { get; set; }
-        public string LogServerIP { get; set; }
-        #endregion
+        public string SubMask;
+        public uint LeaseTime;
+        public string ServerName;
+        public string MyIP;
+        public string RouterIP;
+        public string DomainIP;
+        public string LogServerIP;
+    }
+
+    public struct DhcpClientSettings
+    {
+        public string IPAddr;
+        public string SubMask;
+        public uint LeaseTime;
+        public string MacAddress;
     }
 }

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 
 namespace SmallDhcpServer
 {
@@ -60,9 +57,11 @@ namespace SmallDhcpServer
             return 0;
         }
 
-        public void BuildOptions(DhcpMessgeType msgType, DhcpSettings info)
+        public void ApplySettings(DhcpMessgeType msgType, DhcpServerSettings server, string clientIp)
         {
-            options.CreateOptionStruct(msgType, info);
+            op = 2;
+            yiaddr = IPAddress.Parse(clientIp).GetAddressBytes();
+            options.CreateOptionStruct(msgType, server);
         }
         public byte[] ToArray()
         {
@@ -106,6 +105,8 @@ namespace SmallDhcpServer
                 Console.WriteLine("AddtoArray:" + ex.Message);
             }
         }
+
+        
 
         #region Data
         public byte op;           // Op code:   1 = bootRequest, 2 = BootReply

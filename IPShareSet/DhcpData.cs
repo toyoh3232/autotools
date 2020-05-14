@@ -6,24 +6,14 @@ using System.Text;
 
 namespace SmallDhcpServer
 {
-
-
-    public class DhcpData : DhcpSettings
+    public class DhcpData
     {
 
-        #region Readonly Property
-        public string ClientMacAddr
-        {
-            get
-            {
-                return ByteToString(packet.chaddr, packet.hlen);
-            }
-        }
-        #endregion
+        public DHCPServer RelatedServer { get; internal set; }
 
         private DhcpPacketStruct packet;
 
-        public DhcpData(byte[] data)
+        internal DhcpData(byte[] data)
         {
             packet = new DhcpPacketStruct(data);
         }
@@ -31,6 +21,21 @@ namespace SmallDhcpServer
         public DhcpMessgeType GetDhcpMessageType()
         {
             return packet.GetDhcpMessageType();
+        }
+
+
+        internal byte[] BuildSendData(DhcpMessgeType msgType)
+        {
+            packet.ApplySettings(msgType, RelatedServer.Settings, RelatedServer.GetAvailibleClientSettings());
+            return packet.ToArray();
+        }
+
+        public DhcpClientSettings ToClientSettings()
+        {
+            return new DhcpClientSettings
+            {
+                MacAddress = ByteToString(packet.chaddr, packet.hlen)
+            };
         }
 
         private string ByteToString(byte[] data, int len)
@@ -56,13 +61,5 @@ namespace SmallDhcpServer
             }
 
         }
-        public byte[] BuildSendData(DhcpMessgeType msgType)
-        {
-            packet.op = 2;
-            packet.yiaddr = IPAddress.Parse(IPAddr).GetAddressBytes();
-            packet.BuildOptions(msgType, this);
-            return packet.ToArray();
-        }
-        
     }
 }
