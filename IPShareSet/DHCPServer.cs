@@ -16,7 +16,7 @@ namespace SmallDhcpServer
 
         private UDPListener udpListener; // the udp snd/rcv class
 
-        public DhcpServerSettings Settings;
+        public DhcpServerSettings Settings { get; }
 
         public string[] clientSettingsPool;
 
@@ -26,9 +26,9 @@ namespace SmallDhcpServer
             return clientSettingsPool[0];
         }
         public bool IsAuto = true;
-        public DHCPServer()
+        public DHCPServer(DhcpServerSettings setting)
         {
-            // TODO
+            Settings = setting;
             clientSettingsPool = null;
         }
 

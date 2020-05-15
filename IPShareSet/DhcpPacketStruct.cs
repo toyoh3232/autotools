@@ -50,9 +50,9 @@ namespace SmallDhcpServer
                     return (DhcpMessgeType)data[0];
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("GetMsgType:" + ex.Message);
+                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
             return 0;
         }
@@ -100,9 +100,9 @@ namespace SmallDhcpServer
                     Array.Resize(ref TargetArray, FromValue.Length);
                 Array.Copy(FromValue, 0, TargetArray, TargetArray.Length - FromValue.Length, FromValue.Length);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("AddtoArray:" + ex.Message);
+                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
         }
 

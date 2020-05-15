@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
 using SmallDhcpServer;
+
 namespace IPShareSet
 {
     static class Program
@@ -13,14 +15,13 @@ namespace IPShareSet
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
-            server = new DHCPServer()
+            server = new DHCPServer(new DhcpServerSettings
             {
-                Settings = new DhcpServerSettings
-                {
-                    MyIP = "192.168.10.52"
-                },
+                MyIP = args[0]
+            })
+            {
                 IsAuto = false
             };
             server.Announced += (s) => Console.WriteLine(s.MacAddress);
@@ -30,9 +31,15 @@ namespace IPShareSet
             {
                 continue;
             }
+        }
+
+        static void SetIp()
+        {
+            foreach (var nic in NetworkInterface.GetAllNetworkInterfaces())
+            {
+               
+            }
             
-
-
         }
     }
 }

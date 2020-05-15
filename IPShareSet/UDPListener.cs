@@ -47,8 +47,7 @@ namespace SmallDhcpServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("UDP:" + ex.Message);
-
+                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
         }
 
@@ -61,9 +60,9 @@ namespace SmallDhcpServer
             {
                 s.u.BeginSend(Data, Data.Length, "255.255.255.255", portToSendTo, new AsyncCallback(OnDataSent), s);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("SendData" + ex.Message);
+                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
         }
 
@@ -77,10 +76,10 @@ namespace SmallDhcpServer
                 // stop the send call back
                 ii.EndSend(ar); 
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                if (isListening == true)
-                    Console.WriteLine("OnDataSent" + ex.Message);
+                if (isListening)
+                    Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
         }
 
@@ -94,10 +93,10 @@ namespace SmallDhcpServer
                 // start teh recieve call back method
                 s.u.BeginReceive(new AsyncCallback(OnDataRecieved), s);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                if (isListening == true)
-                    Console.WriteLine("IniListnerCallBack" + ex.Message);
+                if (isListening)
+                    Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
         }
 
@@ -119,10 +118,10 @@ namespace SmallDhcpServer
                 //raise the event with the data recieved
                 Reveived(receiveBytes, e);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                if (isListening == true)
-                    Console.WriteLine("OnDataRecieved" +ex.Message);
+                if (isListening)
+                    Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
             finally
             {
@@ -162,10 +161,11 @@ namespace SmallDhcpServer
                 // wait for data
                 InitListenerCallBack();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                if (isListening == true)
-                    Console.WriteLine("StartListener"+ ex.Message);
+                if (isListening)
+                    Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                throw e;
             }
             finally
             {
@@ -190,9 +190,9 @@ namespace SmallDhcpServer
                 s.e = null;
 
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("StopListener" + ex.Message);
+                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
         }
 
@@ -205,9 +205,9 @@ namespace SmallDhcpServer
                 s.u = null; s.e = null;
                 rcvCardIP = null;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("~UDP" + ex.Message);
+                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
         }
 

@@ -39,9 +39,9 @@ namespace SmallDhcpServer
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("GetOptionData:" + ex.Message);
+                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
 
             return null;
@@ -84,7 +84,7 @@ namespace SmallDhcpServer
                             t1 = IPAddress.Parse(server.MyIP).GetAddressBytes();
                             break;
                         case DhcpOptionType.LogServer:
-                            t1 = System.Text.Encoding.ASCII.GetBytes(server.LogServerIP);
+                            t1 = Encoding.ASCII.GetBytes(server.LogServerIP);
                             break;
                         case DhcpOptionType.NetBIOSoverTCPIPNameServer:
                             break;
@@ -108,9 +108,9 @@ namespace SmallDhcpServer
                 Array.Copy(new byte[] { 255 }, 0, options, options.Length - 1, 1);
                 //send the data to the unit
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("CreateOptionStruct:" + ex.Message);
+                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
         }
 
@@ -132,9 +132,9 @@ namespace SmallDhcpServer
                     Array.Resize(ref source, source.Length + newOption.Length);
                 Array.Copy(newOption, 0, source, source.Length - newOption.Length, newOption.Length);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("CreateOptionElement:" + ex.Message);
+                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
             }
 
         }

@@ -34,32 +34,8 @@ namespace SmallDhcpServer
         {
             return new DhcpClientSettings
             {
-                MacAddress = ByteToString(packet.chaddr, packet.hlen)
+                MacAddress = Utils.ByteToString(packet.chaddr, packet.hlen)
             };
-        }
-
-        private string ByteToString(byte[] data, int len)
-        {
-            string dString;
-
-            try
-            {
-                dString = string.Empty;
-                if (data != null)
-                {
-                    for (int i = 0; i < len; i++)
-                    {
-                        dString += data[i].ToString("X2");
-                    }
-                }
-                return dString;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ByteToString:" + ex.Message);
-                return string.Empty;
-            }
-
         }
     }
 }
