@@ -44,7 +44,7 @@ namespace SmallDHCPServer
         public void ApplySettings(DhcpMessgeType msgType, DhcpServerSettings server, DhcpClientSettings client)
         {
             op = 2;
-            yiaddr = IPAddress.Parse(client.IPAddr).GetAddressBytes();
+            yiaddr = IPAddress.Parse(client.IpAddress).GetAddressBytes();
             options.CreateOptionStruct(msgType, server);
         }
         public byte[] ToArray()

@@ -6,8 +6,8 @@ using System.Threading;
 namespace IPShareSet
 {
     internal class UdpListener
-
     {
+
         #region Class Variables
         private int portToListenTo, portToSendTo = 0;
         private string rcvCardIP;
@@ -22,7 +22,7 @@ namespace IPShareSet
         #endregion
 
         #region "Events"
-        public event DataReceivedEventHandler Reveived;
+        public event DataReceivedEventHandler Received;
         #endregion
 
         // class constructors
@@ -32,19 +32,19 @@ namespace IPShareSet
         }
 
         // overrides pass the port to listen to/sendto and startup
-        public UdpListener(int portListen, int PortSent, string rcvCardIP)
+        public UdpListener(int portListen, int portSent, string rcvCardIP)
         {
             try
             {
                 isListening = false;
                 this.portToListenTo = portListen;
-                this.portToSendTo = PortSent;
+                this.portToSendTo = portSent;
                 this.rcvCardIP = rcvCardIP;
                 StartListener();
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
+                Console.WriteLine($"{GetType().FullName}:{e.Message}");
             }
         }
 
@@ -59,7 +59,7 @@ namespace IPShareSet
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
+                Console.WriteLine($"{GetType().FullName}:{e.Message}");
             }
         }
 
@@ -82,13 +82,13 @@ namespace IPShareSet
 
 
 
-        // function to start the listener call back everytime something is recieved
+        // function to start the listener call back every time something is received
         private void InitListenerCallBack()
         {
             try
             {
-                // start teh recieve call back method
-                s.u.BeginReceive(new AsyncCallback(OnDataReceived), s);
+                // start teh receive call back method
+                s.u.BeginReceive(OnDataReceived, s);
             }
             catch (Exception e)
             {
@@ -112,7 +112,7 @@ namespace IPShareSet
 
                 var receiveBytes = u.EndReceive(ar, ref e);
                 //raise the event with the data received
-                Reveived?.Invoke(receiveBytes, e);
+                Received?.Invoke(receiveBytes, e);
             }
             catch (Exception ex)
             {

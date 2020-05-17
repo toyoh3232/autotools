@@ -56,7 +56,7 @@ namespace IPShareSet
                 options = null;
                 CreateOptionElement(DhcpOptionType.DHCPMessageType, new byte[] { (byte)messageType }, ref options);
                 //server identifier, my IP
-                var myIp = IPAddress.Parse(server.MyIP).GetAddressBytes();
+                var myIp = IPAddress.Parse(server.ServerIp).GetAddressBytes();
                 CreateOptionElement(DhcpOptionType.ServerIdentifier, myIp, ref options);
 
 
@@ -70,19 +70,19 @@ namespace IPShareSet
                             t1 = IPAddress.Parse(server.SubMask).GetAddressBytes();
                             break;
                         case DhcpOptionType.Router:
-                            t1 = IPAddress.Parse(server.RouterIP).GetAddressBytes();
+                            t1 = IPAddress.Parse(server.RouterIp).GetAddressBytes();
                             break;
                         case DhcpOptionType.DomainNameServer:
-                            t1 = IPAddress.Parse(server.DomainIP).GetAddressBytes();
+                            t1 = IPAddress.Parse(server.DomainIp).GetAddressBytes();
                             break;
                         case DhcpOptionType.DomainName:
                             t1 = Encoding.ASCII.GetBytes(server.ServerName);
                             break;
                         case DhcpOptionType.ServerIdentifier:
-                            t1 = IPAddress.Parse(server.MyIP).GetAddressBytes();
+                            t1 = IPAddress.Parse(server.ServerIp).GetAddressBytes();
                             break;
                         case DhcpOptionType.LogServer:
-                            t1 = Encoding.ASCII.GetBytes(server.LogServerIP);
+                            t1 = Encoding.ASCII.GetBytes(server.LogServerIp);
                             break;
                         case DhcpOptionType.NetBIOSoverTCPIPNameServer:
                             break;

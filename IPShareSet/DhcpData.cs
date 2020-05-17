@@ -4,7 +4,7 @@ namespace IPShareSet
 {
     public class DhcpData
     {
-        public DHCPServer RelatedServer { get; internal set; }
+        public DhcpServer RelatedServer { get; internal set; }
 
         private DhcpPacketStruct packet;
 

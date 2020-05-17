@@ -5,7 +5,7 @@ using SmallDHCPServer;
 
 namespace IPShareSet
 {
-    public class DHCPServer
+    public class DhcpServer
     {
         public delegate void AnnouncedEventHandler(DhcpClientSettings data);
         public delegate void ReleasedEventHandler();
@@ -22,51 +22,49 @@ namespace IPShareSet
 
         public DhcpServerSettings Settings { get; }
 
-        public DhcpClientSettings[] clientSettingsPool;
+        private readonly DhcpClientSettings[] clientSettingsPool;
 
         public DhcpClientSettings GetRandomClientSettings()
         {
             for (var i=0; i< clientSettingsPool.Length; i++)
             {
-                if (!clientSettingsPool[i].IsAllocated)
-                {
-                    clientSettingsPool[i].IsAllocated = true;
-                    return clientSettingsPool[i];
-                }   
+                if (clientSettingsPool[i].IsAllocated) continue;
+                clientSettingsPool[i].IsAllocated = true;
+                return clientSettingsPool[i];
             }
             // TODO
             throw new Exception();
         }
 
-        public DHCPServer(DhcpServerSettings setting)
+        public DhcpServer(DhcpServerSettings setting)
         {
             Settings = setting;
-            clientSettingsPool = Utils.GetAllSubnetIPv4(setting.MyIP, setting.SubMask).Select(ip => new DhcpClientSettings {IPAddr = ip, IsAllocated = false}).ToArray();
+            clientSettingsPool = Utils.GetAllSubnetIPv4(setting.ServerIp, setting.SubMask).Select(ip => new DhcpClientSettings {IpAddress = ip, IsAllocated = false}).ToArray();
         }
 
-        ~DHCPServer()
+        ~DhcpServer()
         {
             udpListener?.StopListener();
         }
 
         // function to start the DHCP server
         // port 67 to receive, 68 to send
-        public void StartDHCPServer()
+        public void Start()
         {
             try
             {   // start the DHCP server
                 // assign the event handlers
-                udpListener = new UdpListener(67, 68, Settings.MyIP);
-                udpListener.Reveived += UDPListener_Received;
+                udpListener = new UdpListener(67, 68, Settings.ServerIp);
+                udpListener.Received += UdpListener_Received;
 
             }
             catch (Exception e)
             {
-                Console.WriteLine("StartDHCPServer:" + e.Message);
+                Console.WriteLine("Start:" + e.Message);
             }
         }
 
-        public void UDPListener_Received(byte[] data, IPEndPoint endPoint)
+        public void UdpListener_Received(byte[] data, IPEndPoint endPoint)
         {
             try
             {
@@ -79,25 +77,39 @@ namespace IPShareSet
                 {
                     case DhcpMessgeType.DHCP_DISCOVER:       
                         if (IsAuto)
-                            SendDHCPMessage(DhcpMessgeType.DHCP_OFFER, dhcpData);
+                            SendDhcpMessage(DhcpMessgeType.DHCP_OFFER, dhcpData);
                         Announced?.Invoke(dhcpData.ToClientSettings());
                         break;
                     case DhcpMessgeType.DHCP_REQUEST:
                         if (IsAuto)
-                            SendDHCPMessage(DhcpMessgeType.DHCP_ACK, dhcpData);
+                            SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData);
                         Requested?.Invoke(dhcpData.ToClientSettings());
                         break;
+                    case DhcpMessgeType.DHCP_OFFER:
+                        break;
+                    case DhcpMessgeType.DHCP_DECLINE:
+                        break;
+                    case DhcpMessgeType.DHCP_ACK:
+                        break;
+                    case DhcpMessgeType.DHCP_NAK:
+                        break;
+                    case DhcpMessgeType.DHCP_RELEASE:
+                        break;
+                    case DhcpMessgeType.DHCP_INFORM:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("UDPListener_Received:" + ex.Message);
+                Console.WriteLine("UdpListener_Received:" + ex.Message);
             }
         }
 
         //mac announced itself, established IP etc....
         //send the offer to the mac
-        public void SendDHCPMessage(DhcpMessgeType msgType, DhcpData data)
+        public void SendDhcpMessage(DhcpMessgeType msgType, DhcpData data)
         {
             try
             {

@@ -5,15 +5,15 @@
         public string SubMask;
         public uint LeaseTime;
         public string ServerName;
-        public string MyIP;
-        public string RouterIP;
-        public string DomainIP;
-        public string LogServerIP;
+        public string ServerIp;
+        public string RouterIp;
+        public string DomainIp;
+        public string LogServerIp;
     }
 
     public struct DhcpClientSettings
     {
-        public string IPAddr;
+        public string IpAddress;
         public string SubMask;
         public uint LeaseTime;
         public string MacAddress;

@@ -9,7 +9,7 @@ namespace IPShareSet
 {
     static class Program
     {
-        static DHCPServer server;
+        static DhcpServer server;
         static Thread thread;
         /// <summary>
         /// The main entry point for the application.
@@ -18,18 +18,17 @@ namespace IPShareSet
         {
             var serverSettings = new DhcpServerSettings
             {
-                MyIP = ""
+                ServerIp = ""
             };
-            server = new DHCPServer(serverSettings)
+            server = new DhcpServer(serverSettings)
             {
                 IsAuto = false
             };
             server.Announced += (s) => Console.WriteLine(s.MacAddress);
-            thread = new Thread(server.StartDHCPServer);
+            thread = new Thread(server.Start);
             thread.Start();
             while (true)
             {
-                continue;
             }
         }
     }
