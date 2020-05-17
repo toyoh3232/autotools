@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using IPShareSet;
 
-namespace SmallDhcpServer
+namespace SmallDHCPServer
 {
     internal struct DhcpPacketStruct
     {
-        internal const int OPTION_OFFSET = 240;
+        internal const int OptionOffset = 240;
 
         public DhcpPacketStruct(byte[] data) : this()
         {
@@ -30,37 +31,20 @@ namespace SmallDhcpServer
                     sname = reader.ReadBytes(64);
                     file = reader.ReadBytes(128);
                     cookie = reader.ReadBytes(4);
-                    options = new Options(reader.ReadBytes(data.Length - OPTION_OFFSET));
+                    options = new Options(reader.ReadBytes(data.Length - OptionOffset));
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
             }
 
         }
 
-        public DhcpMessgeType GetDhcpMessageType()
-        {
-            try
-            {
-                var data = options.GetOptionData(DhcpOptionType.DHCPMessageType);
-                if (data != null)
-                {
-                    return (DhcpMessgeType)data[0];
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
-            }
-            return 0;
-        }
-
-        public void ApplySettings(DhcpMessgeType msgType, DhcpServerSettings server, string clientIp)
+        public void ApplySettings(DhcpMessgeType msgType, DhcpServerSettings server, DhcpClientSettings client)
         {
             op = 2;
-            yiaddr = IPAddress.Parse(clientIp).GetAddressBytes();
+            yiaddr = IPAddress.Parse(client.IPAddr).GetAddressBytes();
             options.CreateOptionStruct(msgType, server);
         }
         public byte[] ToArray()
@@ -85,30 +69,46 @@ namespace SmallDhcpServer
             return mArray;
         }
 
-        private void AddtoArray(byte fromValue, ref byte[] targetVaule)
+        private void AddtoArray(byte fromValue, ref byte[] targetValue)
         {
-            AddtoArray(new byte[] { fromValue }, ref targetVaule);
+            AddtoArray(new byte[] { fromValue }, ref targetValue);
         }
 
-        private void AddtoArray(byte[] FromValue, ref byte[] TargetArray)
+        private void AddtoArray(byte[] fromValue, ref byte[] targetArray)
         {
             try
             {
-                if (TargetArray != null)
-                    Array.Resize(ref TargetArray, TargetArray.Length + FromValue.Length);
+                if (targetArray != null)
+                    Array.Resize(ref targetArray, targetArray.Length + fromValue.Length);
                 else
-                    Array.Resize(ref TargetArray, FromValue.Length);
-                Array.Copy(FromValue, 0, TargetArray, TargetArray.Length - FromValue.Length, FromValue.Length);
+                    Array.Resize(ref targetArray, fromValue.Length);
+                Array.Copy(fromValue, 0, targetArray, targetArray.Length - fromValue.Length, fromValue.Length);
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
             }
         }
 
-        
 
-        #region Data
+        public DhcpMessgeType GetDhcpMessageType()
+        {
+            try
+            {
+                var data = options.GetOptionData(DhcpOptionType.DHCPMessageType);
+                if (data != null)
+                {
+                    return (DhcpMessgeType)data[0];
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
+            }
+            return 0;
+        }
+
+    #region Data
         public byte op;           // Op code:   1 = bootRequest, 2 = BootReply
         public byte htype;        // Hardware Address Type: 1 = 10MB ethernet
         public byte hlen;         // hardware address length: length of MACID
@@ -124,7 +124,7 @@ namespace SmallDhcpServer
         public byte[] sname;      // Optional server host name (64)
         public byte[] file;       // Boot file name (128)
         public byte[] cookie;     // Magic cookie (4)
-        Options options;            // options (rest)
+        public Options options;            // options (rest)
         #endregion
     }
 }

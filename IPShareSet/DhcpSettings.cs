@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SmallDhcpServer
+﻿namespace IPShareSet
 {
     public struct DhcpServerSettings
     {
@@ -22,5 +17,6 @@ namespace SmallDhcpServer
         public string SubMask;
         public uint LeaseTime;
         public string MacAddress;
+        public bool IsAllocated;
     }
 }

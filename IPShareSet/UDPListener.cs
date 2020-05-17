@@ -1,41 +1,38 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Net;
 using System.Net.Sockets;
-using System.IO;
 using System.Threading;
-using Microsoft.Win32;
 
-
-namespace SmallDhcpServer
+namespace IPShareSet
 {
-    class UDPListener
+    internal class UdpListener
 
     {
         #region Class Variables
-        private Int32 portToListenTo, portToSendTo = 0;
+        private int portToListenTo, portToSendTo = 0;
         private string rcvCardIP;
         private bool isListening;
         private UdpState s;
         #endregion
 
         #region Delegates
-        public delegate void DataRcvdEventHandler(byte[] dData, IPEndPoint rIpEndPoint);
+        public delegate void DataReceivedEventHandler(byte[] dData, IPEndPoint rIpEndPoint);
        
         public delegate void ErrEventHandler(string msg);
         #endregion
 
         #region "Events"
-        public event DataRcvdEventHandler Reveived;
+        public event DataReceivedEventHandler Reveived;
         #endregion
+
         // class constructors
-        public UDPListener()
+        public UdpListener()
         {
             isListening = false;
         }
+
         // overrides pass the port to listen to/sendto and startup
-        public UDPListener(Int32 portListen, Int32 PortSent, string rcvCardIP)
+        public UdpListener(int portListen, int PortSent, string rcvCardIP)
         {
             try
             {
@@ -45,9 +42,9 @@ namespace SmallDhcpServer
                 this.rcvCardIP = rcvCardIP;
                 StartListener();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
             }
         }
 
@@ -62,7 +59,7 @@ namespace SmallDhcpServer
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
             }
         }
 
@@ -79,7 +76,7 @@ namespace SmallDhcpServer
             catch (Exception e)
             {
                 if (isListening)
-                    Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                    Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
             }
         }
 
@@ -91,20 +88,19 @@ namespace SmallDhcpServer
             try
             {
                 // start teh recieve call back method
-                s.u.BeginReceive(new AsyncCallback(OnDataRecieved), s);
+                s.u.BeginReceive(new AsyncCallback(OnDataReceived), s);
             }
             catch (Exception e)
             {
                 if (isListening)
-                    Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                    Console.WriteLine($"{GetType().FullName}:{e.Message}");
             }
         }
 
 
         // This is the call back function, which will be invoked when a client is connected
-        public void OnDataRecieved(IAsyncResult ar)
+        public void OnDataReceived(IAsyncResult ar)
         {
-            Byte[] receiveBytes;
             UdpClient u;
             IPEndPoint e;
 
@@ -114,14 +110,14 @@ namespace SmallDhcpServer
                 u = ((UdpState) ar.AsyncState).u;
                 e = ((UdpState) ar.AsyncState).e;
 
-                receiveBytes = u.EndReceive(ar, ref e);
-                //raise the event with the data recieved
-                Reveived(receiveBytes, e);
+                var receiveBytes = u.EndReceive(ar, ref e);
+                //raise the event with the data received
+                Reveived?.Invoke(receiveBytes, e);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 if (isListening)
-                    Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                    Console.WriteLine($"{GetType().FullName}:{ex.Message}");
             }
             finally
             {
@@ -132,23 +128,21 @@ namespace SmallDhcpServer
         }
 
         // function to start the listener 
-        // if the the listner is active, destroy it and restart
-        // shall mark the flag that the listner is active
+        // if the the listener is active, destroy it and restart
+        // shall mark the flag that the listener is active
         private void StartListener()
         {
-            // byte[] receiveBytes; // array of bytes where we shall store the data recieved
-            IPAddress ipAddress;
-            IPEndPoint ipLocalEndPoint;
+            // byte[] receiveBytes; // array of bytes where we shall store the data received
             try
             {
 
                 isListening = false;
                 //resolve the net card ip address
-                ipAddress = IPAddress.Parse(rcvCardIP);
+                var ipAddress = IPAddress.Parse(rcvCardIP);
                 //get the ipEndPoint
-                ipLocalEndPoint = new IPEndPoint(ipAddress, portToListenTo);
+                var ipLocalEndPoint = new IPEndPoint(ipAddress, portToListenTo);
                 // if the udpclient interface is active destroy
-                if (s.u != null) s.u.Close();
+                s.u?.Close();
                 //re initialise the udp client
 
                 s = new UdpState
@@ -164,7 +158,7 @@ namespace SmallDhcpServer
             catch (Exception e)
             {
                 if (isListening)
-                    Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                    Console.WriteLine($"{GetType().FullName}:{e.Message}");
                 throw e;
             }
             finally
@@ -185,34 +179,34 @@ namespace SmallDhcpServer
             try
             {
                 isListening = false;
-                if (s.u != null) s.u.Close();
+                s.u?.Close();
                 s.u = null; 
                 s.e = null;
 
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                Console.WriteLine($"{GetType().FullName}:{e.Message}");
             }
         }
 
-        ~UDPListener()
+        ~UdpListener()
         {
             try
             {
                 StopListener();
-                if (s.u != null) s.u.Close();
+                s.u?.Close();
                 s.u = null; s.e = null;
                 rcvCardIP = null;
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                Console.WriteLine($"{GetType().FullName}:{e.Message}");
             }
         }
 
         //class that shall hold the reference of the call backs
-        struct UdpState
+        private struct UdpState
         {
             public IPEndPoint e; //define an end point
             public UdpClient u; //define a client

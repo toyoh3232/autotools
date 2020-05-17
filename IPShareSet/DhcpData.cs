@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
+﻿using SmallDHCPServer;
 
-namespace SmallDhcpServer
+namespace IPShareSet
 {
     public class DhcpData
     {
-
         public DHCPServer RelatedServer { get; internal set; }
 
         private DhcpPacketStruct packet;
@@ -23,10 +18,9 @@ namespace SmallDhcpServer
             return packet.GetDhcpMessageType();
         }
 
-
         internal byte[] BuildSendData(DhcpMessgeType msgType)
         {
-            packet.ApplySettings(msgType, RelatedServer.Settings, RelatedServer.GetAvailibleClientSettings());
+            packet.ApplySettings(msgType, RelatedServer.Settings, RelatedServer.GetRandomClientSettings());
             return packet.ToArray();
         }
 

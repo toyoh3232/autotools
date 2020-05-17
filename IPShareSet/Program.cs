@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
-using SmallDhcpServer;
 
 namespace IPShareSet
 {
@@ -17,10 +16,11 @@ namespace IPShareSet
         /// </summary>
         static void Main(string[] args)
         {
-            server = new DHCPServer(new DhcpServerSettings
+            var serverSettings = new DhcpServerSettings
             {
-                MyIP = args[0]
-            })
+                MyIP = ""
+            };
+            server = new DHCPServer(serverSettings)
             {
                 IsAuto = false
             };
@@ -31,15 +31,6 @@ namespace IPShareSet
             {
                 continue;
             }
-        }
-
-        static void SetIp()
-        {
-            foreach (var nic in NetworkInterface.GetAllNetworkInterfaces())
-            {
-               
-            }
-            
         }
     }
 }

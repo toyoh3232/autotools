@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
+using SmallDHCPServer;
 
-namespace SmallDhcpServer
+namespace IPShareSet
 {
     internal class Options
     {
@@ -17,7 +16,7 @@ namespace SmallDhcpServer
 
         internal byte[] GetOptionData(DhcpOptionType optionType)
         {
-            byte code = (byte)optionType;
+            var code = (byte)optionType;
             try
             {
                 //loop through look for the bit that states that the identifier is there
@@ -41,7 +40,7 @@ namespace SmallDhcpServer
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
             }
 
             return null;
@@ -49,7 +48,6 @@ namespace SmallDhcpServer
 
         internal void CreateOptionStruct(DhcpMessgeType messageType, DhcpServerSettings server)
         {
-            byte[] t1, leaseTime, myIp;
             try
             {
                 //we look for the parameter request list
@@ -58,14 +56,14 @@ namespace SmallDhcpServer
                 options = null;
                 CreateOptionElement(DhcpOptionType.DHCPMessageType, new byte[] { (byte)messageType }, ref options);
                 //server identifier, my IP
-                myIp = IPAddress.Parse(server.MyIP).GetAddressBytes();
+                var myIp = IPAddress.Parse(server.MyIP).GetAddressBytes();
                 CreateOptionElement(DhcpOptionType.ServerIdentifier, myIp, ref options);
 
 
                 //PReqList contains the option data in a byte that is requested by the unit
-                foreach (byte i in reqList)
+                foreach (var i in reqList)
                 {
-                    t1 = null;
+                    byte[] t1 = null;
                     switch ((DhcpOptionType)i)
                     {
                         case DhcpOptionType.SubnetMask:
@@ -89,13 +87,153 @@ namespace SmallDhcpServer
                         case DhcpOptionType.NetBIOSoverTCPIPNameServer:
                             break;
 
+                        case DhcpOptionType.Pad:
+                            break;
+                        case DhcpOptionType.TimeOffset:
+                            break;
+                        case DhcpOptionType.TimeServer:
+                            break;
+                        case DhcpOptionType.NameServer:
+                            break;
+                        case DhcpOptionType.CookieServer:
+                            break;
+                        case DhcpOptionType.LPRServer:
+                            break;
+                        case DhcpOptionType.ImpressServer:
+                            break;
+                        case DhcpOptionType.ResourceLocServer:
+                            break;
+                        case DhcpOptionType.HostName:
+                            break;
+                        case DhcpOptionType.BootFileSize:
+                            break;
+                        case DhcpOptionType.MeritDump:
+                            break;
+                        case DhcpOptionType.SwapServer:
+                            break;
+                        case DhcpOptionType.RootPath:
+                            break;
+                        case DhcpOptionType.ExtensionsPath:
+                            break;
+                        case DhcpOptionType.IpForwarding:
+                            break;
+                        case DhcpOptionType.NonLocalSourceRouting:
+                            break;
+                        case DhcpOptionType.PolicyFilter:
+                            break;
+                        case DhcpOptionType.MaximumDatagramReAssemblySize:
+                            break;
+                        case DhcpOptionType.DefaultIPTimeToLive:
+                            break;
+                        case DhcpOptionType.PathMTUAgingTimeout:
+                            break;
+                        case DhcpOptionType.PathMTUPlateauTable:
+                            break;
+                        case DhcpOptionType.InterfaceMTU:
+                            break;
+                        case DhcpOptionType.AllSubnetsAreLocal:
+                            break;
+                        case DhcpOptionType.BroadcastAddress:
+                            break;
+                        case DhcpOptionType.PerformMaskDiscovery:
+                            break;
+                        case DhcpOptionType.MaskSupplier:
+                            break;
+                        case DhcpOptionType.PerformRouterDiscovery:
+                            break;
+                        case DhcpOptionType.RouterSolicitationAddress:
+                            break;
+                        case DhcpOptionType.StaticRoute:
+                            break;
+                        case DhcpOptionType.TrailerEncapsulation:
+                            break;
+                        case DhcpOptionType.ARPCacheTimeout:
+                            break;
+                        case DhcpOptionType.EthernetEncapsulation:
+                            break;
+                        case DhcpOptionType.TCPDefaultTTL:
+                            break;
+                        case DhcpOptionType.TCPKeepaliveInterval:
+                            break;
+                        case DhcpOptionType.TCPKeepaliveGarbage:
+                            break;
+                        case DhcpOptionType.NetworkInformationServiceDomain:
+                            break;
+                        case DhcpOptionType.NetworkInformationServers:
+                            break;
+                        case DhcpOptionType.NetworkTimeProtocolServers:
+                            break;
+                        case DhcpOptionType.VendorSpecificInformation:
+                            break;
+                        case DhcpOptionType.NetBIOSoverTCPIPDatagramDistributionServer:
+                            break;
+                        case DhcpOptionType.NetBIOSoverTCPIPNodeType:
+                            break;
+                        case DhcpOptionType.NetBIOSoverTCPIPScope:
+                            break;
+                        case DhcpOptionType.XWindowSystemFontServer:
+                            break;
+                        case DhcpOptionType.XWindowSystemDisplayManager:
+                            break;
+                        case DhcpOptionType.RequestedIPAddress:
+                            break;
+                        case DhcpOptionType.IPAddressLeaseTime:
+                            break;
+                        case DhcpOptionType.OptionOverload:
+                            break;
+                        case DhcpOptionType.DHCPMessageType:
+                            break;
+                        case DhcpOptionType.ParameterRequestList:
+                            break;
+                        case DhcpOptionType.Message:
+                            break;
+                        case DhcpOptionType.MaximumDHCPMessageSize:
+                            break;
+                        case DhcpOptionType.RenewalTimeValue_T1:
+                            break;
+                        case DhcpOptionType.RebindingTimeValue_T2:
+                            break;
+                        case DhcpOptionType.Vendorclassidentifier:
+                            break;
+                        case DhcpOptionType.ClientIdentifier:
+                            break;
+                        case DhcpOptionType.NetworkInformationServicePlusDomain:
+                            break;
+                        case DhcpOptionType.NetworkInformationServicePlusServers:
+                            break;
+                        case DhcpOptionType.TFTPServerName:
+                            break;
+                        case DhcpOptionType.BootfileName:
+                            break;
+                        case DhcpOptionType.MobileIPHomeAgent:
+                            break;
+                        case DhcpOptionType.SMTPServer:
+                            break;
+                        case DhcpOptionType.POP3Server:
+                            break;
+                        case DhcpOptionType.NNTPServer:
+                            break;
+                        case DhcpOptionType.DefaultWWWServer:
+                            break;
+                        case DhcpOptionType.DefaultFingerServer:
+                            break;
+                        case DhcpOptionType.DefaultIRCServer:
+                            break;
+                        case DhcpOptionType.StreetTalkServer:
+                            break;
+                        case DhcpOptionType.STDAServer:
+                            break;
+                        case DhcpOptionType.End:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                     if (t1 != null)
                         CreateOptionElement((DhcpOptionType)i, t1, ref options);
                 }
 
                 //lease time
-                leaseTime = new byte[4];
+                var leaseTime = new byte[4];
                 leaseTime[3] = (byte)(server.LeaseTime);
                 leaseTime[2] = (byte)(server.LeaseTime >> 8);
                 leaseTime[1] = (byte)(server.LeaseTime >> 16);
@@ -110,16 +248,15 @@ namespace SmallDhcpServer
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
             }
         }
 
         public void CreateOptionElement(DhcpOptionType optionType, byte[] dataToAdd, ref byte[] source)
         {
-            byte[] newOption;
             try
             {
-                newOption = new byte[dataToAdd.Length + 2];
+                var newOption = new byte[dataToAdd.Length + 2];
                 //add the code, and data length
                 newOption[0] = (byte)optionType;
                 newOption[1] = (byte)dataToAdd.Length;
@@ -134,10 +271,8 @@ namespace SmallDhcpServer
             }
             catch (Exception e)
             {
-                Console.WriteLine(string.Format("{0}:{1}", this.GetType().FullName, e.Message));
+                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
             }
-
         }
-
     }
 }
