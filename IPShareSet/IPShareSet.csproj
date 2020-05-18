@@ -46,16 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Definition.cs" />
-    <Compile Include="DhcpData.cs" />
-    <Compile Include="DhcpPacketStruct.cs" />
-    <Compile Include="DHCPServer.cs" />
-    <Compile Include="DhcpSettings.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="UDPListener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -74,6 +66,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MinjiWorld\MinjiWorld.csproj">
+      <Project>{0c83d570-a8a4-45b6-9816-9409b84574a0}</Project>
+      <Name>MinjiWorld</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

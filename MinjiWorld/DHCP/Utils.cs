@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-namespace IPShareSet
+namespace MinjiWorld.DHCP
 {
     public static class Utils
     {
@@ -72,5 +72,6 @@ namespace IPShareSet
             }
             return bytes;
         }
+
     }
 }
