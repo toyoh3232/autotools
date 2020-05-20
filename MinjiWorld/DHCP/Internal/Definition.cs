@@ -9,7 +9,7 @@
     }
 
     //msgtype indentifier
-    public enum DhcpMessgeType
+    public enum DhcpMessageType
     {
         DHCP_DISCOVER = 1,
         DHCP_OFFER = 2,

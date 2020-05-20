@@ -7,17 +7,17 @@ namespace MinjiWorld.DHCP
 {
     public class DhcpData
     {
-        public struct DhcpClientInfomation
+        public struct DhcpClientInformation
         {
             public string RequestAddress;
             public string ClientIdentifier;
             public string ServerAddress;
             public string ClientAddress;
             public string MacAddress;
-            public uint TransactionID;
+            public uint TransactionId;
         }
 
-        public bool IsBuiltTobeSent { get; private set; }
+        public bool IsBuiltToBeSent { get; private set; }
 
         public DhcpServer RelatedServer { get; internal set; }
 
@@ -26,42 +26,39 @@ namespace MinjiWorld.DHCP
         internal DhcpData(byte[] data)
         {
             packet = new DhcpPacketStruct(data);
-            IsBuiltTobeSent = false;
+            IsBuiltToBeSent = false;
         }
 
-        public DhcpMessgeType GetCurrentMessageType()
+        public DhcpMessageType GetCurrentMessageType()
         {
             var data = packet.options.GetOptionData(DhcpOptionType.DHCPMessageType);
             //　TODO
-            if (IsBuiltTobeSent) throw new Exception();
+            if (IsBuiltToBeSent) throw new Exception();
             // TODO
             if (data == null) throw new Exception();
-            return (DhcpMessgeType)data[0];
+            return (DhcpMessageType)data[0];
         }
 
-        internal byte[] BuildSendData(DhcpMessgeType msgType, string clientIp)
+        internal byte[] BuildSendData(DhcpMessageType msgType, string clientIp)
         {
-            if (!IsBuiltTobeSent)
-            {
-                packet.ApplySettings(msgType, RelatedServer.Settings, clientIp);
-                IsBuiltTobeSent = true;
-                return packet.ToArray();
-            }
+            if (IsBuiltToBeSent) throw new Exception();
+            packet.ApplySettings(msgType, RelatedServer.Settings, clientIp);
+            IsBuiltToBeSent = true;
+            return packet.ToArray();
             // TODO
-            throw new Exception();
 
         }
         
 
 
-        public DhcpClientInfomation GetClientInfo()
+        public DhcpClientInformation GetClientInfo()
         {
 
-            var client = new DhcpClientInfomation
+            var client = new DhcpClientInformation
             {
                 MacAddress = Utils.ByteToString(packet.chaddr, packet.hlen),
                 ClientAddress = new IPAddress(packet.ciaddr).ToString(),
-                TransactionID = BitConverter.ToUInt32(packet.xid, 0)
+                TransactionId = BitConverter.ToUInt32(packet.xid, 0)
             };
             
             if (packet.options.GetOptionData(DhcpOptionType.ClientIdentifier) != null)

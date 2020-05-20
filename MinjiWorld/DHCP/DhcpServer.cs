@@ -12,9 +12,9 @@ namespace MinjiWorld.DHCP
 {
     public class DhcpServer
     {
-        public delegate void DiscoverEventHandler(DhcpData.DhcpClientInfomation data);
+        public delegate void DiscoverEventHandler(DhcpData.DhcpClientInformation data);
         public delegate void ReleasedEventHandler();
-        public delegate void RequestEventHandler(DhcpData.DhcpClientInfomation data);
+        public delegate void RequestEventHandler(DhcpData.DhcpClientInformation data);
         public delegate void AssignedEventHandler(string ipAdd);
 
         public event DiscoverEventHandler Discovered;
@@ -22,15 +22,12 @@ namespace MinjiWorld.DHCP
 
         private UdpListener udpListener; // the udp snd/rcv class
 
-
-        public bool IsAuto = true;
-
         public DhcpServerSettings Settings;
 
         private class OwnedIpAddress
         {
             public string Ip;
-            public uint? TransactionID;
+            public uint? TransactionId;
             public bool IsAllocated;
         }
 
@@ -44,28 +41,27 @@ namespace MinjiWorld.DHCP
             ReBinding
         }
 
-        private DhcpRequestType GetDhcpRequestType(DhcpData.DhcpClientInfomation clientInfo, IPEndPoint endPoint)
+        private DhcpRequestType GetDhcpRequestType(DhcpData.DhcpClientInformation clientInfo, IPEndPoint endPoint)
         {
-            var res = DhcpRequestType.Unknown;
+            DhcpRequestType res;
             if (clientInfo.ServerAddress != null && clientInfo.RequestAddress != null && clientInfo.ClientAddress == "0.0.0.0")
             {
                 res = DhcpRequestType.Selecting;
             }
-            else if (clientInfo.ServerAddress == null && clientInfo.RequestAddress != null && clientInfo.ClientAddress == "0.0.0.0")
+            else switch (clientInfo.ServerAddress)
             {
-                res = DhcpRequestType.InitReboot;
-            }
-            else if (clientInfo.ServerAddress == null && clientInfo.RequestAddress == null && endPoint.Address.ToString() == Settings.ServerIp)
-            {
-                res = DhcpRequestType.ReNewing;
-            }
-            else if (clientInfo.ServerAddress == null && clientInfo.RequestAddress == null &&  endPoint.Address.ToString() == "255.255.255.255")
-            {
-                res = DhcpRequestType.ReBinding;
-            }
-            else
-            {
-                res = DhcpRequestType.Unknown;
+                case null when clientInfo.RequestAddress != null && clientInfo.ClientAddress == "0.0.0.0":
+                    res = DhcpRequestType.InitReboot;
+                    break;
+                case null when clientInfo.RequestAddress == null && endPoint.Address.ToString() == Settings.ServerIp:
+                    res = DhcpRequestType.ReNewing;
+                    break;
+                case null when clientInfo.RequestAddress == null && endPoint.Address.ToString() == "255.255.255.255":
+                    res = DhcpRequestType.ReBinding;
+                    break;
+                default:
+                    res = DhcpRequestType.Unknown;
+                    break;
             }
             return res;
         }
@@ -76,7 +72,7 @@ namespace MinjiWorld.DHCP
         {
             Settings = setting;
             ownedIpAddressPool = Utils.GetAllSubnetIPv4(Settings.ServerIp, Settings.SubMask)
-                .Select(ip => new OwnedIpAddress { Ip = ip, IsAllocated = false, TransactionID = null }).ToList();
+                .Select(ip => new OwnedIpAddress { Ip = ip, IsAllocated = false, TransactionId = null }).ToList();
         }
 
         ~DhcpServer()
@@ -119,20 +115,20 @@ namespace MinjiWorld.DHCP
                 var client = dhcpData.GetClientInfo();
                 switch (msgType)
                 {
-                    case DhcpMessgeType.DHCP_DISCOVER:
+                    case DhcpMessageType.DHCP_DISCOVER:
                         Console.WriteLine("Discover Asked");
                         Discovered?.Invoke(client);
-                        var newIp = ownedIpAddressPool.Find(x => x.TransactionID == null);
+                        var newIp = ownedIpAddressPool.Find(x => x.TransactionId == null);
                         if (newIp.Ip == null)
                         {
-                            Console.WriteLine("no ip is avalaible to allocate");
+                            Console.WriteLine("no ip is available to allocate");
                             return;
                         }
-                        newIp.TransactionID = client.TransactionID;
-                        SendDhcpMessage(DhcpMessgeType.DHCP_OFFER, dhcpData, newIp);                                                                                          
+                        newIp.TransactionId = client.TransactionId;
+                        SendDhcpMessage(DhcpMessageType.DHCP_OFFER, dhcpData, newIp);                                                                                          
                         break;
 
-                    case DhcpMessgeType.DHCP_REQUEST:
+                    case DhcpMessageType.DHCP_REQUEST:
                         Console.WriteLine("Request Asked");
                         Requested?.Invoke(client);
                         switch (GetDhcpRequestType(client, endPoint))
@@ -142,18 +138,18 @@ namespace MinjiWorld.DHCP
                                 Console.WriteLine("Selecting Asked");
                                 if (Settings.ServerIp == client.ServerAddress)
                                 {
-                                    var allocatedIp = ownedIpAddressPool.Find(x => x.TransactionID == client.TransactionID);
+                                    var allocatedIp = ownedIpAddressPool.Find(x => x.TransactionId == client.TransactionId);
                                     if (allocatedIp.Ip != null)
                                     {
                                         if (allocatedIp.Ip == client.RequestAddress)
                                         {
                                             allocatedIp.IsAllocated = true;
-                                            SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, allocatedIp);
+                                            SendDhcpMessage(DhcpMessageType.DHCP_ACK, dhcpData, allocatedIp);
 
                                         }
                                         else
                                         {
-                                            allocatedIp.TransactionID = null;
+                                            allocatedIp.TransactionId = null;
                                         }
                                     }
                                 }
@@ -162,11 +158,11 @@ namespace MinjiWorld.DHCP
                                 throw new ArgumentOutOfRangeException();
                         }
                         break;
-                    case DhcpMessgeType.DHCP_DECLINE:
+                    case DhcpMessageType.DHCP_DECLINE:
                         break;
-                    case DhcpMessgeType.DHCP_RELEASE:
+                    case DhcpMessageType.DHCP_RELEASE:
                         break;
-                    case DhcpMessgeType.DHCP_INFORM:
+                    case DhcpMessageType.DHCP_INFORM:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -180,7 +176,7 @@ namespace MinjiWorld.DHCP
 
         //mac announced itself, established IP etc....
         //send the offer to the mac
-        private void SendDhcpMessage(DhcpMessgeType msgType, DhcpData data, OwnedIpAddress client)
+        private void SendDhcpMessage(DhcpMessageType msgType, DhcpData data, OwnedIpAddress client)
         {
             try
             {

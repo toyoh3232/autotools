@@ -29,12 +29,12 @@ namespace IPShareSet
             }
         }
 
-        private static void ShowMessage(DhcpData.DhcpClientInfomation data)
+        private static void ShowMessage(DhcpData.DhcpClientInformation data)
         {
             Console.WriteLine($@"MacAddress:{data.MacAddress ?? string.Empty}");
             Console.WriteLine($@"RequestAddress:{data.RequestAddress ?? string.Empty}");
             Console.WriteLine($@"ServerAddress:{data.ServerAddress ?? string.Empty}");
-            Console.WriteLine($@"TransactionID:{data.TransactionID}");
+            Console.WriteLine($@"TransactionID:{data.TransactionId}");
             Console.WriteLine($@"ClientAddress:{data.ClientAddress ?? string.Empty}");
             Console.WriteLine($@"ClientIdentifier:{data.ClientIdentifier ?? string.Empty}");
         }

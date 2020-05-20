@@ -36,17 +36,17 @@ namespace MinjiWorld.DHCP.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
+                Console.WriteLine($@"{GetType().FullName}:{e.Message}");
             }
 
         }
 
-        public void ApplySettings(DhcpMessgeType msgType, DhcpServerSettings server, string clientIp)
+        public void ApplySettings(DhcpMessageType msgType, DhcpServerSettings server, string clientIp)
         {
            
             switch (msgType)
             {
-                case DhcpMessgeType.DHCP_OFFER:
+                case DhcpMessageType.DHCP_OFFER:
                     op = (byte)BootMessageType.BootReply;
                     // htype
                     // hlen
@@ -63,7 +63,7 @@ namespace MinjiWorld.DHCP.Internal
                     Utils.FillZero(file);
                     options.ApplyOptionSettings(msgType, server);
                     break;
-                case DhcpMessgeType.DHCP_ACK:
+                case DhcpMessageType.DHCP_ACK:
                     op = (byte)BootMessageType.BootReply;
                     // htype
                     // hlen 
@@ -80,7 +80,7 @@ namespace MinjiWorld.DHCP.Internal
                     Utils.FillZero(file);
                     options.ApplyOptionSettings(msgType, server);
                     break;
-                case DhcpMessgeType.DHCP_NAK:
+                case DhcpMessageType.DHCP_NAK:
                     op = (byte)BootMessageType.BootReply;
                     // htype
                     // hlen 
