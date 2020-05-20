@@ -1,5 +1,13 @@
 ﻿namespace MinjiWorld.DHCP.Internal
 {
+
+    // BOOTP message type
+    public enum BootMessageType
+    {
+        BootRequest = 1,
+        BootReply = 2
+    }
+
     //msgtype indentifier
     public enum DhcpMessgeType
     {
@@ -12,6 +20,8 @@
         DHCP_RELEASE = 7,
         DHCP_INFORM = 8
     }
+
+
     //refer to the rfc2132.txt for vendor specific info
     internal enum DhcpOptionType
     {

@@ -43,69 +43,83 @@ namespace MinjiWorld.DHCP.Internal
 
         public void ApplySettings(DhcpMessgeType msgType, DhcpServerSettings server, string clientIp)
         {
-            op = 2;
-            yiaddr = IPAddress.Parse(clientIp).GetAddressBytes();
-            options.CreateOption(msgType, server);
+           
+            switch (msgType)
+            {
+                case DhcpMessgeType.DHCP_OFFER:
+                    op = (byte)BootMessageType.BootReply;
+                    // htype
+                    // hlen
+                    hops = 0;
+                    // xid from client DHCPDISCOVER message
+                    Utils.FillZero(secs);
+                    Utils.FillZero(ciaddr);
+                    yiaddr = IPAddress.Parse(clientIp).GetAddressBytes();
+                    siaddr = IPAddress.Parse("0.0.0.0").GetAddressBytes();
+                    // flags from client DHCPDISCOVER message
+                    // giaddr from client DHCPDISCOVER message
+                    // chaddr from client DHCPDISCOVER message
+                    Utils.FillZero(sname);
+                    Utils.FillZero(file);
+                    options.ApplyOptionSettings(msgType, server);
+                    break;
+                case DhcpMessgeType.DHCP_ACK:
+                    op = (byte)BootMessageType.BootReply;
+                    // htype
+                    // hlen 
+                    hops = 0;
+                    // xid from client DHCPREQUEST message
+                    Utils.FillZero(secs);
+                    Utils.FillZero(ciaddr);
+                    yiaddr = IPAddress.Parse(clientIp).GetAddressBytes();
+                    siaddr = IPAddress.Parse("0.0.0.0").GetAddressBytes();
+                    // flags from client DHCPREQUEST message
+                    // giaddr from client DHCPREQUEST message
+                    // chaddr from client DHCPREQUEST message
+                    Utils.FillZero(sname);
+                    Utils.FillZero(file);
+                    options.ApplyOptionSettings(msgType, server);
+                    break;
+                case DhcpMessgeType.DHCP_NAK:
+                    op = (byte)BootMessageType.BootReply;
+                    // htype
+                    // hlen 
+                    hops = 0;
+                    // xid from client DHCPREQUEST message
+                    Utils.FillZero(secs);
+                    // ciaddr from client DHCPREQUEST message
+                    Utils.FillZero(yiaddr);
+                    Utils.FillZero(siaddr);
+                    // flags from client DHCPREQUEST message
+                    // giaddr from client DHCPREQUEST message
+                    // chaddr from client DHCPREQUEST message
+                    Utils.FillZero(sname);
+                    Utils.FillZero(file);
+                    options.ApplyOptionSettings(msgType, server);
+                    break;
+            }
         }
+        
         public byte[] ToArray()
         {
             var mArray = new byte[0];
-            AddtoArray(op, ref mArray);
-            AddtoArray(htype, ref mArray);
-            AddtoArray(hlen, ref mArray);
-            AddtoArray(hops, ref mArray);
-            AddtoArray(xid, ref mArray);
-            AddtoArray(secs, ref mArray);
-            AddtoArray(flags, ref mArray);
-            AddtoArray(ciaddr, ref mArray);
-            AddtoArray(yiaddr, ref mArray);
-            AddtoArray(siaddr, ref mArray);
-            AddtoArray(giaddr, ref mArray);
-            AddtoArray(chaddr, ref mArray);
-            AddtoArray(sname, ref mArray);
-            AddtoArray(file, ref mArray);
-            AddtoArray(cookie, ref mArray);
-            AddtoArray(options.options, ref mArray);
+            Utils.AddtoArray(op, ref mArray);
+            Utils.AddtoArray(htype, ref mArray);
+            Utils.AddtoArray(hlen, ref mArray);
+            Utils.AddtoArray(hops, ref mArray);
+            Utils.AddtoArray(xid, ref mArray);
+            Utils.AddtoArray(secs, ref mArray);
+            Utils.AddtoArray(flags, ref mArray);
+            Utils.AddtoArray(ciaddr, ref mArray);
+            Utils.AddtoArray(yiaddr, ref mArray);
+            Utils.AddtoArray(siaddr, ref mArray);
+            Utils.AddtoArray(giaddr, ref mArray);
+            Utils.AddtoArray(chaddr, ref mArray);
+            Utils.AddtoArray(sname, ref mArray);
+            Utils.AddtoArray(file, ref mArray);
+            Utils.AddtoArray(cookie, ref mArray);
+            Utils.AddtoArray(options.options, ref mArray);
             return mArray;
-        }
-
-        private void AddtoArray(byte fromValue, ref byte[] targetValue)
-        {
-            AddtoArray(new byte[] { fromValue }, ref targetValue);
-        }
-
-        private void AddtoArray(byte[] fromValue, ref byte[] targetArray)
-        {
-            try
-            {
-                if (targetArray != null)
-                    Array.Resize(ref targetArray, targetArray.Length + fromValue.Length);
-                else
-                    Array.Resize(ref targetArray, fromValue.Length);
-                Array.Copy(fromValue, 0, targetArray, targetArray.Length - fromValue.Length, fromValue.Length);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
-            }
-        }
-
-
-        public DhcpMessgeType GetDhcpMessageType()
-        {
-            try
-            {
-                var data = options.GetOptionData(DhcpOptionType.DHCPMessageType);
-                if (data != null)
-                {
-                    return (DhcpMessgeType)data[0];
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
-            }
-            return 0;
         }
 
     #region Data
@@ -124,7 +138,7 @@ namespace MinjiWorld.DHCP.Internal
         public byte[] sname;      // Optional server host name (64)
         public byte[] file;       // Boot file name (128)
         public byte[] cookie;     // Magic cookie (4)
-        public Options options;            // options (rest)
+        public Options options;   // options (rest)
         #endregion
     }
 }

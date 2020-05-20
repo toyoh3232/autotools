@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Reflection;
 using System.Text;
 
 namespace MinjiWorld.DHCP.Internal
@@ -17,11 +18,14 @@ namespace MinjiWorld.DHCP.Internal
         internal byte[] GetOptionData(DhcpOptionType optionType)
         {
             var code = (byte)optionType;
+            Console.WriteLine($"length:{options.Length},code:{code}");
             try
             {
                 //loop through look for the bit that states that the identifier is there
                 for (int i = 0; i < options.Length; i++)
                 {
+                    Console.WriteLine($"i:{i}");
+                    if (options[i] == (byte)DhcpOptionType.End) break;
                     //at the start we have the code + length
                     //i has the code, i+1 = length of data, i+1+n = data skip
                     if (options[i] == code)
@@ -46,21 +50,45 @@ namespace MinjiWorld.DHCP.Internal
             return null;
         }
 
-        internal void CreateOption(DhcpMessgeType messageType, DhcpServerSettings server)
+        internal void ApplyOptionSettings(DhcpMessgeType messageType, DhcpServerSettings server)
         {
             try
             {
-                //we look for the parameter request list
-                var reqList = GetOptionData(DhcpOptionType.ParameterRequestList);
+                var oldMsgType =(DhcpMessgeType)GetOptionData(DhcpOptionType.DHCPMessageType)[0];
+
                 //erase the options array, and set the message type to ack
-                options = null;
-                CreateOptionElement(DhcpOptionType.DHCPMessageType, new byte[] { (byte)messageType }, ref options);
+                byte[] newOptions = null;
+                CreateOptionElement(DhcpOptionType.DHCPMessageType, new byte[] { (byte)messageType }, ref newOptions);
                 //server identifier, my IP
                 var myIp = IPAddress.Parse(server.ServerIp).GetAddressBytes();
-                CreateOptionElement(DhcpOptionType.ServerIdentifier, myIp, ref options);
+                CreateOptionElement(DhcpOptionType.ServerIdentifier, myIp, ref newOptions);
 
+                //lease time
+                var leaseTime = new byte[4];
+                leaseTime[3] = (byte)(server.LeaseTime);
+                leaseTime[2] = (byte)(server.LeaseTime >> 8);
+                leaseTime[1] = (byte)(server.LeaseTime >> 16);
+                leaseTime[0] = (byte)(server.LeaseTime >> 24);
+                switch (messageType)
+                {
+                    case DhcpMessgeType.DHCP_NAK:
+                        goto EndOption;
+                    case DhcpMessgeType.DHCP_OFFER:
 
-                //PReqList contains the option data in a byte that is requested by the unit
+                        CreateOptionElement(DhcpOptionType.IPAddressLeaseTime, leaseTime, ref newOptions);
+                        CreateOptionElement(DhcpOptionType.RenewalTimeValue_T1, leaseTime, ref newOptions);
+                        CreateOptionElement(DhcpOptionType.RebindingTimeValue_T2, leaseTime, ref newOptions);
+                        break;
+                    case DhcpMessgeType.DHCP_ACK:
+                        if (oldMsgType == DhcpMessgeType.DHCP_INFORM) break;
+                        CreateOptionElement(DhcpOptionType.IPAddressLeaseTime, leaseTime, ref newOptions);
+                        CreateOptionElement(DhcpOptionType.RenewalTimeValue_T1, leaseTime, ref newOptions);
+                        CreateOptionElement(DhcpOptionType.RebindingTimeValue_T2, leaseTime, ref newOptions);
+                        break;
+                }
+                // look for the parameter request list
+                var reqList = GetOptionData(DhcpOptionType.ParameterRequestList);
+                // reqList contains the option data in a byte that is requested by the unit
                 foreach (var i in reqList)
                 {
                     byte[] t1 = null;
@@ -77,9 +105,6 @@ namespace MinjiWorld.DHCP.Internal
                             break;
                         case DhcpOptionType.DomainName:
                             t1 = Encoding.ASCII.GetBytes(server.ServerName);
-                            break;
-                        case DhcpOptionType.ServerIdentifier:
-                            t1 = IPAddress.Parse(server.ServerIp).GetAddressBytes();
                             break;
                         case DhcpOptionType.LogServer:
                             t1 = Encoding.ASCII.GetBytes(server.LogServerIp);
@@ -227,29 +252,21 @@ namespace MinjiWorld.DHCP.Internal
                             break;
                     }
                     if (t1 != null)
-                        CreateOptionElement((DhcpOptionType)i, t1, ref options);
+                        CreateOptionElement((DhcpOptionType)i, t1, ref newOptions);
                 }
-
-                //lease time
-                var leaseTime = new byte[4];
-                leaseTime[3] = (byte)(server.LeaseTime);
-                leaseTime[2] = (byte)(server.LeaseTime >> 8);
-                leaseTime[1] = (byte)(server.LeaseTime >> 16);
-                leaseTime[0] = (byte)(server.LeaseTime >> 24);
-                CreateOptionElement(DhcpOptionType.IPAddressLeaseTime, leaseTime, ref options);
-                CreateOptionElement(DhcpOptionType.RenewalTimeValue_T1, leaseTime, ref options);
-                CreateOptionElement(DhcpOptionType.RebindingTimeValue_T2, leaseTime, ref options);
+                EndOption:
                 //create the end option
-                Array.Resize(ref options, options.Length + 1);
-                Array.Copy(new byte[] { 255 }, 0, options, options.Length - 1, 1);
+                Array.Resize(ref newOptions, newOptions.Length + 1);
+                Array.Copy(new byte[] { (byte)DhcpOptionType.End }, 0, newOptions, newOptions.Length - 1, 1);
+                options = newOptions;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{this.GetType().FullName}.CreateOptionStruct:{e.Message}");
+                Console.WriteLine($@"{GetType().FullName}.{MethodBase.GetCurrentMethod()}:{e.Message}");
             }
         }
 
-        public void CreateOptionElement(DhcpOptionType optionType, byte[] dataToAdd, ref byte[] source)
+        internal void CreateOptionElement(DhcpOptionType optionType, byte[] dataToAdd, ref byte[] source)
         {
             try
             {

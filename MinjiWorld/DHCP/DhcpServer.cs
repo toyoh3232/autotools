@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using MinjiWorld.DHCP.Internal;
@@ -29,8 +30,44 @@ namespace MinjiWorld.DHCP
         private class OwnedIpAddress
         {
             public string Ip;
-            public uint? Id;
+            public uint? TransactionID;
             public bool IsAllocated;
+        }
+
+        // RFC 2131 p30-33
+        private enum DhcpRequestType
+        {
+            Unknown,
+            Selecting,
+            InitReboot,
+            ReNewing,
+            ReBinding
+        }
+
+        private DhcpRequestType GetDhcpRequestType(DhcpData.DhcpClientInfomation clientInfo, IPEndPoint endPoint)
+        {
+            var res = DhcpRequestType.Unknown;
+            if (clientInfo.ServerAddress != null && clientInfo.RequestAddress != null && clientInfo.ClientAddress == "0.0.0.0")
+            {
+                res = DhcpRequestType.Selecting;
+            }
+            else if (clientInfo.ServerAddress == null && clientInfo.RequestAddress != null && clientInfo.ClientAddress == "0.0.0.0")
+            {
+                res = DhcpRequestType.InitReboot;
+            }
+            else if (clientInfo.ServerAddress == null && clientInfo.RequestAddress == null && endPoint.Address.ToString() == Settings.ServerIp)
+            {
+                res = DhcpRequestType.ReNewing;
+            }
+            else if (clientInfo.ServerAddress == null && clientInfo.RequestAddress == null &&  endPoint.Address.ToString() == "255.255.255.255")
+            {
+                res = DhcpRequestType.ReBinding;
+            }
+            else
+            {
+                res = DhcpRequestType.Unknown;
+            }
+            return res;
         }
 
         private readonly List<OwnedIpAddress> ownedIpAddressPool;
@@ -39,7 +76,7 @@ namespace MinjiWorld.DHCP
         {
             Settings = setting;
             ownedIpAddressPool = Utils.GetAllSubnetIPv4(Settings.ServerIp, Settings.SubMask)
-                .Select(ip => new OwnedIpAddress { Ip = ip, IsAllocated = false, Id = null }).ToList();
+                .Select(ip => new OwnedIpAddress { Ip = ip, IsAllocated = false, TransactionID = null }).ToList();
         }
 
         ~DhcpServer()
@@ -78,48 +115,52 @@ namespace MinjiWorld.DHCP
                 {
                     RelatedServer = this
                 };
-                var msgType = dhcpData.GetDhcpMessageType();
+                var msgType = dhcpData.GetCurrentMessageType();
                 var client = dhcpData.GetClientInfo();
                 switch (msgType)
                 {
                     case DhcpMessgeType.DHCP_DISCOVER:
                         Console.WriteLine("Discover Asked");
-                        Discovered?.Invoke(dhcpData.GetClientInfo());
-                        try
+                        Discovered?.Invoke(client);
+                        var newIp = ownedIpAddressPool.Find(x => x.TransactionID == null);
+                        if (newIp.Ip == null)
                         {
-                            var newIp = ownedIpAddressPool.Find(x => x.Id == null);
-                            newIp.Id = client.TransactionID;
-                            SendDhcpMessage(DhcpMessgeType.DHCP_OFFER, dhcpData, newIp);
+                            Console.WriteLine("no ip is avalaible to allocate");
+                            return;
                         }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine($"{GetType().FullName}:{MethodBase.GetCurrentMethod()}.{e.Message}");
-                        }
+                        newIp.TransactionID = client.TransactionID;
+                        SendDhcpMessage(DhcpMessgeType.DHCP_OFFER, dhcpData, newIp);                                                                                          
                         break;
 
                     case DhcpMessgeType.DHCP_REQUEST:
                         Console.WriteLine("Request Asked");
-                        Requested?.Invoke(dhcpData.GetClientInfo());
-                        if (Settings.ServerIp == client.ServerAddress)
+                        Requested?.Invoke(client);
+                        switch (GetDhcpRequestType(client, endPoint))
                         {
-                            for (var i = 0; i < ownedIpAddressPool.Length; i++)
-                            {
-                                if (ownedIpAddressPool[i].Id == client.TransactionID)
+                            // respond to client which has responded to DHCPOFFER message from this server 
+                            case DhcpRequestType.Selecting:
+                                Console.WriteLine("Selecting Asked");
+                                if (Settings.ServerIp == client.ServerAddress)
                                 {
-                                    if (ownedIpAddressPool[i].Ip == client.RequestAddress)
+                                    var allocatedIp = ownedIpAddressPool.Find(x => x.TransactionID == client.TransactionID);
+                                    if (allocatedIp.Ip != null)
                                     {
-                                        ownedIpAddressPool[i].IsAllocated = true;
-                                        SendDhcpMessage(DhcpMessgeType.DHCP_OFFER, dhcpData, ownedIpAddressPool[i]);
+                                        if (allocatedIp.Ip == client.RequestAddress)
+                                        {
+                                            allocatedIp.IsAllocated = true;
+                                            SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, allocatedIp);
+
+                                        }
+                                        else
+                                        {
+                                            allocatedIp.TransactionID = null;
+                                        }
                                     }
-                                    else
-                                    {
-                                        ownedIpAddressPool[i].Id = null;
-                                    }
-                                    break;
                                 }
-                            }
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
                         }
-                        Requested?.Invoke(dhcpData.GetClientInfo());
                         break;
                     case DhcpMessgeType.DHCP_DECLINE:
                         break;
@@ -148,7 +189,8 @@ namespace MinjiWorld.DHCP
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{GetType().FullName}:{e.Message}");
+                Console.WriteLine($@"{GetType().FullName}:{MethodBase.GetCurrentMethod()}{e.Message}");
+                throw e;
             }
         }
     }

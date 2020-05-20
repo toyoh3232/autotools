@@ -6,7 +6,7 @@
         {
             ServerIp = ip;
             SubMask = Utils.GetIPv4Mask(ip);
-            LeaseTime = 2000;
+            LeaseTime = 20000;
             ServerName = "Little DHCP Server";
             RouterIp = "0.0.0.0";
             DomainIp = "0.0.0.0";

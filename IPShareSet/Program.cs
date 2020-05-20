@@ -19,8 +19,8 @@ namespace IPShareSet
         {
             var serverSettings = new DhcpServerSettings(args[0]);
             server = new DhcpServer(serverSettings);
-            server.Discovered += Server_Discovered;
-            server.Requested += Server_Discovered;
+            server.Discovered += ShowMessage;
+            server.Requested += ShowMessage;
             thread = new Thread(server.Start);
             thread.Start();
             while (true)
@@ -29,9 +29,14 @@ namespace IPShareSet
             }
         }
 
-        private static void Server_Discovered(DhcpData.DhcpClientInfomation data)
+        private static void ShowMessage(DhcpData.DhcpClientInfomation data)
         {
-            Console.WriteLine($"{data.MacAddress}");
+            Console.WriteLine($@"MacAddress:{data.MacAddress ?? string.Empty}");
+            Console.WriteLine($@"RequestAddress:{data.RequestAddress ?? string.Empty}");
+            Console.WriteLine($@"ServerAddress:{data.ServerAddress ?? string.Empty}");
+            Console.WriteLine($@"TransactionID:{data.TransactionID}");
+            Console.WriteLine($@"ClientAddress:{data.ClientAddress ?? string.Empty}");
+            Console.WriteLine($@"ClientIdentifier:{data.ClientIdentifier ?? string.Empty}");
         }
     }
 }
