@@ -18,13 +18,11 @@ namespace MinjiWorld.DHCP.Internal
         internal byte[] GetOptionData(DhcpOptionType optionType)
         {
             var code = (byte)optionType;
-            Console.WriteLine($"length:{options.Length},code:{code}");
             try
             {
                 //loop through look for the bit that states that the identifier is there
                 for (int i = 0; i < options.Length; i++)
                 {
-                    Console.WriteLine($"i:{i}");
                     if (options[i] == (byte)DhcpOptionType.End) break;
                     //at the start we have the code + length
                     //i has the code, i+1 = length of data, i+1+n = data skip
@@ -50,17 +48,17 @@ namespace MinjiWorld.DHCP.Internal
             return null;
         }
 
-        internal void ApplyOptionSettings(DhcpMessageType messageType, DhcpServerSettings server)
+        internal void ApplyOptionSettings(DhcpMessgeType messageType, DhcpServerSettings server)
         {
             try
             {
-                var oldMsgType =(DhcpMessageType)GetOptionData(DhcpOptionType.DHCPMessageType)[0];
+                var oldMsgType =(DhcpMessgeType)GetOptionData(DhcpOptionType.DHCPMessageType)[0];
 
                 //erase the options array, and set the message type to ack
                 byte[] newOptions = null;
                 CreateOptionElement(DhcpOptionType.DHCPMessageType, new byte[] { (byte)messageType }, ref newOptions);
                 //server identifier, my IP
-                var myIp = IPAddress.Parse(server.ServerIp).GetAddressBytes();
+                var myIp = server.ServerIp.GetAddressBytes();
                 CreateOptionElement(DhcpOptionType.ServerIdentifier, myIp, ref newOptions);
 
                 //lease time
@@ -71,16 +69,16 @@ namespace MinjiWorld.DHCP.Internal
                 leaseTime[0] = (byte)(server.LeaseTime >> 24);
                 switch (messageType)
                 {
-                    case DhcpMessageType.DHCP_NAK:
+                    case DhcpMessgeType.DHCP_NAK:
                         goto EndOption;
-                    case DhcpMessageType.DHCP_OFFER:
+                    case DhcpMessgeType.DHCP_OFFER:
 
                         CreateOptionElement(DhcpOptionType.IPAddressLeaseTime, leaseTime, ref newOptions);
                         CreateOptionElement(DhcpOptionType.RenewalTimeValue_T1, leaseTime, ref newOptions);
                         CreateOptionElement(DhcpOptionType.RebindingTimeValue_T2, leaseTime, ref newOptions);
                         break;
-                    case DhcpMessageType.DHCP_ACK:
-                        if (oldMsgType == DhcpMessageType.DHCP_INFORM) break;
+                    case DhcpMessgeType.DHCP_ACK:
+                        if (oldMsgType == DhcpMessgeType.DHCP_INFORM) break;
                         CreateOptionElement(DhcpOptionType.IPAddressLeaseTime, leaseTime, ref newOptions);
                         CreateOptionElement(DhcpOptionType.RenewalTimeValue_T1, leaseTime, ref newOptions);
                         CreateOptionElement(DhcpOptionType.RebindingTimeValue_T2, leaseTime, ref newOptions);
@@ -92,10 +90,10 @@ namespace MinjiWorld.DHCP.Internal
                 foreach (var i in reqList)
                 {
                     byte[] t1 = null;
-                    switch ((DhcpOptionType) i)
+                    switch ((DhcpOptionType)i)
                     {
                         case DhcpOptionType.SubnetMask:
-                            t1 = IPAddress.Parse(server.SubMask).GetAddressBytes();
+                            t1 = server.SubnetMask.GetAddressBytes();
                             break;
                         case DhcpOptionType.Router:
                             t1 = IPAddress.Parse(server.RouterIp).GetAddressBytes();
@@ -109,8 +107,148 @@ namespace MinjiWorld.DHCP.Internal
                         case DhcpOptionType.LogServer:
                             t1 = Encoding.ASCII.GetBytes(server.LogServerIp);
                             break;
-                    }
+                        case DhcpOptionType.NetBIOSoverTCPIPNameServer:
+                            break;
 
+                        case DhcpOptionType.Pad:
+                            break;
+                        case DhcpOptionType.TimeOffset:
+                            break;
+                        case DhcpOptionType.TimeServer:
+                            break;
+                        case DhcpOptionType.NameServer:
+                            break;
+                        case DhcpOptionType.CookieServer:
+                            break;
+                        case DhcpOptionType.LPRServer:
+                            break;
+                        case DhcpOptionType.ImpressServer:
+                            break;
+                        case DhcpOptionType.ResourceLocServer:
+                            break;
+                        case DhcpOptionType.HostName:
+                            break;
+                        case DhcpOptionType.BootFileSize:
+                            break;
+                        case DhcpOptionType.MeritDump:
+                            break;
+                        case DhcpOptionType.SwapServer:
+                            break;
+                        case DhcpOptionType.RootPath:
+                            break;
+                        case DhcpOptionType.ExtensionsPath:
+                            break;
+                        case DhcpOptionType.IpForwarding:
+                            break;
+                        case DhcpOptionType.NonLocalSourceRouting:
+                            break;
+                        case DhcpOptionType.PolicyFilter:
+                            break;
+                        case DhcpOptionType.MaximumDatagramReAssemblySize:
+                            break;
+                        case DhcpOptionType.DefaultIPTimeToLive:
+                            break;
+                        case DhcpOptionType.PathMTUAgingTimeout:
+                            break;
+                        case DhcpOptionType.PathMTUPlateauTable:
+                            break;
+                        case DhcpOptionType.InterfaceMTU:
+                            break;
+                        case DhcpOptionType.AllSubnetsAreLocal:
+                            break;
+                        case DhcpOptionType.BroadcastAddress:
+                            break;
+                        case DhcpOptionType.PerformMaskDiscovery:
+                            break;
+                        case DhcpOptionType.MaskSupplier:
+                            break;
+                        case DhcpOptionType.PerformRouterDiscovery:
+                            break;
+                        case DhcpOptionType.RouterSolicitationAddress:
+                            break;
+                        case DhcpOptionType.StaticRoute:
+                            break;
+                        case DhcpOptionType.TrailerEncapsulation:
+                            break;
+                        case DhcpOptionType.ARPCacheTimeout:
+                            break;
+                        case DhcpOptionType.EthernetEncapsulation:
+                            break;
+                        case DhcpOptionType.TCPDefaultTTL:
+                            break;
+                        case DhcpOptionType.TCPKeepaliveInterval:
+                            break;
+                        case DhcpOptionType.TCPKeepaliveGarbage:
+                            break;
+                        case DhcpOptionType.NetworkInformationServiceDomain:
+                            break;
+                        case DhcpOptionType.NetworkInformationServers:
+                            break;
+                        case DhcpOptionType.NetworkTimeProtocolServers:
+                            break;
+                        case DhcpOptionType.VendorSpecificInformation:
+                            break;
+                        case DhcpOptionType.NetBIOSoverTCPIPDatagramDistributionServer:
+                            break;
+                        case DhcpOptionType.NetBIOSoverTCPIPNodeType:
+                            break;
+                        case DhcpOptionType.NetBIOSoverTCPIPScope:
+                            break;
+                        case DhcpOptionType.XWindowSystemFontServer:
+                            break;
+                        case DhcpOptionType.XWindowSystemDisplayManager:
+                            break;
+                        case DhcpOptionType.RequestedIPAddress:
+                            break;
+                        case DhcpOptionType.IPAddressLeaseTime:
+                            break;
+                        case DhcpOptionType.OptionOverload:
+                            break;
+                        case DhcpOptionType.DHCPMessageType:
+                            break;
+                        case DhcpOptionType.ParameterRequestList:
+                            break;
+                        case DhcpOptionType.Message:
+                            break;
+                        case DhcpOptionType.MaximumDHCPMessageSize:
+                            break;
+                        case DhcpOptionType.RenewalTimeValue_T1:
+                            break;
+                        case DhcpOptionType.RebindingTimeValue_T2:
+                            break;
+                        case DhcpOptionType.Vendorclassidentifier:
+                            break;
+                        case DhcpOptionType.ClientIdentifier:
+                            break;
+                        case DhcpOptionType.NetworkInformationServicePlusDomain:
+                            break;
+                        case DhcpOptionType.NetworkInformationServicePlusServers:
+                            break;
+                        case DhcpOptionType.TFTPServerName:
+                            break;
+                        case DhcpOptionType.BootfileName:
+                            break;
+                        case DhcpOptionType.MobileIPHomeAgent:
+                            break;
+                        case DhcpOptionType.SMTPServer:
+                            break;
+                        case DhcpOptionType.POP3Server:
+                            break;
+                        case DhcpOptionType.NNTPServer:
+                            break;
+                        case DhcpOptionType.DefaultWWWServer:
+                            break;
+                        case DhcpOptionType.DefaultFingerServer:
+                            break;
+                        case DhcpOptionType.DefaultIRCServer:
+                            break;
+                        case DhcpOptionType.StreetTalkServer:
+                            break;
+                        case DhcpOptionType.STDAServer:
+                            break;
+                        case DhcpOptionType.End:
+                            break;
+                    }
                     if (t1 != null)
                         CreateOptionElement((DhcpOptionType)i, t1, ref newOptions);
                 }
@@ -145,7 +283,7 @@ namespace MinjiWorld.DHCP.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{GetType().FullName}.CreateOptionElement:{e.Message}");
+                Console.WriteLine($"{this.GetType().FullName}.CreateOptionElement:{e.Message}");
             }
         }
     }

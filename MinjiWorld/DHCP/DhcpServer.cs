@@ -6,15 +6,16 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using MinjiWorld.DHCP.Extension;
 using MinjiWorld.DHCP.Internal;
 
 namespace MinjiWorld.DHCP
 {
     public class DhcpServer
     {
-        public delegate void DiscoverEventHandler(DhcpData.DhcpClientInformation data);
+        public delegate void DiscoverEventHandler(DhcpData.ClientInfomation data);
         public delegate void ReleasedEventHandler();
-        public delegate void RequestEventHandler(DhcpData.DhcpClientInformation data);
+        public delegate void RequestEventHandler(DhcpData.ClientInfomation data);
         public delegate void AssignedEventHandler(string ipAdd);
 
         public event DiscoverEventHandler Discovered;
@@ -26,9 +27,9 @@ namespace MinjiWorld.DHCP
 
         private class OwnedIpAddress
         {
-            public string Ip;
-            public uint? TransactionId;
+            public IPAddress Ip;
             public bool IsAllocated;
+            public string AuthorizedClientMac;
         }
 
         // RFC 2131 p30-33
@@ -41,27 +42,28 @@ namespace MinjiWorld.DHCP
             ReBinding
         }
 
-        private DhcpRequestType GetDhcpRequestType(DhcpData.DhcpClientInformation clientInfo, IPEndPoint endPoint)
+        private DhcpRequestType GetDhcpRequestType(DhcpData.ClientInfomation clientInfo, IPEndPoint endPoint)
         {
-            DhcpRequestType res;
-            if (clientInfo.ServerAddress != null && clientInfo.RequestAddress != null && clientInfo.ClientAddress == "0.0.0.0")
+            var res = DhcpRequestType.Unknown;
+            if (clientInfo.ServerAddress != null && clientInfo.RequestAddress != null && clientInfo.ClientAddress.Equals(IPAddress.Any))
             {
                 res = DhcpRequestType.Selecting;
             }
-            else switch (clientInfo.ServerAddress)
+            else if (clientInfo.ServerAddress == null && clientInfo.RequestAddress != null && clientInfo.ClientAddress.Equals(IPAddress.Any))
             {
-                case null when clientInfo.RequestAddress != null && clientInfo.ClientAddress == "0.0.0.0":
-                    res = DhcpRequestType.InitReboot;
-                    break;
-                case null when clientInfo.RequestAddress == null && endPoint.Address.ToString() == Settings.ServerIp:
-                    res = DhcpRequestType.ReNewing;
-                    break;
-                case null when clientInfo.RequestAddress == null && endPoint.Address.ToString() == "255.255.255.255":
-                    res = DhcpRequestType.ReBinding;
-                    break;
-                default:
-                    res = DhcpRequestType.Unknown;
-                    break;
+                res = DhcpRequestType.InitReboot;
+            }
+            else if (clientInfo.ServerAddress == null && clientInfo.RequestAddress == null && endPoint.Address.Equals(Settings.ServerIp))
+            {
+                res = DhcpRequestType.ReNewing;
+            }
+            else if (clientInfo.ServerAddress == null && clientInfo.RequestAddress == null && endPoint.Address.Equals(IPAddress.Broadcast))
+            {
+                res = DhcpRequestType.ReBinding;
+            }
+            else
+            {
+                res = DhcpRequestType.Unknown;
             }
             return res;
         }
@@ -71,8 +73,8 @@ namespace MinjiWorld.DHCP
         public DhcpServer(DhcpServerSettings setting)
         {
             Settings = setting;
-            ownedIpAddressPool = Utils.GetAllSubnetIPv4(Settings.ServerIp, Settings.SubMask)
-                .Select(ip => new OwnedIpAddress { Ip = ip, IsAllocated = false, TransactionId = null }).ToList();
+            ownedIpAddressPool = Settings.ServerIp.GetAllSubnet(Settings.SubnetMask)
+                .Select(ip => new OwnedIpAddress { Ip = ip, IsAllocated = false}).ToList();
         }
 
         ~DhcpServer()
@@ -87,7 +89,7 @@ namespace MinjiWorld.DHCP
             try
             {   // start the DHCP server
                 // assign the event handlers
-                udpListener = new UdpListener(67, 68, Settings.ServerIp);
+                udpListener = new UdpListener(67, 68, Settings.ServerIp.ToString());
                 udpListener.Received += UdpListener_Received;
 
             }
@@ -115,54 +117,74 @@ namespace MinjiWorld.DHCP
                 var client = dhcpData.GetClientInfo();
                 switch (msgType)
                 {
-                    case DhcpMessageType.DHCP_DISCOVER:
-                        Console.WriteLine("Discover Asked");
+                    case DhcpMessgeType.DHCP_DISCOVER:
+                        Console.WriteLine("received DHCPDISCOVER");
                         Discovered?.Invoke(client);
-                        var newIp = ownedIpAddressPool.Find(x => x.TransactionId == null);
+                        var newIp = ownedIpAddressPool.Find(x => x.IsAllocated == false);
                         if (newIp.Ip == null)
                         {
-                            Console.WriteLine("no ip is available to allocate");
+                            Console.WriteLine("no ip is avalaible to allocate");
                             return;
                         }
-                        newIp.TransactionId = client.TransactionId;
-                        SendDhcpMessage(DhcpMessageType.DHCP_OFFER, dhcpData, newIp);                                                                                          
+                        Console.WriteLine("send DHCPOFFER");
+                        SendDhcpMessage(DhcpMessgeType.DHCP_OFFER, dhcpData, newIp);
                         break;
 
-                    case DhcpMessageType.DHCP_REQUEST:
-                        Console.WriteLine("Request Asked");
+                    case DhcpMessgeType.DHCP_REQUEST:
+                        Console.WriteLine("received DHCPREQUEST");
                         Requested?.Invoke(client);
                         switch (GetDhcpRequestType(client, endPoint))
                         {
                             // respond to client which has responded to DHCPOFFER message from this server 
                             case DhcpRequestType.Selecting:
-                                Console.WriteLine("Selecting Asked");
-                                if (Settings.ServerIp == client.ServerAddress)
+                                Console.WriteLine("response to DHCPREQUEST generated during SELECTING state");
+                                if (Settings.ServerIp.Equals(client.ServerAddress))
                                 {
-                                    var allocatedIp = ownedIpAddressPool.Find(x => x.TransactionId == client.TransactionId);
-                                    if (allocatedIp.Ip != null)
+                                    var allocatedIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.RequestAddress));
+                                    if (allocatedIp.Ip != null && !allocatedIp.IsAllocated)
                                     {
-                                        if (allocatedIp.Ip == client.RequestAddress)
-                                        {
-                                            allocatedIp.IsAllocated = true;
-                                            SendDhcpMessage(DhcpMessageType.DHCP_ACK, dhcpData, allocatedIp);
-
-                                        }
-                                        else
-                                        {
-                                            allocatedIp.TransactionId = null;
-                                        }
+                                        allocatedIp.IsAllocated = true;
+                                        allocatedIp.AuthorizedClientMac = client.MacAddress;
+                                        Console.WriteLine("send DHCPACK");
+                                        SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, allocatedIp);
                                     }
                                 }
+                                break;
+                            case DhcpRequestType.InitReboot:
+                                Console.WriteLine("response to DHCPREQUEST generated during INIT-REBOOT state");
+                                if (!client.RelayAgentAddress.Equals(IPAddress.Any))
+                                    Console.WriteLine("relay agent is not supported in this version");
+                                var rebootIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.RequestAddress));
+                                if (rebootIp.Ip != null && rebootIp.AuthorizedClientMac == client.MacAddress)
+                                {
+                                    Console.WriteLine("send DHCPACK");
+                                    SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, rebootIp);
+                                }
+                                break;
+                            case DhcpRequestType.ReNewing:
+                                Console.WriteLine("response to DHCPREQUEST generated during RENEWING state");
+                                var reNewIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.ClientAddress));
+                                if (reNewIp.Ip != null && reNewIp.AuthorizedClientMac == client.MacAddress)
+                                {
+                                    Console.WriteLine("send DHCPACK");
+                                    SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, reNewIp);
+                                }
+                                break;
+                            case DhcpRequestType.ReBinding:
+                                Console.WriteLine("response to DHCPREQUEST generated during REBINDING state");
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
                         break;
-                    case DhcpMessageType.DHCP_DECLINE:
+                    case DhcpMessgeType.DHCP_DECLINE:
                         break;
-                    case DhcpMessageType.DHCP_RELEASE:
+                    case DhcpMessgeType.DHCP_RELEASE:
+                        Console.WriteLine("received DHCPRELESE");
+                        var oldIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.ClientAddress));
+                        if (oldIp.Ip != null) oldIp.IsAllocated = false;
                         break;
-                    case DhcpMessageType.DHCP_INFORM:
+                    case DhcpMessgeType.DHCP_INFORM:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -176,11 +198,28 @@ namespace MinjiWorld.DHCP
 
         //mac announced itself, established IP etc....
         //send the offer to the mac
-        private void SendDhcpMessage(DhcpMessageType msgType, DhcpData data, OwnedIpAddress client)
+        private void SendDhcpMessage(DhcpMessgeType msgType, DhcpData data, OwnedIpAddress client = null)
         {
+            BroadCastType castType;
+            string dest = "255.255.255.255";
+            var clientInfo = data.GetClientInfo();
+            if (clientInfo.RelayAgentAddress.Equals(IPAddress.Any) && !clientInfo.ClientAddress.Equals(IPAddress.Any))
+            {
+                castType = BroadCastType.UniCast;
+                dest = clientInfo.ToString();
+            }
+            if (clientInfo.RelayAgentAddress.Equals(IPAddress.Any) && clientInfo.ClientAddress.Equals(IPAddress.Any) && clientInfo.CastType == BroadCastType.BroadCast)
+            {
+                castType = BroadCastType.BroadCast;
+            }
+            if (clientInfo.RelayAgentAddress.Equals(IPAddress.Any) && clientInfo.ClientAddress.Equals(IPAddress.Any) && clientInfo.CastType == BroadCastType.UniCast)
+            {
+                // TODO
+                castType = BroadCastType.UniCast;
+            }
             try
             {
-                var dataToSend = data.BuildSendData(msgType, client.Ip);
+                var dataToSend = data.BuildSendData(msgType, client?.Ip);
                 udpListener.SendData(dataToSend);
             }
             catch (Exception e)

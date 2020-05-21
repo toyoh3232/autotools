@@ -1,21 +1,24 @@
-﻿namespace MinjiWorld.DHCP
+﻿using System.Net;
+using MinjiWorld.DHCP.Extension;
+
+namespace MinjiWorld.DHCP
 {
     public struct DhcpServerSettings
     {
         public DhcpServerSettings(string ip)
         {
-            ServerIp = ip;
-            SubMask = Utils.GetIPv4Mask(ip);
+            ServerIp = IPAddress.Parse(ip);
+            SubnetMask = IPAddress.Parse(ip).GetSubnetMask() ;
             LeaseTime = 20000;
             ServerName = "Little DHCP Server";
             RouterIp = "0.0.0.0";
             DomainIp = "0.0.0.0";
             LogServerIp = "0.0.0.0";
         }
-        public string SubMask;
+        public IPAddress ServerIp;
+        public IPAddress SubnetMask;
         public uint LeaseTime;
         public string ServerName;
-        public string ServerIp;
         public string RouterIp;
         public string DomainIp;
         public string LogServerIp;

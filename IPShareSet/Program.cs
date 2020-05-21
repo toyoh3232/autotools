@@ -29,14 +29,13 @@ namespace IPShareSet
             }
         }
 
-        private static void ShowMessage(DhcpData.DhcpClientInformation data)
+        private static void ShowMessage(DhcpData.ClientInfomation data)
         {
             Console.WriteLine($@"MacAddress:{data.MacAddress ?? string.Empty}");
-            Console.WriteLine($@"RequestAddress:{data.RequestAddress ?? string.Empty}");
-            Console.WriteLine($@"ServerAddress:{data.ServerAddress ?? string.Empty}");
-            Console.WriteLine($@"TransactionID:{data.TransactionId}");
-            Console.WriteLine($@"ClientAddress:{data.ClientAddress ?? string.Empty}");
-            Console.WriteLine($@"ClientIdentifier:{data.ClientIdentifier ?? string.Empty}");
+            Console.WriteLine($@"RequestAddress:{data.RequestAddress?.ToString()}");
+            Console.WriteLine($@"ServerAddress:{data.ServerAddress?.ToString()}");
+            Console.WriteLine($@"TransactionID:{data.TransactionID}");
+            Console.WriteLine($@"ClientAddress:{data.ClientAddress?.ToString()}");
         }
     }
 }

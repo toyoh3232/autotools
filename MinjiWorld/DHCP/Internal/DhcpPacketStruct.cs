@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MinjiWorld.DHCP.Extension;
+using System;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -36,65 +37,65 @@ namespace MinjiWorld.DHCP.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine($@"{GetType().FullName}:{e.Message}");
+                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
             }
 
         }
 
-        public void ApplySettings(DhcpMessageType msgType, DhcpServerSettings server, string clientIp)
+        public void ApplySettings(DhcpMessgeType msgType, DhcpServerSettings server, IPAddress clientIp)
         {
            
             switch (msgType)
             {
-                case DhcpMessageType.DHCP_OFFER:
+                case DhcpMessgeType.DHCP_OFFER:
                     op = (byte)BootMessageType.BootReply;
                     // htype
                     // hlen
                     hops = 0;
                     // xid from client DHCPDISCOVER message
-                    Utils.FillZero(secs);
-                    Utils.FillZero(ciaddr);
-                    yiaddr = IPAddress.Parse(clientIp).GetAddressBytes();
+                    secs.FillZero();
+                    ciaddr.FillZero();
+                    yiaddr = IPAddress.Parse(clientIp.ToString()).GetAddressBytes();
                     siaddr = IPAddress.Parse("0.0.0.0").GetAddressBytes();
                     // flags from client DHCPDISCOVER message
                     // giaddr from client DHCPDISCOVER message
                     // chaddr from client DHCPDISCOVER message
-                    Utils.FillZero(sname);
-                    Utils.FillZero(file);
+                    sname.FillZero();
+                    file.FillZero();
                     options.ApplyOptionSettings(msgType, server);
                     break;
-                case DhcpMessageType.DHCP_ACK:
+                case DhcpMessgeType.DHCP_ACK:
                     op = (byte)BootMessageType.BootReply;
                     // htype
                     // hlen 
                     hops = 0;
                     // xid from client DHCPREQUEST message
-                    Utils.FillZero(secs);
-                    Utils.FillZero(ciaddr);
-                    yiaddr = IPAddress.Parse(clientIp).GetAddressBytes();
+                    secs.FillZero();
+                    ciaddr.FillZero();
+                    yiaddr = IPAddress.Parse(clientIp.ToString()).GetAddressBytes();
                     siaddr = IPAddress.Parse("0.0.0.0").GetAddressBytes();
                     // flags from client DHCPREQUEST message
                     // giaddr from client DHCPREQUEST message
                     // chaddr from client DHCPREQUEST message
-                    Utils.FillZero(sname);
-                    Utils.FillZero(file);
+                    sname.FillZero();
+                    file.FillZero();
                     options.ApplyOptionSettings(msgType, server);
                     break;
-                case DhcpMessageType.DHCP_NAK:
+                case DhcpMessgeType.DHCP_NAK:
                     op = (byte)BootMessageType.BootReply;
                     // htype
                     // hlen 
                     hops = 0;
                     // xid from client DHCPREQUEST message
-                    Utils.FillZero(secs);
+                    secs.FillZero();
                     // ciaddr from client DHCPREQUEST message
-                    Utils.FillZero(yiaddr);
-                    Utils.FillZero(siaddr);
+                    yiaddr.FillZero();
+                    siaddr.FillZero();
                     // flags from client DHCPREQUEST message
                     // giaddr from client DHCPREQUEST message
                     // chaddr from client DHCPREQUEST message
-                    Utils.FillZero(sname);
-                    Utils.FillZero(file);
+                    sname.FillZero();
+                    file.FillZero();
                     options.ApplyOptionSettings(msgType, server);
                     break;
             }

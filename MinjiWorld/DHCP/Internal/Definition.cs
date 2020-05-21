@@ -7,9 +7,13 @@
         BootRequest = 1,
         BootReply = 2
     }
-
+    public enum BroadCastType
+    {
+        BroadCast = 1,
+        UniCast = 0
+    }
     //msgtype indentifier
-    public enum DhcpMessageType
+    public enum DhcpMessgeType
     {
         DHCP_DISCOVER = 1,
         DHCP_OFFER = 2,

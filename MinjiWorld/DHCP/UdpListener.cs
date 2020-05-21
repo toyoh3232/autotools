@@ -51,18 +51,19 @@ namespace MinjiWorld.DHCP
 
         // function to send data as a byte stream to a remote socket
         // modified to work as a callback rather than a block
-        public void SendData(byte[] Data)
+        public void SendData(byte[] Data, string dest ="255.255.255.255")
         {
 
             try
             {
-                s.u.BeginSend(Data, Data.Length, "255.255.255.255", portToSendTo, new AsyncCallback(OnDataSent), s);
+                s.u.BeginSend(Data, Data.Length, dest, portToSendTo, new AsyncCallback(OnDataSent), s);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"{GetType().FullName}:{e.Message}");
             }
         }
+
 
         // This is the call back function, which will be invoked when a client is connected
         public void OnDataSent(IAsyncResult ar)
