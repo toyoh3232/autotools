@@ -35,12 +35,10 @@ namespace MinjiWorld.DHCP
 
         public DhcpMessgeType GetCurrentMessageType()
         {
-            var data = packet.options.GetOptionData(DhcpOptionType.DHCPMessageType);
+            
             //　TODO
             if (IsBuiltTobeSent) throw new Exception();
-            // TODO
-            if (data == null) throw new Exception();
-            return (DhcpMessgeType)data[0];
+            return packet.options.GetDhcpMessageType();
         }
 
         internal byte[] BuildSendData(DhcpMessgeType msgType, IPAddress clientIp)

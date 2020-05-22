@@ -72,7 +72,10 @@ namespace MinjiWorld.DHCP.Internal
                     // xid from client DHCPREQUEST message
                     secs.FillZero();
                     ciaddr.FillZero();
-                    yiaddr = IPAddress.Parse(clientIp.ToString()).GetAddressBytes();
+                    if (options.GetDhcpMessageType() == DhcpMessgeType.DHCP_INFORM)
+                        yiaddr.FillZero();
+                    else
+                        yiaddr = IPAddress.Parse(clientIp.ToString()).GetAddressBytes();
                     siaddr = IPAddress.Parse("0.0.0.0").GetAddressBytes();
                     // flags from client DHCPREQUEST message
                     // giaddr from client DHCPREQUEST message

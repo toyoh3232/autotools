@@ -21,7 +21,9 @@ namespace MinjiWorld.DHCP
         public event DiscoverEventHandler Discovered;
         public event RequestEventHandler Requested;
 
-        private UdpListener udpListener; // the udp snd/rcv class
+        // only broadcast, unicast w/out ARP is not supported
+        // change to raw socket in future version
+        private UdpListener udpListener; 
 
         public DhcpServerSettings Settings;
 
@@ -118,26 +120,28 @@ namespace MinjiWorld.DHCP
                 switch (msgType)
                 {
                     case DhcpMessgeType.DHCP_DISCOVER:
-                        Console.WriteLine("received DHCPDISCOVER");
+                        Console.WriteLine($"{Utils.GetCurrentTime()} DHCPDISCOVER received.");
                         Discovered?.Invoke(client);
-                        var newIp = ownedIpAddressPool.Find(x => x.IsAllocated == false);
+                        var newIp = ownedIpAddressPool.Find(x =>(x.AuthorizedClientMac == client.MacAddress) || (x.IsAllocated == false && x.AuthorizedClientMac == null));
                         if (newIp.Ip == null)
                         {
-                            Console.WriteLine("no ip is avalaible to allocate");
+                            Console.WriteLine($"{Utils.GetCurrentTime()} No ip is avalaible to allocate.");
                             return;
                         }
-                        Console.WriteLine("send DHCPOFFER");
+                        Console.WriteLine($"{Utils.GetCurrentTime()}:DHCPOFFER sent.");
+                        // MUST be unicast over raw socket (unimplemented)
+                        // broadcast used
                         SendDhcpMessage(DhcpMessgeType.DHCP_OFFER, dhcpData, newIp);
                         break;
 
                     case DhcpMessgeType.DHCP_REQUEST:
-                        Console.WriteLine("received DHCPREQUEST");
+                        Console.WriteLine($"{Utils.GetCurrentTime()} DHCPREQUEST received.");
                         Requested?.Invoke(client);
                         switch (GetDhcpRequestType(client, endPoint))
                         {
                             // respond to client which has responded to DHCPOFFER message from this server 
                             case DhcpRequestType.Selecting:
-                                Console.WriteLine("response to DHCPREQUEST generated during SELECTING state");
+                                Console.WriteLine($"{Utils.GetCurrentTime()} Response to DHCPREQUEST generated during SELECTING state.");
                                 if (Settings.ServerIp.Equals(client.ServerAddress))
                                 {
                                     var allocatedIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.RequestAddress));
@@ -145,82 +149,87 @@ namespace MinjiWorld.DHCP
                                     {
                                         allocatedIp.IsAllocated = true;
                                         allocatedIp.AuthorizedClientMac = client.MacAddress;
-                                        Console.WriteLine("send DHCPACK");
+                                        Console.WriteLine($"{Utils.GetCurrentTime()} DHCPACK sent.");
+                                        // broadcast
                                         SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, allocatedIp);
                                     }
                                 }
                                 break;
                             case DhcpRequestType.InitReboot:
-                                Console.WriteLine("response to DHCPREQUEST generated during INIT-REBOOT state");
+                                Console.WriteLine($"{Utils.GetCurrentTime()} Response to DHCPREQUEST generated during INIT-REBOOT state.");
                                 if (!client.RelayAgentAddress.Equals(IPAddress.Any))
-                                    Console.WriteLine("relay agent is not supported in this version");
+                                    Console.WriteLine($"{Utils.GetCurrentTime()} Relay agent is not supported in this version.");
                                 var rebootIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.RequestAddress));
                                 if (rebootIp.Ip != null && rebootIp.AuthorizedClientMac == client.MacAddress)
                                 {
-                                    Console.WriteLine("send DHCPACK");
+                                    // broadcast
                                     SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, rebootIp);
+                                    Console.WriteLine($"{Utils.GetCurrentTime()} DHCPACK sent.");
                                 }
                                 break;
                             case DhcpRequestType.ReNewing:
-                                Console.WriteLine("response to DHCPREQUEST generated during RENEWING state");
+                                Console.WriteLine($"{Utils.GetCurrentTime()} Response to DHCPREQUEST generated during RENEWING state.");
                                 var reNewIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.ClientAddress));
                                 if (reNewIp.Ip != null && reNewIp.AuthorizedClientMac == client.MacAddress)
                                 {
-                                    Console.WriteLine("send DHCPACK");
-                                    SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, reNewIp);
+                                    // unicast
+                                    SendDhcpMessage(client.ClientAddress.ToString(), DhcpMessgeType.DHCP_ACK, dhcpData, reNewIp);
+                                    Console.WriteLine($"{Utils.GetCurrentTime()} DHCPACK sent.");
                                 }
                                 break;
                             case DhcpRequestType.ReBinding:
-                                Console.WriteLine("response to DHCPREQUEST generated during REBINDING state");
+                                Console.WriteLine($"{Utils.GetCurrentTime()} Response to DHCPREQUEST generated during REBINDING state.");
+                                var reBindIp = ownedIpAddressPool.Find(x => x.IsAllocated == false);
+                                if (reBindIp.Ip != null)
+                                {
+                                    reBindIp.IsAllocated = true;
+                                    reBindIp.AuthorizedClientMac = client.MacAddress;
+                                    // broadcast
+                                    SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, reBindIp);
+                                    Console.WriteLine($"{Utils.GetCurrentTime()} DHCPACK sent.");
+                                }
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
                         break;
                     case DhcpMessgeType.DHCP_DECLINE:
+                        Console.WriteLine($"{Utils.GetCurrentTime()} DHCPDECLINE received.");
+                        var declinedIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.ClientAddress));
+                        if (declinedIp.Ip != null) ownedIpAddressPool.Remove(declinedIp);
                         break;
                     case DhcpMessgeType.DHCP_RELEASE:
-                        Console.WriteLine("received DHCPRELESE");
-                        var oldIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.ClientAddress));
-                        if (oldIp.Ip != null) oldIp.IsAllocated = false;
+                        Console.WriteLine($"{Utils.GetCurrentTime()} DHCPRELESE received.");
+                        var releasedIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.ClientAddress));
+                        if (releasedIp.Ip != null) releasedIp.IsAllocated = false;
                         break;
                     case DhcpMessgeType.DHCP_INFORM:
+                        Console.WriteLine($"{Utils.GetCurrentTime()} DHCPINFORM received.");
+                        // unicast
+                        SendDhcpMessage(client.ClientAddress.ToString(), DhcpMessgeType.DHCP_ACK, dhcpData, null);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("UdpListener_Received:" + ex.Message);
+                Console.WriteLine($@"{GetType().FullName}:{MethodBase.GetCurrentMethod()}{e.Message}");
             }
         }
 
-        //mac announced itself, established IP etc....
-        //send the offer to the mac
-        private void SendDhcpMessage(DhcpMessgeType msgType, DhcpData data, OwnedIpAddress client = null)
+        // override method for broadcast 
+        private void SendDhcpMessage(DhcpMessgeType msgType, DhcpData data, OwnedIpAddress newClient)
         {
-            BroadCastType castType;
-            string dest = "255.255.255.255";
-            var clientInfo = data.GetClientInfo();
-            if (clientInfo.RelayAgentAddress.Equals(IPAddress.Any) && !clientInfo.ClientAddress.Equals(IPAddress.Any))
-            {
-                castType = BroadCastType.UniCast;
-                dest = clientInfo.ToString();
-            }
-            if (clientInfo.RelayAgentAddress.Equals(IPAddress.Any) && clientInfo.ClientAddress.Equals(IPAddress.Any) && clientInfo.CastType == BroadCastType.BroadCast)
-            {
-                castType = BroadCastType.BroadCast;
-            }
-            if (clientInfo.RelayAgentAddress.Equals(IPAddress.Any) && clientInfo.ClientAddress.Equals(IPAddress.Any) && clientInfo.CastType == BroadCastType.UniCast)
-            {
-                // TODO
-                castType = BroadCastType.UniCast;
-            }
+            SendDhcpMessage(IPAddress.Broadcast.ToString(), msgType, data, newClient);
+        }
+
+        private void SendDhcpMessage(string dest, DhcpMessgeType msgType, DhcpData data, OwnedIpAddress newClient)
+        {
             try
             {
-                var dataToSend = data.BuildSendData(msgType, client?.Ip);
-                udpListener.SendData(dataToSend);
+                var dataToSend = data.BuildSendData(msgType, newClient.Ip);
+                udpListener.SendData(dest, dataToSend);
             }
             catch (Exception e)
             {

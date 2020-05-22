@@ -9,11 +9,10 @@ namespace MinjiWorld.DHCP
 {
     public static class Utils
     {
-
-
-
-      
-
+        public static string GetCurrentTime()
+        {
+            return DateTime.Now.ToString("MM/dd HH:mm:ss");
+        }
 
         public static void AddtoArray(byte fromValue, ref byte[] targetValue)
         {

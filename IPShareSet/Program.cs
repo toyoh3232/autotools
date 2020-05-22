@@ -31,11 +31,10 @@ namespace IPShareSet
 
         private static void ShowMessage(DhcpData.ClientInfomation data)
         {
-            Console.WriteLine($@"MacAddress:{data.MacAddress ?? string.Empty}");
-            Console.WriteLine($@"RequestAddress:{data.RequestAddress?.ToString()}");
-            Console.WriteLine($@"ServerAddress:{data.ServerAddress?.ToString()}");
-            Console.WriteLine($@"TransactionID:{data.TransactionID}");
-            Console.WriteLine($@"ClientAddress:{data.ClientAddress?.ToString()}");
+            Console.WriteLine($@"               MacAddress:{data.MacAddress ?? string.Empty}");
+            Console.WriteLine($@"               ServerAddress:{data.ServerAddress?.ToString()}");
+            Console.WriteLine($@"               TransactionID:{data.TransactionID}");
+            Console.WriteLine($@"               ClientAddress:{data.ClientAddress?.ToString()}");
         }
     }
 }

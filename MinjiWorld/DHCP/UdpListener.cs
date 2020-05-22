@@ -51,7 +51,7 @@ namespace MinjiWorld.DHCP
 
         // function to send data as a byte stream to a remote socket
         // modified to work as a callback rather than a block
-        public void SendData(byte[] Data, string dest ="255.255.255.255")
+        public void SendData(string dest, byte[] Data)
         {
 
             try

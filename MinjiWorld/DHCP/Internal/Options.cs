@@ -15,6 +15,11 @@ namespace MinjiWorld.DHCP.Internal
             this.options = data;
         }
 
+        public DhcpMessgeType GetDhcpMessageType()
+        {
+            return (DhcpMessgeType) GetOptionData(DhcpOptionType.DHCPMessageType)[0];
+        }
+
         internal byte[] GetOptionData(DhcpOptionType optionType)
         {
             var code = (byte)optionType;
@@ -52,7 +57,7 @@ namespace MinjiWorld.DHCP.Internal
         {
             try
             {
-                var oldMsgType =(DhcpMessgeType)GetOptionData(DhcpOptionType.DHCPMessageType)[0];
+                var oldMsgType = GetDhcpMessageType();
 
                 //erase the options array, and set the message type to ack
                 byte[] newOptions = null;
