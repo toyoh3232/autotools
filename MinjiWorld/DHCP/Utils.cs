@@ -9,17 +9,12 @@ namespace MinjiWorld.DHCP
 {
     public static class Utils
     {
-        public static string GetCurrentTime()
+        public static void AddToArray(byte fromValue, ref byte[] targetValue)
         {
-            return DateTime.Now.ToString("MM/dd HH:mm:ss");
+            AddToArray(new byte[] { fromValue }, ref targetValue);
         }
 
-        public static void AddtoArray(byte fromValue, ref byte[] targetValue)
-        {
-            AddtoArray(new byte[] { fromValue }, ref targetValue);
-        }
-
-        public static void AddtoArray(byte[] fromValue, ref byte[] targetArray)
+        public static void AddToArray(byte[] fromValue, ref byte[] targetArray)
         {
             try
             {

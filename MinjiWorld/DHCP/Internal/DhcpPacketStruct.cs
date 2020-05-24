@@ -107,22 +107,22 @@ namespace MinjiWorld.DHCP.Internal
         public byte[] ToArray()
         {
             var mArray = new byte[0];
-            Utils.AddtoArray(op, ref mArray);
-            Utils.AddtoArray(htype, ref mArray);
-            Utils.AddtoArray(hlen, ref mArray);
-            Utils.AddtoArray(hops, ref mArray);
-            Utils.AddtoArray(xid, ref mArray);
-            Utils.AddtoArray(secs, ref mArray);
-            Utils.AddtoArray(flags, ref mArray);
-            Utils.AddtoArray(ciaddr, ref mArray);
-            Utils.AddtoArray(yiaddr, ref mArray);
-            Utils.AddtoArray(siaddr, ref mArray);
-            Utils.AddtoArray(giaddr, ref mArray);
-            Utils.AddtoArray(chaddr, ref mArray);
-            Utils.AddtoArray(sname, ref mArray);
-            Utils.AddtoArray(file, ref mArray);
-            Utils.AddtoArray(cookie, ref mArray);
-            Utils.AddtoArray(options.options, ref mArray);
+            Utils.AddToArray(op, ref mArray);
+            Utils.AddToArray(htype, ref mArray);
+            Utils.AddToArray(hlen, ref mArray);
+            Utils.AddToArray(hops, ref mArray);
+            Utils.AddToArray(xid, ref mArray);
+            Utils.AddToArray(secs, ref mArray);
+            Utils.AddToArray(flags, ref mArray);
+            Utils.AddToArray(ciaddr, ref mArray);
+            Utils.AddToArray(yiaddr, ref mArray);
+            Utils.AddToArray(siaddr, ref mArray);
+            Utils.AddToArray(giaddr, ref mArray);
+            Utils.AddToArray(chaddr, ref mArray);
+            Utils.AddToArray(sname, ref mArray);
+            Utils.AddToArray(file, ref mArray);
+            Utils.AddToArray(cookie, ref mArray);
+            Utils.AddToArray(options.options, ref mArray);
             return mArray;
         }
 

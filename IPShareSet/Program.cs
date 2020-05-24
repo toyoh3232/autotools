@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
+using MinjiWorld;
 using MinjiWorld.DHCP;
 
 namespace IPShareSet
@@ -15,10 +16,10 @@ namespace IPShareSet
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var serverSettings = new DhcpServerSettings(args[0]);
-            server = new DhcpServer(serverSettings);
+            server = new DhcpServer(serverSettings, new Logger(Console.Out));
             server.Discovered += ShowMessage;
             server.Requested += ShowMessage;
             thread = new Thread(server.Start);

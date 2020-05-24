@@ -48,6 +48,7 @@
     <Compile Include="DHCP\UdpListener.cs" />
     <Compile Include="DHCP\Utils.cs" />
     <Compile Include="DHCP\Extension\Extensions.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
