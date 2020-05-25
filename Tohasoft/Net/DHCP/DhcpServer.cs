@@ -7,28 +7,31 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using MinjiWorld.DHCP.Extension;
-using MinjiWorld.DHCP.Internal;
+using Tohasoft.Net.DHCP.Internal;
+using Tohasoft.Net.Extension;
+using Tohasoft.Utils;
 
-namespace MinjiWorld.DHCP
+namespace Tohasoft.Net.DHCP
 {
-    public class DhcpServer
+    public class DhcpServer : ILoggerEventSource
     {
-        public delegate void DiscoverEventHandler(DhcpData.ClientInfomation data);
+        public delegate void DiscoverEventHandler(ClientInfomation data);
         public delegate void ReleasedEventHandler();
-        public delegate void RequestEventHandler(DhcpData.ClientInfomation data);
+        public delegate void RequestEventHandler(ClientInfomation data);
         public delegate void AssignedEventHandler(string ipAdd);
 
         public event DiscoverEventHandler Discovered;
         public event RequestEventHandler Requested;
+
+        public event EventHandler<WarningMessageEventArgs> WarningRaised;
+        public event EventHandler<ErrorMessageEventArgs> ErrorRaised;
+        public event EventHandler<MessageEventArgs> MessageRaised;
 
         // only broadcast, unicast w/out ARP is not supported
         // change to raw socket in future version
         private UdpListener udpListener; 
 
         public DhcpServerSettings Settings;
-
-
 
         private class OwnedIpAddress
         {
@@ -47,7 +50,7 @@ namespace MinjiWorld.DHCP
             ReBinding
         }
 
-        private DhcpRequestType GetDhcpRequestType(DhcpData.ClientInfomation clientInfo, IPEndPoint endPoint)
+        private DhcpRequestType GetDhcpRequestType(ClientInfomation clientInfo, IPEndPoint endPoint)
         {
             DhcpRequestType res;
             if (clientInfo.ServerAddress != null && clientInfo.RequestAddress != null && clientInfo.ClientAddress.Equals(IPAddress.Any))
@@ -74,12 +77,12 @@ namespace MinjiWorld.DHCP
 
         private readonly List<OwnedIpAddress> ownedIpAddressPool;
 
-        private Logger logger;
-
-        public DhcpServer(DhcpServerSettings setting, Logger logger = null)
+        public DhcpServer(DhcpServerSettings setting)
         {
-            this.logger = logger;
+            if (!setting.IsValid()) throw new ArgumentNullException();
+                
             Settings = setting;
+
             ownedIpAddressPool = Settings.ServerIp.GetAllSubnet(Settings.SubnetMask)
                 .Select(ip => new OwnedIpAddress { Ip = ip, IsAllocated = false}).ToList();
         }
@@ -102,11 +105,12 @@ namespace MinjiWorld.DHCP
             }
             catch (Exception e)
             {
-                Console.WriteLine("Start:" + e.Message);
+                ErrorRaised?.Invoke(this, new ErrorMessageEventArgs { Message = e.Message });
+                throw e;
             }
         }
 
-        public void End()
+        public void Terminate()
         {
             udpListener.Received -= UdpListener_Received;
             udpListener.StopListener();
@@ -125,28 +129,28 @@ namespace MinjiWorld.DHCP
                 switch (msgType)
                 {
                     case DhcpMessgeType.DHCP_DISCOVER:
-                        logger?.Log("DHCPDISCOVER received.");
+                        MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPDISCOVER received." });
                         Discovered?.Invoke(client);
                         var newIp = ownedIpAddressPool.Find(x =>(x.AuthorizedClientMac == client.MacAddress) || (x.IsAllocated == false && x.AuthorizedClientMac == null));
                         if (newIp.Ip == null)
                         {
-                            logger?.Log("No ip is available to allocate.");
+                            MessageRaised?.Invoke(this, new MessageEventArgs { Message = "No ip is available to allocate." });
                             return;
-                        } 
-                        logger?.Log("DHCPOFFER sent.");
+                        }
+                        MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPOFFER sent." });
                         // MUST be unicast over raw socket (unimplemented)
                         // broadcast used
                         SendDhcpMessage(DhcpMessgeType.DHCP_OFFER, dhcpData, newIp);
                         break;
 
                     case DhcpMessgeType.DHCP_REQUEST:
-                        logger?.Log("DHCPREQUEST received.");
+                        MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPREQUEST received." });
                         Requested?.Invoke(client);
                         switch (GetDhcpRequestType(client, endPoint))
                         {
                             // respond to client which has responded to DHCPOFFER message from this server 
                             case DhcpRequestType.Selecting:
-                                logger?.Log("Response to DHCPREQUEST generated during SELECTING state.");
+                                MessageRaised?.Invoke(this, new MessageEventArgs { Message = "Response to DHCPREQUEST generated during SELECTING state." });
                                 if (Settings.ServerIp.Equals(client.ServerAddress))
                                 {
                                     var allocatedIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.RequestAddress));
@@ -154,36 +158,36 @@ namespace MinjiWorld.DHCP
                                     {
                                         allocatedIp.IsAllocated = true;
                                         allocatedIp.AuthorizedClientMac = client.MacAddress;
-                                        logger?.Log("DHCPACK sent.");
+                                        MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPACK sent." });
                                         // broadcast
                                         SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, allocatedIp);
                                     }
                                 }
                                 break;
                             case DhcpRequestType.InitReboot:
-                                logger?.Log("Response to DHCPREQUEST generated during INIT-REBOOT state.");
+                                MessageRaised?.Invoke(this, new MessageEventArgs { Message = "Response to DHCPREQUEST generated during INIT-REBOOT state." });
                                 if (!client.RelayAgentAddress.Equals(IPAddress.Any))
-                                    logger?.Log("Relay agent is not supported in this version.");
+                                    MessageRaised?.Invoke(this, new MessageEventArgs { Message = "Relay agent is not supported in this version." });
                                 var rebootIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.RequestAddress));
                                 if (rebootIp.Ip != null && rebootIp.AuthorizedClientMac == client.MacAddress)
                                 {
                                     // broadcast
                                     SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, rebootIp);
-                                    logger?.Log("DHCPACK sent.");
+                                    MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPACK sent." });
                                 }
                                 break;
                             case DhcpRequestType.ReNewing:
-                                logger.Log("Response to DHCPREQUEST generated during RENEWING state.");
+                                MessageRaised?.Invoke(this, new MessageEventArgs { Message = "Response to DHCPREQUEST generated during RENEWING state." });
                                 var reNewIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.ClientAddress));
                                 if (reNewIp.Ip != null && reNewIp.AuthorizedClientMac == client.MacAddress)
                                 {
                                     // unicast
                                     SendDhcpMessage(client.ClientAddress.ToString(), DhcpMessgeType.DHCP_ACK, dhcpData, reNewIp);
-                                    logger?.Log("DHCPACK sent.");
+                                    MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPACK sent." });
                                 }
                                 break;
                             case DhcpRequestType.ReBinding:
-                                logger?.Log("Response to DHCPREQUEST generated during REBINDING state.");
+                                MessageRaised?.Invoke(this, new MessageEventArgs { Message = "Response to DHCPREQUEST generated during REBINDING state." });
                                 var reBindIp = ownedIpAddressPool.Find(x => x.IsAllocated == false);
                                 if (reBindIp.Ip != null)
                                 {
@@ -191,7 +195,7 @@ namespace MinjiWorld.DHCP
                                     reBindIp.AuthorizedClientMac = client.MacAddress;
                                     // broadcast
                                     SendDhcpMessage(DhcpMessgeType.DHCP_ACK, dhcpData, reBindIp);
-                                    logger?.Log("DHCPACK sent.");
+                                    MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPACK sent." });
                                 }
                                 break;
                             default:
@@ -199,17 +203,17 @@ namespace MinjiWorld.DHCP
                         }
                         break;
                     case DhcpMessgeType.DHCP_DECLINE:
-                        logger?.Log("DHCPDECLINE received.");
+                        MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPDECLINE received." });
                         var declinedIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.ClientAddress));
                         if (declinedIp.Ip != null) ownedIpAddressPool.Remove(declinedIp);
                         break;
                     case DhcpMessgeType.DHCP_RELEASE:
-                        logger?.Log("DHCPRELESE received.");
+                        MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPRELESE received." });
                         var releasedIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.ClientAddress));
                         if (releasedIp.Ip != null) releasedIp.IsAllocated = false;
                         break;
                     case DhcpMessgeType.DHCP_INFORM:
-                        logger?.Log("DHCPINFORM received.");
+                        MessageRaised?.Invoke(this, new MessageEventArgs { Message = "DHCPINFORM received." });
                         // unicast
                         SendDhcpMessage(client.ClientAddress.ToString(), DhcpMessgeType.DHCP_ACK, dhcpData, null);
                         break;
@@ -219,7 +223,9 @@ namespace MinjiWorld.DHCP
             }
             catch (Exception e)
             {
-                Console.WriteLine($@"{GetType().FullName}:{MethodBase.GetCurrentMethod()}{e.Message}");
+                ErrorRaised?.Invoke(this, new ErrorMessageEventArgs { Message = e.Message });
+                Terminate();
+                throw e;
             }
         }
 
@@ -238,8 +244,7 @@ namespace MinjiWorld.DHCP
             }
             catch (Exception e)
             {
-                Console.WriteLine($@"{GetType().FullName}:{MethodBase.GetCurrentMethod()}{e.Message}");
-                throw e;
+                ErrorRaised?.Invoke(this, new ErrorMessageEventArgs { Message = e.Message });
             }
         }
     }

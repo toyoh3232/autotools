@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPShareSet", "IPShareSet\IPShareSet.csproj", "{89BC64B2-AD8F-4288-B927-299E476F4A3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinjiWorld", "MinjiWorld\MinjiWorld.csproj", "{0C83D570-A8A4-45B6-9816-9409B84574A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tohasoft", "Tohasoft\Tohasoft.csproj", "{0C83D570-A8A4-45B6-9816-9409B84574A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

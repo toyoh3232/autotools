@@ -3,11 +3,10 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 
-namespace MinjiWorld.DHCP.Internal
+namespace Tohasoft.Net.DHCP.Internal
 {
     internal class Options
     {
-
         internal byte[] options;
 
         public Options(byte[] data)
@@ -47,7 +46,7 @@ namespace MinjiWorld.DHCP.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{this.GetType().FullName}.GetOptionData:{e.Message}");
+                throw new Exception($"{GetType().FullName}.GetOptionData:{e.Message}");
             }
 
             return null;
@@ -100,21 +99,19 @@ namespace MinjiWorld.DHCP.Internal
                         case DhcpOptionType.SubnetMask:
                             t1 = server.SubnetMask.GetAddressBytes();
                             break;
-                        case DhcpOptionType.Router:
-                            t1 = IPAddress.Parse(server.RouterIp).GetAddressBytes();
+                        case DhcpOptionType.Router when server.RouterIp != null:
+                            t1 = server.RouterIp.GetAddressBytes();
                             break;
-                        case DhcpOptionType.DomainNameServer:
-                            t1 = IPAddress.Parse(server.DomainIp).GetAddressBytes();
+                        case DhcpOptionType.DomainNameServer when server.DomainIp != null:
+                            t1 = server.DomainIp.GetAddressBytes();
                             break;
-                        case DhcpOptionType.DomainName:
+                        case DhcpOptionType.DomainName when server.ServerName != null:
                             t1 = Encoding.ASCII.GetBytes(server.ServerName);
                             break;
                         case DhcpOptionType.LogServer:
-                            t1 = Encoding.ASCII.GetBytes(server.LogServerIp);
                             break;
                         case DhcpOptionType.NetBIOSoverTCPIPNameServer:
                             break;
-
                         case DhcpOptionType.Pad:
                             break;
                         case DhcpOptionType.TimeOffset:
@@ -265,7 +262,7 @@ namespace MinjiWorld.DHCP.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine($@"{GetType().FullName}.{MethodBase.GetCurrentMethod()}:{e.Message}");
+                throw new Exception($@"{GetType().FullName}.{MethodBase.GetCurrentMethod()}:{e.Message}");
             }
         }
 
@@ -288,7 +285,7 @@ namespace MinjiWorld.DHCP.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{this.GetType().FullName}.CreateOptionElement:{e.Message}");
+               throw new Exception($"{GetType().FullName}.CreateOptionElement:{e.Message}");
             }
         }
     }

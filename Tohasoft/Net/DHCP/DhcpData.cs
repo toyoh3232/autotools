@@ -1,25 +1,13 @@
-﻿using MinjiWorld.DHCP.Extension;
-using MinjiWorld.DHCP.Internal;
+﻿using Tohasoft.Net.Extension;
 using System;
 using System.Net;
 using System.Text;
+using Tohasoft.Net.DHCP.Internal;
 
-namespace MinjiWorld.DHCP
+namespace Tohasoft.Net.DHCP
 {
-    public class DhcpData
+    class DhcpData
     {
-        public struct ClientInfomation
-        {
-            public IPAddress RequestAddress;
-            public IPAddress ServerAddress;
-            public IPAddress ClientAddress;
-            public IPAddress YourAddress;
-            public IPAddress RelayAgentAddress;
-            public string ClientIdentifier;
-            public string MacAddress;
-            public uint TransactionID;
-            public BroadCastType CastType;
-        }
 
         public bool IsBuiltTobeSent { get; private set; }
 
@@ -49,8 +37,7 @@ namespace MinjiWorld.DHCP
                 IsBuiltTobeSent = true;
                 return packet.ToArray();
             }
-            // TODO
-            throw new Exception();
+            throw new Exception("Dhcp packet data is already built.");
 
         }
         

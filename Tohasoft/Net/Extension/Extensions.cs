@@ -6,7 +6,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 
-namespace MinjiWorld.DHCP.Extension
+namespace Tohasoft.Net.Extension
 {
     public static class Extensions
     {
@@ -23,10 +23,19 @@ namespace MinjiWorld.DHCP.Extension
                 var ip = new IPAddress((netBytesInt + start).ToBytes());
                 if (!ip.Equals(hostIP)) IPs.Add(ip);
             }
-
             return IPs.ToArray();
         }
 
+        public static IPAddress Increment(this IPAddress hostIP, IPAddress netmask)
+        {
+            var hostInt = hostIP.ToLong();
+            var netmaskInt = netmask.ToLong();
+            var wildCard = ~(uint)netmaskInt;
+            var netBytesInt = hostInt & netmaskInt;
+            if (hostInt == netBytesInt + wildCard - 1)
+                return null;
+            return new IPAddress(hostInt + 1);
+        }
 
         public static long ToLong(this IPAddress address)
         {

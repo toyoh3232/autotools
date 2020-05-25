@@ -1,10 +1,10 @@
-﻿using MinjiWorld.DHCP.Extension;
+﻿using Tohasoft.Net.Extension;
 using System;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 
-namespace MinjiWorld.DHCP.Internal
+namespace Tohasoft.Net.DHCP.Internal
 {
     internal struct DhcpPacketStruct
     {
@@ -37,7 +37,7 @@ namespace MinjiWorld.DHCP.Internal
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{this.GetType().FullName}:{e.Message}");
+                throw new Exception($"{this.GetType().FullName}:{e.Message}");
             }
 
         }

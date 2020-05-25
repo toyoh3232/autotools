@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
-using MinjiWorld;
-using MinjiWorld.DHCP;
+using Tohasoft.Net.DHCP;
+using Tohasoft.Utils;
 
 namespace IPShareSet
 {
@@ -18,19 +19,22 @@ namespace IPShareSet
         /// </summary>
         public static void Main(string[] args)
         {
-            var serverSettings = new DhcpServerSettings(args[0]);
-            server = new DhcpServer(serverSettings, new Logger(Console.Out));
+            var serverSettings = new DhcpServerSettings
+            {
+                ServerIp = IPAddress.Parse(args[0])
+            };
+            var logger = new ConsoleLogger();
+
+            var server = new DhcpServer(serverSettings);
+            
+            logger.AddSource(server);
+
             server.Discovered += ShowMessage;
             server.Requested += ShowMessage;
             thread = new Thread(server.Start);
-            thread.Start();
-            while (true)
-            {
-
-            }
         }
 
-        private static void ShowMessage(DhcpData.ClientInfomation data)
+        private static void ShowMessage(ClientInfomation data)
         {
             Console.WriteLine($@"               MacAddress:{data.MacAddress ?? string.Empty}");
             Console.WriteLine($@"               ServerAddress:{data.ServerAddress?.ToString()}");

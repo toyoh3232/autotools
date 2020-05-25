@@ -5,9 +5,9 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 
-namespace MinjiWorld.DHCP
+namespace Tohasoft.Net.DHCP
 {
-    public static class Utils
+    static class Utils
     {
         public static void AddToArray(byte fromValue, ref byte[] targetValue)
         {
@@ -26,7 +26,7 @@ namespace MinjiWorld.DHCP
             }
             catch (Exception e)
             {
-                Console.WriteLine($@"{MethodBase.GetCurrentMethod()}.{e.Message}");
+                throw new Exception($@"{MethodBase.GetCurrentMethod()}.{e.Message}");
             }
         }
 

@@ -39,16 +39,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DHCP\Internal\Definition.cs" />
-    <Compile Include="DHCP\DhcpData.cs" />
-    <Compile Include="DHCP\Internal\DhcpPacketStruct.cs" />
-    <Compile Include="DHCP\DhcpServer.cs" />
-    <Compile Include="DHCP\DhcpSettings.cs" />
-    <Compile Include="DHCP\Internal\Options.cs" />
-    <Compile Include="DHCP\UdpListener.cs" />
-    <Compile Include="DHCP\Utils.cs" />
-    <Compile Include="DHCP\Extension\Extensions.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Net\DHCP\Clientinformation.cs" />
+    <Compile Include="Net\DHCP\Internal\Definition.cs" />
+    <Compile Include="Net\DHCP\DhcpData.cs" />
+    <Compile Include="Net\DHCP\Internal\DhcpPacketStruct.cs" />
+    <Compile Include="Net\DHCP\DhcpServer.cs" />
+    <Compile Include="Net\DHCP\DhcpServerSettings.cs" />
+    <Compile Include="Net\DHCP\Internal\Options.cs" />
+    <Compile Include="Net\DHCP\UdpListener.cs" />
+    <Compile Include="Net\DHCP\Utils.cs" />
+    <Compile Include="Net\Extension\Extensions.cs" />
+    <Compile Include="Utils\ConsoleLogger.cs" />
+    <Compile Include="Utils\ILoggerEventSource.cs" />
+    <Compile Include="Utils\Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

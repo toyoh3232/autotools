@@ -344,9 +344,9 @@
             // 
             this.gbStatusInfo.Controls.Add(this.tbStatusInfo);
             this.gbStatusInfo.Location = new System.Drawing.Point(230, 167);
-            this.gbStatusInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gbStatusInfo.Margin = new System.Windows.Forms.Padding(2);
             this.gbStatusInfo.Name = "gbStatusInfo";
-            this.gbStatusInfo.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gbStatusInfo.Padding = new System.Windows.Forms.Padding(2);
             this.gbStatusInfo.Size = new System.Drawing.Size(167, 69);
             this.gbStatusInfo.TabIndex = 18;
             this.gbStatusInfo.TabStop = false;
@@ -358,7 +358,7 @@
             this.tbStatusInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbStatusInfo.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.tbStatusInfo.Location = new System.Drawing.Point(4, 16);
-            this.tbStatusInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbStatusInfo.Margin = new System.Windows.Forms.Padding(2);
             this.tbStatusInfo.Multiline = true;
             this.tbStatusInfo.Name = "tbStatusInfo";
             this.tbStatusInfo.ReadOnly = true;

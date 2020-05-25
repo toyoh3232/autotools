@@ -1,18 +1,19 @@
-﻿namespace MinjiWorld.DHCP.Internal
+﻿namespace Tohasoft.Net.DHCP.Internal
 {
-
     // BOOTP message type
     public enum BootMessageType
     {
         BootRequest = 1,
         BootReply = 2
     }
+
     public enum BroadCastType
     {
         BroadCast = 1,
         UniCast = 0
     }
-    //msgtype indentifier
+
+    // DHCP message type in options
     public enum DhcpMessgeType
     {
         DHCP_DISCOVER = 1,
@@ -25,8 +26,7 @@
         DHCP_INFORM = 8
     }
 
-
-    //refer to the rfc2132.txt for vendor specific info
+    // refer to the rfc2132.txt for vendor specific info
     internal enum DhcpOptionType
     {
         Pad = 0,
@@ -106,6 +106,5 @@
         STDAServer = 76,
         End = 255
     }
-
 }
 

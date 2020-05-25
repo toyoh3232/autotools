@@ -196,12 +196,6 @@ namespace CpyFcDel.NET
             if (workingThread?.IsAlive ?? false)
             {
                 workingThread.Abort();
-                this.Enabled = false;
-                while (workingThread.ThreadState  != ThreadState.AbortRequested)
-                {
-                    continue;
-                }
-                this.Enabled = true;
                 UpdateControls(false);
             }
             else

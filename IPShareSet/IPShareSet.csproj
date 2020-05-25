@@ -67,11 +67,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\MinjiWorld\MinjiWorld.csproj">
+    <ProjectReference Include="..\Tohasoft\Tohasoft.csproj">
       <Project>{0c83d570-a8a4-45b6-9816-9409b84574a0}</Project>
-      <Name>MinjiWorld</Name>
+      <Name>Tohasoft</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
