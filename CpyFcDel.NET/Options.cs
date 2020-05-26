@@ -99,7 +99,7 @@ namespace CpyFcDel.NET
         public void Parse(string[] args)
         {
             if (args.Length == 1) return;
-            if (args.Length < 3) throw new Exception();
+            if (args.Length < 3) throw new ArgumentException();
             var sourceDir = args[1];
             var targetDir = args[2];
             bool isWriteCacheOn = true;
@@ -139,7 +139,7 @@ namespace CpyFcDel.NET
             }
             if (optionArgsList.Count > 0)
             {
-                throw new Exception();
+                throw new ArgumentException();
             }
             // add to the options if parse succeed
             this.IsAutoExit = isAutoExit;

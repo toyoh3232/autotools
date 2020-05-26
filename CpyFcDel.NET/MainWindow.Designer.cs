@@ -67,12 +67,16 @@
             // lbProgramName
             // 
             this.lbProgramName.AutoSize = true;
-            this.lbProgramName.Location = new System.Drawing.Point(162, 6);
+            this.lbProgramName.BackColor = System.Drawing.SystemColors.Control;
+            this.lbProgramName.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lbProgramName.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.lbProgramName.Location = new System.Drawing.Point(158, 9);
             this.lbProgramName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbProgramName.Name = "lbProgramName";
-            this.lbProgramName.Size = new System.Drawing.Size(111, 12);
+            this.lbProgramName.Size = new System.Drawing.Size(140, 13);
             this.lbProgramName.TabIndex = 1;
             this.lbProgramName.Text = "CpyFcDel.NET V0.01";
+            this.lbProgramName.Click += new System.EventHandler(this.lbProgramName_Click);
             // 
             // lbcSrcDir
             // 
@@ -90,7 +94,7 @@
             this.btSetSrcDir.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btSetSrcDir.Name = "btSetSrcDir";
             this.btSetSrcDir.Size = new System.Drawing.Size(74, 23);
-            this.btSetSrcDir.TabIndex = 4;
+            this.btSetSrcDir.TabIndex = 99;
             this.btSetSrcDir.Text = "text";
             this.btSetSrcDir.UseVisualStyleBackColor = true;
             this.btSetSrcDir.Click += new System.EventHandler(this.BtSetSrcDir_Click);
@@ -102,7 +106,7 @@
             this.cbSrcDirs.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.cbSrcDirs.Name = "cbSrcDirs";
             this.cbSrcDirs.Size = new System.Drawing.Size(386, 20);
-            this.cbSrcDirs.TabIndex = 5;
+            this.cbSrcDirs.TabIndex = 98;
             // 
             // lbcTgtDir
             // 
@@ -253,7 +257,7 @@
             this.btStart.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btStart.Name = "btStart";
             this.btStart.Size = new System.Drawing.Size(74, 128);
-            this.btStart.TabIndex = 15;
+            this.btStart.TabIndex = 5;
             this.btStart.Text = "text";
             this.btStart.UseVisualStyleBackColor = true;
             this.btStart.Click += new System.EventHandler(this.BtStart_Click);
@@ -379,6 +383,7 @@
             // 
             // MainWindow
             // 
+            this.AcceptButton = this.btStart;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
@@ -404,6 +409,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MainWindow";
             this.Text = "CpyFcDel.NET";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainWindow_FormClosed);

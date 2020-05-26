@@ -97,6 +97,24 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to コマンドプロンプト命令.
+        /// </summary>
+        internal static string cl_title {
+            get {
+                return ResourceManager.GetString("cl_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CpyFcDel.NET ディレクトリ1 ディレクトリ2 [/DW] [/DR] [/P:passes] [/AE]{0}{0}使用法：{0}  /DW{1}{1}書込みキャッシュオフ{0}  /DR{1}{1}読込みキャッシュオフ{0}  /P:passes{1}実行回数をpasses回にする{0}  /AE{1}{1}自動終了オン{0}{0}例：{0}  CpyFcDelN C:\Temp1 C:\Temp2{0}  CpyFcDelN C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDelN C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}注意：{0}  オプション/AEは、/Pが指定された時だけ有効{0}.
+        /// </summary>
+        internal static string cl_usage {
+            get {
+                return ResourceManager.GetString("cl_usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 比較：.
         /// </summary>
         internal static string compare_ {
@@ -192,6 +210,15 @@ namespace CpyFcDel.NET {
         internal static string error_info_3 {
             get {
                 return ResourceManager.GetString("error_info_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ファイルは一致しませんでした。.
+        /// </summary>
+        internal static string error_info_4 {
+            get {
+                return ResourceManager.GetString("error_info_4", resourceCulture);
             }
         }
         

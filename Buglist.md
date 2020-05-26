@@ -52,4 +52,11 @@
     **原　因**：volatile 手法を採用したが、Sub ThreadがBlockなInvokeを使っている。WaitStopSleep状態になる
 
     **解決策**：Sub ThreadがInvokeを使う必要な場合があるから、Abort手法に戻す。
+***
+7.  **問　題**:作業開始しても、Optionsの設定が有効になっている。
+    
+    **原　因**：Controlの制御し忘れ
+    
+    **解決策**：UpdateControl関数を修正
+
 

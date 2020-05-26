@@ -112,22 +112,28 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="app_info_1" xml:space="preserve">
     <value>Program will terminate in a few secs</value>
   </data>
   <data name="auto_exit" xml:space="preserve">
-    <value>Auto Shutdown when finished sucessfully</value>
+    <value>Auto exit when finished properly</value>
   </data>
   <data name="browse..." xml:space="preserve">
     <value>browse...</value>
   </data>
   <data name="cache_settings" xml:space="preserve">
     <value>Cache Settings</value>
+  </data>
+  <data name="cl_title" xml:space="preserve">
+    <value>Commandline Options</value>
+  </data>
+  <data name="cl_usage" xml:space="preserve">
+    <value>CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:passes] [/AE]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:passes{1}set the running counter to a certain number{0}  /AE{1}{1}auto exit program on{0}{0}Examples：{0}  CpyFcDelN C:\Temp1 C:\Temp2{0}  CpyFcDelN C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDelN C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention：{0}  option /AE is available only if /P is set{0}</value>
   </data>
   <data name="compare:" xml:space="preserve">
     <value>Compare:</value>
@@ -161,6 +167,9 @@
   </data>
   <data name="error_info_3" xml:space="preserve">
     <value>the limited pass to be set must great than 0</value>
+  </data>
+  <data name="error_info_4" xml:space="preserve">
+    <value>File verification failed.</value>
   </data>
   <data name="error_title" xml:space="preserve">
     <value>Error</value>

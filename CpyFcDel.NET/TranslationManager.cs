@@ -19,7 +19,7 @@ namespace CpyFcDel.NET
 
         public static string Translate(string str)
         {
-            return manager.resManager.GetString(str);
+            return string.Format(manager.resManager.GetString(str),"\n","\t");
         }
     }
 }

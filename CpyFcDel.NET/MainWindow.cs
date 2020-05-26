@@ -105,9 +105,9 @@ namespace CpyFcDel.NET
             {
                 options.Parse(Environment.GetCommandLineArgs());
             }
-            catch
+            catch (Exception ex)
             {
-                // TODO
+                MessageBox.Show(this, ex.Message, TM.Translate("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             // set data bindings for combobox
@@ -222,7 +222,7 @@ namespace CpyFcDel.NET
         // corresponding to working thread
         private void UpdateControls(bool isThreadStart)
         {
-            var ctrls = new Control[] { btSetSrcDir, btSetTgtDir, cbSrcDirs, cbTgtDirs };
+            var ctrls = new Control[] { btSetSrcDir, btSetTgtDir, cbSrcDirs, cbTgtDirs, gbOtherSettings, gbCacheSettings};
             if (isThreadStart)
             {
                 foreach (var ctl in ctrls)
@@ -230,7 +230,6 @@ namespace CpyFcDel.NET
                     ctl.Enabled = false;
                 }
                 btStart.Text = TM.Translate("stop");
-                // TODO
                 lbCount.ForeColor = Color.Red;
                 lbPassedTime.ForeColor = Color.Red;
                 lbStartTime.Text = DateTime.Now.ToString(timeFormat);
@@ -391,8 +390,7 @@ namespace CpyFcDel.NET
                 var md5Hash2 = GetMd5Hash(md5Hash, tgtFileStream);
                 if (md5Hash1 != md5Hash2)
                 {
-                    //TODO
-                    throw new Exception();
+                    throw new Exception(TM.Translate("error_info_4"));
                 }
             }
         }
@@ -435,6 +433,11 @@ namespace CpyFcDel.NET
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             options.Save();
+        }
+
+        private void lbProgramName_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(this, TM.Translate("cl_usage"), TM.Translate("cl_title"));
         }
 
         private void UpdateAppStatus(string statusName, string info = "", bool isAutoDeleted = true)

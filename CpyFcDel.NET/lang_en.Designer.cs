@@ -70,7 +70,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Shutdown when finished sucessfully.
+        ///   Looks up a localized string similar to Auto exit when finished properly.
         /// </summary>
         internal static string auto_exit {
             get {
@@ -93,6 +93,24 @@ namespace CpyFcDel.NET {
         internal static string cache_settings {
             get {
                 return ResourceManager.GetString("cache_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commandline Options.
+        /// </summary>
+        internal static string cl_title {
+            get {
+                return ResourceManager.GetString("cl_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:passes] [/AE]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:passes{1}set the running counter to a certain number{0}  /AE{1}{1}auto exit program on{0}{0}Examples：{0}  CpyFcDelN C:\Temp1 C:\Temp2{0}  CpyFcDelN C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDelN C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention：{0}  option /AE is available only if /P is set{0}.
+        /// </summary>
+        internal static string cl_usage {
+            get {
+                return ResourceManager.GetString("cl_usage", resourceCulture);
             }
         }
         
@@ -192,6 +210,15 @@ namespace CpyFcDel.NET {
         internal static string error_info_3 {
             get {
                 return ResourceManager.GetString("error_info_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File verification failed..
+        /// </summary>
+        internal static string error_info_4 {
+            get {
+                return ResourceManager.GetString("error_info_4", resourceCulture);
             }
         }
         
