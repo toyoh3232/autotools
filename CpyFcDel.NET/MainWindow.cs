@@ -100,10 +100,12 @@ namespace CpyFcDel.NET
             // load options from file if exists or default options
             options = Options.Load();
 
+            // parse result
+            bool isSucceed = false;
             // parse commandline
             try
             {
-                options.Parse(Environment.GetCommandLineArgs());
+                isSucceed = options.Parse(Environment.GetCommandLineArgs());
             }
             catch (Exception ex)
             {
@@ -125,6 +127,7 @@ namespace CpyFcDel.NET
                 ckbCountLimOn.Checked = true;
                 tbLimitCount.Text = count.ToString();
             }
+            if (isSucceed) btStart.PerformClick();
         }
 
         private void BtSetSrcDir_Click(object sender, EventArgs e)

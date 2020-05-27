@@ -75,7 +75,7 @@
             this.lbProgramName.Name = "lbProgramName";
             this.lbProgramName.Size = new System.Drawing.Size(140, 13);
             this.lbProgramName.TabIndex = 1;
-            this.lbProgramName.Text = "CpyFcDel.NET V0.01";
+            this.lbProgramName.Text = "CpyFcDel.NET V1.00";
             this.lbProgramName.Click += new System.EventHandler(this.lbProgramName_Click);
             // 
             // lbcSrcDir

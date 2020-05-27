@@ -96,9 +96,9 @@ namespace CpyFcDel.NET
          * commmand sourceDir TargetDir [/DW] [/DR] [/P:passes] [/AE]
          * default pattern: commmand sourceDir TargetDir
          */
-        public void Parse(string[] args)
+        public bool Parse(string[] args)
         {
-            if (args.Length == 1) return;
+            if (args.Length == 1) return false;
             if (args.Length < 3) throw new ArgumentException();
             var sourceDir = args[1];
             var targetDir = args[2];
@@ -148,6 +148,7 @@ namespace CpyFcDel.NET
             this.LimitCount = limitCount;
             this.CurrentSrcDirIndex = this.SourceDirs.Push(sourceDir);
             this.CurrentTgtDirIndex = this.TargetDirs.Push(targetDir);
+            return true;
         }
 
         public static Options Load()
