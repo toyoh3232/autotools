@@ -106,7 +106,7 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:passes] [/AE]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:passes{1}set the running counter to a certain number{0}  /AE{1}{1}auto exit program on{0}{0}Examples：{0}  CpyFcDelN C:\Temp1 C:\Temp2{0}  CpyFcDelN C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDelN C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention：{0}  option /AE is available only if /P is set{0}.
+        ///   Looks up a localized string similar to CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:passes] [/AE]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:passes{1}set the running counter to a certain number{0}  /AE{1}{1}auto exit program on{0}{0}Examples：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention：{0}  option /AE is available only if /P is set{0}.
         /// </summary>
         internal static string cl_usage {
             get {
@@ -187,11 +187,20 @@ namespace CpyFcDel.NET {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No corresponding directory or invalid name..
+        ///   Looks up a localized string similar to No corresponding source directory or invalid name..
         /// </summary>
-        internal static string error_info_1 {
+        internal static string error_info_1_src {
             get {
-                return ResourceManager.GetString("error_info_1", resourceCulture);
+                return ResourceManager.GetString("error_info_1_src", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No corresponding target directory or invalid name..
+        /// </summary>
+        internal static string error_info_1_tgt {
+            get {
+                return ResourceManager.GetString("error_info_1_tgt", resourceCulture);
             }
         }
         
@@ -300,6 +309,15 @@ namespace CpyFcDel.NET {
         internal static string stop {
             get {
                 return ResourceManager.GetString("stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  - is stopping.
+        /// </summary>
+        internal static string stopping {
+            get {
+                return ResourceManager.GetString("stopping", resourceCulture);
             }
         }
         

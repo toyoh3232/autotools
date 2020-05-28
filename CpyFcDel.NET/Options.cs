@@ -72,15 +72,13 @@ namespace CpyFcDel.NET
             return index;
         }
 
-
         public int CurrentSrcDirIndex { get; set; } = -1;
         public int CurrentTgtDirIndex { get; set; } = -1;
 
-        public bool IsWriteCacheOn { get; set; }
-        public bool IsReadCacheOn { get; set; } 
-        public int? LimitCount { get; set; } 
-        public bool IsAutoExit { get; set; } 
-
+        public bool IsWriteCacheOn { get; set; } = false;
+        public bool IsReadCacheOn { get; set; } = false;
+        public int? LimitCount { get; set; } = null;
+        public bool IsAutoExit { get; set; } = false;
 
         public void SetDefaults()
         {
@@ -96,9 +94,9 @@ namespace CpyFcDel.NET
          * commmand sourceDir TargetDir [/DW] [/DR] [/P:passes] [/AE]
          * default pattern: commmand sourceDir TargetDir
          */
-        public bool Parse(string[] args)
+        public void Parse(string[] args)
         {
-            if (args.Length == 1) return false;
+            if (args.Length == 1) return;
             if (args.Length < 3) throw new ArgumentException();
             var sourceDir = args[1];
             var targetDir = args[2];
@@ -148,7 +146,6 @@ namespace CpyFcDel.NET
             this.LimitCount = limitCount;
             this.CurrentSrcDirIndex = this.SourceDirs.Push(sourceDir);
             this.CurrentTgtDirIndex = this.TargetDirs.Push(targetDir);
-            return true;
         }
 
         public static Options Load()

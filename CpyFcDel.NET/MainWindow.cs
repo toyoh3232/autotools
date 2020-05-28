@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,13 +18,17 @@ namespace CpyFcDel.NET
     {
         private const string timeFormat = "yyyy-MM-dd HH:mm";
 
+        private readonly string appName = Assembly.GetExecutingAssembly().GetName().Name;
+
         private readonly ElapsedTimer elapsedTimer;
 
-        private readonly System.Timers.Timer updateStsTimer, exitTimer;
+        private readonly System.Timers.Timer updateStsTimer, exitTimer, stoppingTimer;
 
         private Thread workingThread;
 
-        private Options options;
+        private Options options = new Options();
+
+        private bool hasCommandline = false;
 
         public MainWindow()
         {
@@ -79,7 +84,18 @@ namespace CpyFcDel.NET
                 Interval = 1000
             };
             elapsedTimer.Tick += (s, e) => lbPassedTime.Text = TimeSpan.FromSeconds(elapsedTimer.ElapsedSeconds).ToString();
-
+            // set timmer for updating form title when terminating working thread
+            stoppingTimer = new System.Timers.Timer
+            {
+                Interval = 500
+            };
+            stoppingTimer.Elapsed += (s, e) =>
+            {
+                if (this.Text.EndsWith("..."))
+                    this.Text = Text.TrimEnd('.');
+                else
+                    this.Text = Text + ".";
+            };
         }
         
         private void MainWindow_Load(object sender, EventArgs e)
@@ -97,21 +113,25 @@ namespace CpyFcDel.NET
             if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en")
                 lbcLimitCount.Location = new Point(lbcLimitCount.Location.X, ckbCountLimOn.Location.Y);
 
-            // load options from file if exists or default options
-            options = Options.Load();
 
-            // parse result
-            bool isSucceed = false;
+
             // parse commandline
+            if (Environment.GetCommandLineArgs().Length > 1) hasCommandline = true;
             try
             {
-                isSucceed = options.Parse(Environment.GetCommandLineArgs());
+                options.Parse(Environment.GetCommandLineArgs());
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show(this, ex.Message, TM.Translate("error_title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                MessageBox.Show(this, TM.Translate("cl_usage"), TM.Translate("cl_title"));
+                this.Close();
 
+            }
+            // load options from file if exists or default options
+            if (!hasCommandline)
+            {
+                options = Options.Load();
+            }
             // set data bindings for combobox
             cbSrcDirs.DataSource = options.SourceDirs;
             cbSrcDirs.SelectedIndex = options.CurrentSrcDirIndex;
@@ -127,7 +147,7 @@ namespace CpyFcDel.NET
                 ckbCountLimOn.Checked = true;
                 tbLimitCount.Text = count.ToString();
             }
-            if (isSucceed) btStart.PerformClick();
+            if (hasCommandline) btStart.PerformClick();
         }
 
         private void BtSetSrcDir_Click(object sender, EventArgs e)
@@ -148,61 +168,75 @@ namespace CpyFcDel.NET
 
         private void BtStart_Click(object sender, EventArgs e)
         {
-            // validate
-             if (!Directory.Exists(cbTgtDirs.Text))
-            {
-                MessageBox.Show(TM.Translate("error_info_1"), TM.Translate("error_title"), 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                cbTgtDirs.Text = "";
-                return;
-            }
-            if (!Directory.Exists(cbSrcDirs.Text))
-            {
-                MessageBox.Show(TM.Translate("error_info_1"), TM.Translate("error_title"), 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                cbSrcDirs.Text = "";
-                return;
-            }
-
-            int? limitCount = null;
-            if (ckbCountLimOn.Checked)
-            {
-                try
-                {
-                    limitCount = int.Parse(tbLimitCount.Text);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show(TM.Translate("error_info_2"), TM.Translate("error_title"), 
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    tbLimitCount.Text = "";
-                    return;
-                }
-                if (limitCount <= 0)
-                {
-                    MessageBox.Show(TM.Translate("error_info_3"), TM.Translate("error_title"), 
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    tbLimitCount.Text = "";
-                    return;
-                }
-            }
-
-            // update options
-            cbSrcDirs.SelectedIndex = options.AddSourceDir(cbSrcDirs.Text);
-            cbTgtDirs.SelectedIndex = options.AddTargetDir(cbTgtDirs.Text);
-
-            options.IsAutoExit = ckbAutoExit.Checked;
-            options.IsReadCacheOn = ckbRCacheOn.Checked;
-            options.IsWriteCacheOn = ckbWCacheOn.Checked;
-            options.LimitCount = limitCount; 
-
+           
             if (workingThread?.IsAlive ?? false)
             {
-                workingThread.Abort();
-                UpdateControls(false);
+               new Thread(() =>
+                {
+                    workingThread.Abort();
+                    this.Invoke(new Action(() => elapsedTimer.Stop()));
+                    this.Invoke(new Action(() => this.Enabled = false));
+                    this.Invoke(new Action(() => this.Text = appName + TM.Translate("stopping")));
+                    this.BeginInvoke(new Action(() => stoppingTimer.Start()));
+                    workingThread.Join();
+                    this.BeginInvoke(new Action(() => stoppingTimer.Stop()));
+                    this.Invoke(new Action(() => this.Text = appName));
+                    this.Invoke(new Action(() => this.Enabled = true));
+                    this.Invoke(new Action(() => UpdateControls(false)));
+                }).Start();
             }
             else
             {
+                // validate
+                if (!Directory.Exists(cbSrcDirs.Text))
+                {
+                    MessageBox.Show(TM.Translate("error_info_1_src"), TM.Translate("error_title"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    cbSrcDirs.Text = "";
+                    return;
+                }
+
+                if (!Directory.Exists(cbTgtDirs.Text))
+                {
+                    MessageBox.Show(TM.Translate("error_info_1_tgt"), TM.Translate("error_title"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    cbTgtDirs.Text = "";
+                    return;
+                }
+
+
+                int? limitCount = null;
+                if (ckbCountLimOn.Checked)
+                {
+                    try
+                    {
+                        limitCount = int.Parse(tbLimitCount.Text);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show(TM.Translate("error_info_2"), TM.Translate("error_title"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        tbLimitCount.Text = "";
+                        return;
+                    }
+                    if (limitCount <= 0)
+                    {
+                        MessageBox.Show(TM.Translate("error_info_3"), TM.Translate("error_title"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        tbLimitCount.Text = "";
+                        return;
+                    }
+                }
+
+                // update options
+                cbSrcDirs.SelectedIndex = options.AddSourceDir(cbSrcDirs.Text);
+                cbTgtDirs.SelectedIndex = options.AddTargetDir(cbTgtDirs.Text);
+
+                options.IsAutoExit = ckbAutoExit.Checked;
+                options.IsReadCacheOn = ckbRCacheOn.Checked;
+                options.IsWriteCacheOn = ckbWCacheOn.Checked;
+                options.LimitCount = limitCount;
+
                 // set parameters passing to thread
                 // pay attention to value type or reference type
                 var tuple = Tuple.Create(string.Copy(options.SourceDirs[options.CurrentSrcDirIndex]), 
@@ -216,6 +250,7 @@ namespace CpyFcDel.NET
                     IsBackground = true
                 };
                 workingThread.Start(tuple);
+                elapsedTimer.Start();
                 UpdateControls(true);
 
             }
@@ -237,7 +272,7 @@ namespace CpyFcDel.NET
                 lbPassedTime.ForeColor = Color.Red;
                 lbStartTime.Text = DateTime.Now.ToString(timeFormat);
                 lbPassedTime.Text = TimeSpan.FromSeconds(0).ToString();
-                elapsedTimer.Start();
+                
             }
 
             else
@@ -251,7 +286,7 @@ namespace CpyFcDel.NET
                 tbStatusInfo.Text = "";
                 lbCount.ForeColor = Color.Black;
                 lbPassedTime.ForeColor = Color.Black;
-                elapsedTimer.Stop();
+                
             }
 
         }
@@ -370,6 +405,7 @@ namespace CpyFcDel.NET
                 if (count == 0) break;
             }
             // prepare ending this thread
+            this.Invoke(new Action(() => elapsedTimer.Stop()));
             this.Invoke(new Action(() => this.UpdateControls(false)));
 
             // end main thread if necessary
@@ -435,7 +471,7 @@ namespace CpyFcDel.NET
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
-            options.Save();
+            if (!hasCommandline) options.Save();
         }
 
         private void lbProgramName_Click(object sender, EventArgs e)

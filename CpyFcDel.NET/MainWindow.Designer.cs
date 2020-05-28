@@ -75,7 +75,7 @@
             this.lbProgramName.Name = "lbProgramName";
             this.lbProgramName.Size = new System.Drawing.Size(140, 13);
             this.lbProgramName.TabIndex = 1;
-            this.lbProgramName.Text = "CpyFcDel.NET V1.00";
+            this.lbProgramName.Text = "CpyFcDel.NET V1.01";
             this.lbProgramName.Click += new System.EventHandler(this.lbProgramName_Click);
             // 
             // lbcSrcDir
@@ -94,7 +94,7 @@
             this.btSetSrcDir.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btSetSrcDir.Name = "btSetSrcDir";
             this.btSetSrcDir.Size = new System.Drawing.Size(74, 23);
-            this.btSetSrcDir.TabIndex = 99;
+            this.btSetSrcDir.TabIndex = 7;
             this.btSetSrcDir.Text = "text";
             this.btSetSrcDir.UseVisualStyleBackColor = true;
             this.btSetSrcDir.Click += new System.EventHandler(this.BtSetSrcDir_Click);
@@ -106,7 +106,7 @@
             this.cbSrcDirs.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.cbSrcDirs.Name = "cbSrcDirs";
             this.cbSrcDirs.Size = new System.Drawing.Size(386, 20);
-            this.cbSrcDirs.TabIndex = 98;
+            this.cbSrcDirs.TabIndex = 6;
             // 
             // lbcTgtDir
             // 
@@ -125,7 +125,7 @@
             this.cbTgtDirs.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.cbTgtDirs.Name = "cbTgtDirs";
             this.cbTgtDirs.Size = new System.Drawing.Size(386, 20);
-            this.cbTgtDirs.TabIndex = 7;
+            this.cbTgtDirs.TabIndex = 8;
             // 
             // btSetTgtDir
             // 
@@ -133,7 +133,7 @@
             this.btSetTgtDir.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btSetTgtDir.Name = "btSetTgtDir";
             this.btSetTgtDir.Size = new System.Drawing.Size(74, 23);
-            this.btSetTgtDir.TabIndex = 8;
+            this.btSetTgtDir.TabIndex = 9;
             this.btSetTgtDir.Text = "text";
             this.btSetTgtDir.UseVisualStyleBackColor = true;
             this.btSetTgtDir.Click += new System.EventHandler(this.BtSetTgtDir_Click);
@@ -147,7 +147,7 @@
             this.gbCacheSettings.Name = "gbCacheSettings";
             this.gbCacheSettings.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.gbCacheSettings.Size = new System.Drawing.Size(167, 62);
-            this.gbCacheSettings.TabIndex = 9;
+            this.gbCacheSettings.TabIndex = 98;
             this.gbCacheSettings.TabStop = false;
             this.gbCacheSettings.Text = "text";
             // 
@@ -160,7 +160,7 @@
             this.ckbRCacheOn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.ckbRCacheOn.Name = "ckbRCacheOn";
             this.ckbRCacheOn.Size = new System.Drawing.Size(96, 16);
-            this.ckbRCacheOn.TabIndex = 1;
+            this.ckbRCacheOn.TabIndex = 12;
             this.ckbRCacheOn.Text = "ckbRCacheOn";
             this.ckbRCacheOn.UseVisualStyleBackColor = true;
             // 
@@ -173,7 +173,7 @@
             this.ckbWCacheOn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.ckbWCacheOn.Name = "ckbWCacheOn";
             this.ckbWCacheOn.Size = new System.Drawing.Size(97, 16);
-            this.ckbWCacheOn.TabIndex = 0;
+            this.ckbWCacheOn.TabIndex = 11;
             this.ckbWCacheOn.Text = "ckbWCacheOn";
             this.ckbWCacheOn.UseVisualStyleBackColor = true;
             // 
@@ -203,7 +203,7 @@
             this.ckbCountLimOn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.ckbCountLimOn.Name = "ckbCountLimOn";
             this.ckbCountLimOn.Size = new System.Drawing.Size(88, 16);
-            this.ckbCountLimOn.TabIndex = 2;
+            this.ckbCountLimOn.TabIndex = 10;
             this.ckbCountLimOn.Text = "CountLimOn:";
             this.ckbCountLimOn.UseVisualStyleBackColor = true;
             this.ckbCountLimOn.CheckedChanged += new System.EventHandler(this.CkbCountLimOn_CheckedChanged);
@@ -273,7 +273,7 @@
             this.gbTimeInfo.Name = "gbTimeInfo";
             this.gbTimeInfo.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.gbTimeInfo.Size = new System.Drawing.Size(213, 69);
-            this.gbTimeInfo.TabIndex = 16;
+            this.gbTimeInfo.TabIndex = 97;
             this.gbTimeInfo.TabStop = false;
             this.gbTimeInfo.Text = "text";
             // 
@@ -328,7 +328,7 @@
             this.gbOtherSettings.Name = "gbOtherSettings";
             this.gbOtherSettings.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.gbOtherSettings.Size = new System.Drawing.Size(213, 62);
-            this.gbOtherSettings.TabIndex = 17;
+            this.gbOtherSettings.TabIndex = 99;
             this.gbOtherSettings.TabStop = false;
             this.gbOtherSettings.Text = "text";
             // 
@@ -352,7 +352,7 @@
             this.gbStatusInfo.Name = "gbStatusInfo";
             this.gbStatusInfo.Padding = new System.Windows.Forms.Padding(2);
             this.gbStatusInfo.Size = new System.Drawing.Size(167, 69);
-            this.gbStatusInfo.TabIndex = 18;
+            this.gbStatusInfo.TabIndex = 96;
             this.gbStatusInfo.TabStop = false;
             this.gbStatusInfo.Text = "text";
             // 
