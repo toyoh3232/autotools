@@ -33,7 +33,7 @@ namespace Tohasoft.Net.DHCP
         {
             if (!IsBuiltTobeSent)
             {
-                packet.ApplySettings(msgType, RelatedServer.Settings, clientIp);
+                packet.ApplySettings(msgType, RelatedServer._settings, clientIp);
                 IsBuiltTobeSent = true;
                 return packet.ToArray();
             }

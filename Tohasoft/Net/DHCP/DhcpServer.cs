@@ -31,7 +31,7 @@ namespace Tohasoft.Net.DHCP
         // change to raw socket in future version
         private UdpListener udpListener; 
 
-        public DhcpServerSettings Settings;
+        public DhcpServerSettings _settings;
 
         private class OwnedIpAddress
         {
@@ -62,7 +62,7 @@ namespace Tohasoft.Net.DHCP
                 case null when clientInfo.RequestAddress != null && clientInfo.ClientAddress.Equals(IPAddress.Any):
                     res = DhcpRequestType.InitReboot;
                     break;
-                case null when clientInfo.RequestAddress == null && endPoint.Address.Equals(Settings.ServerIp):
+                case null when clientInfo.RequestAddress == null && endPoint.Address.Equals(_settings.ServerIp):
                     res = DhcpRequestType.ReNewing;
                     break;
                 case null when clientInfo.RequestAddress == null && endPoint.Address.Equals(IPAddress.Broadcast):
@@ -77,19 +77,58 @@ namespace Tohasoft.Net.DHCP
 
         private readonly List<OwnedIpAddress> ownedIpAddressPool;
 
-        public DhcpServer(DhcpServerSettings setting)
+        public DhcpServer(DhcpServerSettings settings)
         {
-            if (!setting.IsValid()) throw new ArgumentNullException();
-                
-            Settings = setting;
+            // server ip is not set
+            if (settings.ServerIp == null)
+                throw new ArgumentNullException();
 
-            ownedIpAddressPool = Settings.ServerIp.GetAllSubnet(Settings.SubnetMask)
-                .Select(ip => new OwnedIpAddress { Ip = ip, IsAllocated = false}).ToList();
-        }
+            // server ip is not binding to local nic
+            if (!Utils.GetLocalIp().Contains(settings.ServerIp))
+                throw new ArgumentOutOfRangeException();
 
-        ~DhcpServer()
-        {
-            udpListener?.StopListener();
+            // ip range is set only one side
+            if ((settings.StartIp == null) != (settings.EndIp == null))
+                throw new ArgumentNullException();
+
+            // given subnetmask is different to local machine settings
+            if (!settings.SubnetMask?.Equals(settings.ServerIp.GetSubnetMask()) ?? false)
+                throw new ArgumentOutOfRangeException();
+
+            // reset the net mask
+            settings.SubnetMask = settings.ServerIp.GetSubnetMask();
+
+            // given ip range is not in a subnet
+            if (!settings.StartIp?.IsInSameSubnet(settings.EndIp, settings.SubnetMask) ?? false )
+                throw new ArgumentOutOfRangeException();
+
+            // given ip range is not in an ascending range
+            if (settings.StartIp?.ToLong() > settings.EndIp?.ToLong())
+                throw new ArgumentOutOfRangeException();
+
+            _settings = settings;
+
+            // if ip is set in range
+            if (_settings.StartIp != null)
+            {
+                var start = _settings.StartIp;
+                var mask = _settings.SubnetMask;
+                var server = _settings.ServerIp;
+
+                ownedIpAddressPool = new List<OwnedIpAddress>();
+                do
+                {
+                    if (!start.Equals(server))
+                        ownedIpAddressPool.Add(new OwnedIpAddress { Ip = start, IsAllocated = false });
+                }
+                while ((start = start.Increment(mask)) != null);
+            }
+            // if no ip in range is set, get the default
+            else
+            {
+                ownedIpAddressPool = _settings.ServerIp.GetAllSubnet(_settings.SubnetMask)
+                .Select(ip => new OwnedIpAddress { Ip = ip, IsAllocated = false }).ToList();
+            }
         }
 
         // function to start the DHCP server
@@ -99,7 +138,7 @@ namespace Tohasoft.Net.DHCP
             try
             {   // start the DHCP server
                 // assign the event handlers
-                udpListener = new UdpListener(67, 68, Settings.ServerIp.ToString());
+                udpListener = new UdpListener(67, 68, _settings.ServerIp.ToString());
                 udpListener.Received += UdpListener_Received;
 
             }
@@ -151,7 +190,7 @@ namespace Tohasoft.Net.DHCP
                             // respond to client which has responded to DHCPOFFER message from this server 
                             case DhcpRequestType.Selecting:
                                 MessageRaised?.Invoke(this, new MessageEventArgs { Message = "Response to DHCPREQUEST generated during SELECTING state." });
-                                if (Settings.ServerIp.Equals(client.ServerAddress))
+                                if (_settings.ServerIp.Equals(client.ServerAddress))
                                 {
                                     var allocatedIp = ownedIpAddressPool.Find(x => x.Ip.Equals(client.RequestAddress));
                                     if (allocatedIp.Ip != null && !allocatedIp.IsAllocated)

@@ -7,8 +7,8 @@
     <ProjectGuid>{0C83D570-A8A4-45B6-9816-9409B84574A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MinjiWorld</RootNamespace>
-    <AssemblyName>MinjiWorld</AssemblyName>
+    <RootNamespace>Tohasoft.Net</RootNamespace>
+    <AssemblyName>Tohasoft.Net</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

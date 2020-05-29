@@ -9,6 +9,14 @@ namespace Tohasoft.Net.DHCP
 {
     static class Utils
     {
+        public static IPAddress[] GetLocalIp()
+        {
+            var strHostName = Dns.GetHostName();
+            // find host by name
+            var iphostentry = Dns.GetHostEntry(strHostName);
+            return iphostentry.AddressList;
+        }
+
         public static void AddToArray(byte fromValue, ref byte[] targetValue)
         {
             AddToArray(new byte[] { fromValue }, ref targetValue);
