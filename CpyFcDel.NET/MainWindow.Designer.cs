@@ -84,9 +84,9 @@
             this.lbcSrcDir.Location = new System.Drawing.Point(12, 25);
             this.lbcSrcDir.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbcSrcDir.Name = "lbcSrcDir";
-            this.lbcSrcDir.Size = new System.Drawing.Size(25, 12);
+            this.lbcSrcDir.Size = new System.Drawing.Size(52, 12);
             this.lbcSrcDir.TabIndex = 2;
-            this.lbcSrcDir.Text = "text";
+            this.lbcSrcDir.Text = "lbcSrcDir";
             // 
             // btSetSrcDir
             // 
@@ -114,9 +114,9 @@
             this.lbcTgtDir.Location = new System.Drawing.Point(12, 63);
             this.lbcTgtDir.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbcTgtDir.Name = "lbcTgtDir";
-            this.lbcTgtDir.Size = new System.Drawing.Size(25, 12);
+            this.lbcTgtDir.Size = new System.Drawing.Size(52, 12);
             this.lbcTgtDir.TabIndex = 6;
-            this.lbcTgtDir.Text = "text";
+            this.lbcTgtDir.Text = "lbcTgtDir";
             // 
             // cbTgtDirs
             // 
