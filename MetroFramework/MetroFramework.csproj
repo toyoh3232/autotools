@@ -12,7 +12,7 @@
     <AssemblyName>MetroFramework</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>../MetroFramework.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -81,6 +81,12 @@
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Forms\MetroMessageBox.cs" />
+    <Compile Include="Forms\MetroMessageBoxControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MetroMessageBoxControl.Designer.cs" />
+    <Compile Include="Forms\MetroMessageBoxProperties.cs" />
     <Compile Include="MetroStyles.cs" />
     <Compile Include="Components\MetroStyleExtender.cs">
       <SubType>Component</SubType>
@@ -179,9 +185,6 @@
     </Compile>
     <Compile Include="MetroExtensions.cs" />
     <Compile Include="Drawing\MetroPaint.cs" />
-    <Compile Include="Forms\MetroMessageBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\MetroForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -278,6 +281,7 @@
       <DependentUpon>MetroTaskWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de\MetroToggle.xml" />
+    <EmbeddedResource Include="Forms\MetroMessageBoxControl.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -293,6 +297,12 @@
     <EmbeddedResource Include="themes.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\ja\MetroToggle.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\ja\MetroMessageBoxControl.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

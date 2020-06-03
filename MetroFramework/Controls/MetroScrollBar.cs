@@ -46,7 +46,7 @@ namespace MetroFramework.Controls
         Vertical
     }
 
-    [Designer("MetroFramework.Design.MetroScrollBarDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroScrollBarDesigner")]
     [DefaultEvent("Scroll")]
     [DefaultProperty("Value")]
     public class MetroScrollBar : MetroControlBase

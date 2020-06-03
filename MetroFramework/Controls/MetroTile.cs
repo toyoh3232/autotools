@@ -37,7 +37,7 @@ using MetroFramework.Drawing;
 
 namespace MetroFramework.Controls
 {
-    [Designer("MetroFramework.Design.MetroTileDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroTileDesigner")]
     [ToolboxBitmap(typeof(Button))]
     public partial class MetroTile : MetroButtonBase, IContainerControl
     {

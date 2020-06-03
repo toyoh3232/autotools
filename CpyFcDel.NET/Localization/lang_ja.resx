@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_info_1" xml:space="preserve">
+    <value>プログラムは数秒後に終了する</value>
+  </data>
+  <data name="auto_exit" xml:space="preserve">
+    <value>自動終了</value>
+  </data>
+  <data name="browse..." xml:space="preserve">
+    <value>参照...</value>
+  </data>
+  <data name="cache_settings" xml:space="preserve">
+    <value>キャッシュ設定</value>
+  </data>
+  <data name="cl_title" xml:space="preserve">
+    <value>コマンドプロンプト命令</value>
+  </data>
+  <data name="cl_usage" xml:space="preserve">
+    <value>CpyFcDel.NET ディレクトリ1 ディレクトリ2 [/DW] [/DR] [/P:passes] [/AE]{0}{0}使用法：{0}  /DW{1}{1}書込みキャッシュオフ{0}  /DR{1}{1}読込みキャッシュオフ{0}  /P:passes{1}実行回数をpasses回にする{0}  /AE{1}{1}自動終了オン{0}{0}例：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}注意：{0}  オプション/AEは、/Pが指定された時だけ有効{0}</value>
+  </data>
+  <data name="compare:" xml:space="preserve">
+    <value>比較：</value>
+  </data>
+  <data name="copied:" xml:space="preserve">
+    <value>コピーされた容量：</value>
+  </data>
+  <data name="copy:" xml:space="preserve">
+    <value>コピー：</value>
+  </data>
+  <data name="count" xml:space="preserve">
+    <value>回</value>
+  </data>
+  <data name="counter" xml:space="preserve">
+    <value>回目</value>
+  </data>
+  <data name="count_limit_on" xml:space="preserve">
+    <value>回数を制限する</value>
+  </data>
+  <data name="current_time:" xml:space="preserve">
+    <value>現在時刻：</value>
+  </data>
+  <data name="delete:" xml:space="preserve">
+    <value>削除：</value>
+  </data>
+  <data name="error_info_1_src" xml:space="preserve">
+    <value>ソースディレクトリの名前が存在しないか、ディレクトリではありません</value>
+  </data>
+  <data name="error_info_1_tgt" xml:space="preserve">
+    <value>ターゲットディレクトリの名前が存在しないか、ディレクトリではありません</value>
+  </data>
+  <data name="error_info_2" xml:space="preserve">
+    <value>無効な数字</value>
+  </data>
+  <data name="error_info_3" xml:space="preserve">
+    <value>1以上の整数を入れてください</value>
+  </data>
+  <data name="error_info_4" xml:space="preserve">
+    <value>ファイルは一致しませんでした。</value>
+  </data>
+  <data name="error_title" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="if_continue?" xml:space="preserve">
+    <value>続きますか？</value>
+  </data>
+  <data name="other_settings" xml:space="preserve">
+    <value>各種設定</value>
+  </data>
+  <data name="read_cache_on" xml:space="preserve">
+    <value>読込みキャッシュを有効する</value>
+  </data>
+  <data name="source_dir" xml:space="preserve">
+    <value>ソースディレクトリ</value>
+  </data>
+  <data name="start" xml:space="preserve">
+    <value>開始</value>
+  </data>
+  <data name="start_time:" xml:space="preserve">
+    <value>開始時刻：</value>
+  </data>
+  <data name="status_info" xml:space="preserve">
+    <value>ステータス</value>
+  </data>
+  <data name="stop" xml:space="preserve">
+    <value>中止</value>
+  </data>
+  <data name="stopping" xml:space="preserve">
+    <value> - 停止中</value>
+  </data>
+  <data name="target_dir" xml:space="preserve">
+    <value>ターゲットディレクトリ</value>
+  </data>
+  <data name="thread_terminating" xml:space="preserve">
+    <value>スレッド停止がリクエストされた</value>
+  </data>
+  <data name="time_duration:" xml:space="preserve">
+    <value>試験時間：</value>
+  </data>
+  <data name="time_info" xml:space="preserve">
+    <value>時刻</value>
+  </data>
+  <data name="write_cache_on" xml:space="preserve">
+    <value>書込みキャッシュを有効する</value>
+  </data>
+</root>

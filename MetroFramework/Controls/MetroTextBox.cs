@@ -334,7 +334,8 @@ namespace MetroFramework.Controls
         {
             using (Pen p = new Pen(UseStyleColors ? GetStyleColor() : GetThemeColor("BorderColor")))
             {
-                e.Graphics.DrawRectangle(p, new Rectangle(0, 0, Width - 1, Height - 1));
+                // e.Graphics.DrawRectangle(p, new Rectangle(0, 0, Width - 1, Height - 1));
+                e.Graphics.DrawLine(p, new Point(0, Height - 5), new Point(Width - 1, Height - 5));
             }
 
             DrawIcon(e.Graphics);

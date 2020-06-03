@@ -53,7 +53,7 @@ namespace MetroFramework.Controls
     #region MetroTabPageCollection
 
     [ToolboxItem(false)]
-    [Editor("MetroFramework.Design.MetroTabPageCollectionEditor, " + AssemblyRef.MetroFrameworkDesignSN, typeof(UITypeEditor))]
+    [Editor("MetroFramework.Design.MetroTabPageCollectionEditor", typeof(UITypeEditor))]
     public class MetroTabPageCollection : TabControl.TabPageCollection
     {
         public MetroTabPageCollection(MetroTabControl owner) : base(owner)
@@ -62,7 +62,7 @@ namespace MetroFramework.Controls
 
     #endregion
 
-    [Designer("MetroFramework.Design.MetroTabControlDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroTabControlDesigner")]
     [ToolboxBitmap(typeof(TabControl))]
     public partial class MetroTabControl : MetroTabControlBase
     {
@@ -83,7 +83,7 @@ namespace MetroFramework.Controls
             set { textAlign = value; }
         }
 
-        [Editor("MetroFramework.Design.MetroTabPageCollectionEditor, " + AssemblyRef.MetroFrameworkDesignSN, typeof(UITypeEditor))]
+        [Editor("MetroFramework.Design.MetroTabPageCollectionEditor", typeof(UITypeEditor))]
         public new TabPageCollection TabPages
         {
             get { return base.TabPages; }

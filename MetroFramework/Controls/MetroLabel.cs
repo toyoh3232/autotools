@@ -34,7 +34,7 @@ using MetroFramework.Drawing;
 
 namespace MetroFramework.Controls
 {
-    [Designer("MetroFramework.Design.MetroLabelDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroLabelDesigner")]
     [ToolboxBitmap(typeof(Label))]
     public partial class MetroLabel : MetroLabelBase
     {

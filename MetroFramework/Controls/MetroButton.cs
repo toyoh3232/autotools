@@ -31,7 +31,7 @@ using MetroFramework.Drawing;
 
 namespace MetroFramework.Controls
 {
-    [Designer("MetroFramework.Design.MetroButtonDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroButtonDesigner")]
     [ToolboxBitmap(typeof(Button))]
     [DefaultEvent("Click")]
     public partial class MetroButton : MetroButtonBase

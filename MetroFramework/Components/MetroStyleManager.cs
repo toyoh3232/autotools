@@ -68,7 +68,7 @@ namespace MetroFramework.Components
     ///     </item>
     ///     </list>
     /// </remarks>
-    [Designer("MetroFramework.Design.MetroStyleManagerDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroStyleManagerDesigner")]
     public sealed class MetroStyleManager : Component, ISupportInitialize, IMetroComponent, IMetroStyledComponent
     {
 

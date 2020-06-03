@@ -41,7 +41,7 @@ using MetroFramework.Native;
 
 namespace MetroFramework.Controls
 {
-    [Designer("MetroFramework.Design.MetroProgressBarDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroProgressBarDesigner")]
     [ToolboxBitmap(typeof(ProgressBar))]
     public class MetroProgressBar : MetroProgressBarBase
     {

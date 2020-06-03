@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using MetroFramework.Forms;
 using MetroFramework.Interfaces;
 
-namespace MetroFramework.Forms
+namespace MetroFramework
 {
     /// <summary>
     /// Metro-styled message notification.

@@ -56,7 +56,7 @@ using System.Windows.Forms;
 
 namespace MetroFramework.Controls
 {
-    [Designer("MetroFramework.Design.MetroProgressSpinnerDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroProgressSpinnerDesigner")]
     [ToolboxBitmap(typeof(ProgressBar))]
     public partial class MetroProgressSpinner : MetroControlBase
     {

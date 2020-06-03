@@ -40,7 +40,7 @@ using MetroFramework.Native;
 namespace MetroFramework.Controls
 {
     [ToolboxBitmap(typeof(Panel))]
-    [Designer("MetroFramework.Design.MetroPanelDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroPanelDesigner")]
     public partial class MetroPanel : MetroPanelBase
     {
 

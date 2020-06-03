@@ -39,7 +39,7 @@ namespace MetroFramework.Controls
 {
     // NOTE: This won't support transparency
 
-    [Designer("MetroFramework.Design.MetroLabelDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroLabelDesigner")]
     [ToolboxBitmap(typeof(Label))]
     public partial class MetroSelectableLabel : MetroTextBoxBase
     {

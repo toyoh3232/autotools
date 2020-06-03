@@ -38,7 +38,7 @@ using MetroFramework.Drawing;
 namespace MetroFramework.Controls
 {
     [ToolboxBitmap(typeof(RadioButton))]
-    [Designer("MetroFramework.Design.MetroRadioButtonDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroRadioButtonDesigner")]
     public partial class MetroRadioButton : MetroRadioButtonBase
     {
         protected override string MetroControlCategory { get { return "CheckBox"; } }

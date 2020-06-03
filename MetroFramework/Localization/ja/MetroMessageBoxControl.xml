@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <Localization>
+    <Key>Ok</Key>
+    <Value>OK</Value>
+  </Localization>
+  <Localization>
+    <Key>Cancel</Key>
+    <Value>キャンセル</Value>
+  </Localization>
+  <Localization>
+    <Key>Notification</Key>
+    <Value>情報</Value>
+  </Localization>
+</root>

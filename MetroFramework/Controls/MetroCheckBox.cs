@@ -37,7 +37,7 @@ using MetroFramework.Drawing;
 namespace MetroFramework.Controls
 {
     [ToolboxBitmap(typeof(CheckBox))]
-    [Designer("MetroFramework.Design.MetroCheckBoxDesigner, " + AssemblyRef.MetroFrameworkDesignSN)]
+    [Designer("MetroFramework.Design.MetroCheckBoxDesigner")]
     public partial class MetroCheckBox : MetroCheckBoxBase
     {
 

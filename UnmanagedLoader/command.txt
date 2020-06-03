@@ -1,2 +1,0 @@
-awk '{ print "\""$0"\""}' out.txt > out2.txt
-i686-w64-mingw32.static-gcc -L"/mnt/d" -o main.exe main.c file.c -lcrypt32
