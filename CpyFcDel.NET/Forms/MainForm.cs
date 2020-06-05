@@ -30,6 +30,8 @@ namespace CpyFcDel.NET
 
         private bool hasCommandline = false;
 
+        private delegate int Count();
+
         public MainForm()
         {
             InitializeComponent();
@@ -97,7 +99,7 @@ namespace CpyFcDel.NET
                     this.Text = Text + ".";
             };
         }
-        
+
         private void MainWindow_Load(object sender, EventArgs e)
         {
             // resize controls for language localization
@@ -112,8 +114,6 @@ namespace CpyFcDel.NET
             // little fix for location of control when it is in engllish
             if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en")
                 lbcLimitCount.Location = new Point(lbcLimitCount.Location.X, ckbCountLimOn.Location.Y);
-
-
 
             // parse commandline
             if (Environment.GetCommandLineArgs().Length > 1) hasCommandline = true;
@@ -137,7 +137,7 @@ namespace CpyFcDel.NET
             cbSrcDirs.SelectedIndex = options.CurrentSrcDirIndex;
             cbTgtDirs.DataSource = options.TargetDirs;
             cbTgtDirs.SelectedIndex = options.CurrentTgtDirIndex;
-            
+
             //fill controls from options
             ckbAutoExit.Checked = options.IsAutoExit;
             ckbRCacheOn.Checked = options.IsReadCacheOn;
@@ -152,6 +152,7 @@ namespace CpyFcDel.NET
 
         private void BtSetSrcDir_Click(object sender, EventArgs e)
         {
+            folderBrowserDialog.ShowNewFolderButton = false;
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 cbSrcDirs.Text = folderBrowserDialog.SelectedPath;
@@ -160,6 +161,7 @@ namespace CpyFcDel.NET
 
         private void BtSetTgtDir_Click(object sender, EventArgs e)
         {
+            folderBrowserDialog.ShowNewFolderButton = true;
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 cbTgtDirs.Text = folderBrowserDialog.SelectedPath;
@@ -168,22 +170,22 @@ namespace CpyFcDel.NET
 
         private void BtStart_Click(object sender, EventArgs e)
         {
-           
+
             if (workingThread?.IsAlive ?? false)
             {
-               new Thread(() =>
-                {
-                    workingThread.Abort();
-                    this.Invoke(new Action(() => elapsedTimer.Stop()));
-                    this.Invoke(new Action(() => this.Enabled = false));
-                    this.Invoke(new Action(() => this.Text = appName + TM.Translate("stopping")));
-                    this.BeginInvoke(new Action(() => stoppingTimer.Start()));
-                    workingThread.Join();
-                    this.BeginInvoke(new Action(() => stoppingTimer.Stop()));
-                    this.Invoke(new Action(() => this.Text = appName));
-                    this.Invoke(new Action(() => this.Enabled = true));
-                    this.Invoke(new Action(() => UpdateControls(false)));
-                }).Start();
+                new Thread(() =>
+                 {
+                     workingThread.Abort();
+                     this.Invoke(new Action(() => elapsedTimer.Stop()));
+                     this.Invoke(new Action(() => this.Enabled = false));
+                     this.Invoke(new Action(() => this.Text = appName + TM.Translate("stopping")));
+                     this.BeginInvoke(new Action(() => stoppingTimer.Start()));
+                     workingThread.Join();
+                     this.BeginInvoke(new Action(() => stoppingTimer.Stop()));
+                     this.Invoke(new Action(() => this.Text = appName));
+                     this.Invoke(new Action(() => this.Enabled = true));
+                     this.Invoke(new Action(() => UpdateControls(false)));
+                 }).Start();
             }
             else
             {
@@ -204,6 +206,18 @@ namespace CpyFcDel.NET
                     return;
                 }
 
+                if (Directory.GetFiles(cbSrcDirs.Text).Length == 0)
+                {
+                    MessageBox.Show(TM.Translate("error_info_2_src"), TM.Translate("error_title"),
+                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (new DirectoryInfo(cbSrcDirs.Text).FullName == new DirectoryInfo(cbTgtDirs.Text).FullName)
+                {
+                    MessageBox.Show(TM.Translate("error_info_2_tgt"), TM.Translate("error_title"),
+                      MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
                 int? limitCount = null;
                 if (ckbCountLimOn.Checked)
@@ -239,8 +253,8 @@ namespace CpyFcDel.NET
 
                 // set parameters passing to thread
                 // pay attention to value type or reference type
-                var tuple = Tuple.Create(string.Copy(options.SourceDirs[options.CurrentSrcDirIndex]), 
-                    string.Copy(options.TargetDirs[options.CurrentTgtDirIndex]), options.IsReadCacheOn, options.IsWriteCacheOn, 
+                var tuple = Tuple.Create(string.Copy(options.SourceDirs[options.CurrentSrcDirIndex]),
+                    string.Copy(options.TargetDirs[options.CurrentTgtDirIndex]), options.IsReadCacheOn, options.IsWriteCacheOn,
                     options.LimitCount, options.IsAutoExit);
 
                 // initialize working thread
@@ -260,7 +274,7 @@ namespace CpyFcDel.NET
         // corresponding to working thread
         private void UpdateControls(bool isThreadStart)
         {
-            var ctrls = new Control[] { btSetSrcDir, btSetTgtDir, cbSrcDirs, cbTgtDirs, gbOtherSettings, gbCacheSettings};
+            var ctrls = new Control[] { btSetSrcDir, btSetTgtDir, cbSrcDirs, cbTgtDirs, gbOtherSettings, gbCacheSettings };
             if (isThreadStart)
             {
                 foreach (var ctl in ctrls)
@@ -272,7 +286,7 @@ namespace CpyFcDel.NET
                 lbPassedTime.ForeColor = Color.Red;
                 lbStartTime.Text = DateTime.Now.ToString(timeFormat);
                 lbPassedTime.Text = TimeSpan.FromSeconds(0).ToString();
-                
+
             }
 
             else
@@ -286,7 +300,7 @@ namespace CpyFcDel.NET
                 tbStatusInfo.Text = "";
                 lbCount.ForeColor = Color.Black;
                 lbPassedTime.ForeColor = Color.Black;
-                
+
             }
 
         }
@@ -304,7 +318,7 @@ namespace CpyFcDel.NET
                 tbLimitCount.Text = "";
                 ckbAutoExit.Enabled = false;
                 ckbAutoExit.Checked = false;
-                
+
             }
         }
 
@@ -318,11 +332,11 @@ namespace CpyFcDel.NET
             var count = tuple.Item5;
             var isAutoExit = tuple.Item6;
 
-            var curCount = 1;
+            var MyCounter = MakeCounter();
             var files = Directory.GetFiles(srcDir);
             while (true)
             {
-                this.Invoke(new Action(() => lbCount.Text = curCount.ToString()));
+                this.Invoke(new Action(() => lbCount.Text = MyCounter().ToString()));
                 foreach (var file in files)
                 {
                     var srcFileInfo = new FileInfo(file);
@@ -397,8 +411,6 @@ namespace CpyFcDel.NET
                     }
                     #endregion
                 }
-                // update counter
-                curCount++;
                 // since count is nullable type following is necessary
                 // if (count == null) continue;
                 count--;
@@ -414,7 +426,7 @@ namespace CpyFcDel.NET
             // following code fails (different to BeginInvoke() method)
             if (isAutoExit)
             {
-                this.Invoke(new Action(() => this.UpdateAppStatus("app_info_1", "")));
+                this.Invoke(new Action(() => this.UpdateAppStatus("app_info_1")));
                 this.BeginInvoke(new Action(() => this.exitTimer.Start()));
             }
         }
@@ -466,7 +478,7 @@ namespace CpyFcDel.NET
                 return true;
             }
             return false;
-            
+
         }
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
@@ -481,9 +493,14 @@ namespace CpyFcDel.NET
 
         private void UpdateAppStatus(string statusName, string info = "", bool isAutoDeleted = true)
         {
-            lbStatus.Text = TM.Translate(statusName) + (info==string.Empty ? "": info);
+            lbStatus.Text = TM.Translate(statusName) + (info == string.Empty ? "" : info);
             if (isAutoDeleted)
                 updateStsTimer.Start();
+        }
+
+        private Count MakeCounter() 
+        {
+            var n = 0; return new Count(() => ++n); 
         }
     }
 }

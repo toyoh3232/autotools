@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <Localization>
-    <Key>StatusOn</Key>
-    <Value>An</Value>
+    <Key>all</Key>
+    <Value>一覧</Value>
   </Localization>
   <Localization>
-    <Key>StatusOff</Key>
-    <Value>Aus</Value>
+    <Key>adapter1</Key>
+    <Value>アダプター 1</Value>
   </Localization>
 </root>

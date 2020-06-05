@@ -8,9 +8,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+
 using TM = CpyFcDel.NET.Localization.TranslationManager;
 
-namespace CpyFcDel.NET
+namespace CpyFcDelMetro.NET
 {
     public partial class MetroMainForm : MetroFramework.Forms.MetroForm
     {
@@ -26,7 +27,7 @@ namespace CpyFcDel.NET
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.metroTextBox1.BackColor = this.EffectiveBackColor;
+            tbSrcDir.BackColor = tbTgtDir.BackColor = EffectiveBackColor ;
         }
     }
 }

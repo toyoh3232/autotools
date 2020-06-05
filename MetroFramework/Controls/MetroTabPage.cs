@@ -33,7 +33,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Security;
 using System.Windows.Forms;
-
+using MetroFramework.Localization;
 using MetroFramework.Native;
 
 namespace MetroFramework.Controls
@@ -132,13 +132,13 @@ namespace MetroFramework.Controls
                 base.AutoScroll = value;
             }
         }
-
         #endregion
 
         #region Constructor
 
         public MetroTabPage()
         {
+
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
                      //ControlStyles.AllPaintingInWmPaint |
                      //ControlStyles.ResizeRedraw |
@@ -153,6 +153,8 @@ namespace MetroFramework.Controls
 
             verticalScrollbar.Scroll += VerticalScrollbarScroll;
             horizontalScrollbar.Scroll += HorizontalScrollbarScroll;
+
+            
         }
 
         #endregion

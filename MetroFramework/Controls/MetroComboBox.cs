@@ -79,7 +79,7 @@ namespace MetroFramework.Controls
             UseSelectable();
 
             base.DrawMode = DrawMode.OwnerDrawFixed;
-            base.DropDownStyle = ComboBoxStyle.DropDownList;
+            base.DropDownStyle = ComboBoxStyle.DropDown;
 
             //drawPrompt = (SelectedIndex == -1);
         }

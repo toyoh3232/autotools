@@ -28,7 +28,7 @@ using System.Windows.Forms;
 
 namespace MetroFramework.Localization
 {
-    internal class MetroLocalize
+    internal class MetroLocalizer
     {
         private DataSet languageDataset;
 
@@ -48,12 +48,12 @@ namespace MetroFramework.Localization
             return language.ToLower();
         }
 
-        public MetroLocalize(string ctrlName)
+        public MetroLocalizer(string ctrlName)
         {
             importManifestResource(ctrlName);
         }
 
-        public MetroLocalize(Control ctrl)
+        public MetroLocalizer(Control ctrl)
         {
             importManifestResource(ctrl.GetType().Name);            
         }

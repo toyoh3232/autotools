@@ -73,6 +73,15 @@ namespace MetroFramework.Controls
 
         #region Properties
 
+        private bool clickEnabled = true;
+        [DefaultValue(true)]
+        [Category(MetroDefaults.CatAppearance)]
+        public bool ClickEnabled
+        {
+            get { return clickEnabled; }
+            set { paintTileCount = value; Invalidate(); }
+        }
+
         private bool paintTileCount = true;
         [DefaultValue(true)]
         [Category(MetroDefaults.CatAppearance)]

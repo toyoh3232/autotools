@@ -61,7 +61,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to プログラムは数秒後に終了する.
+        ///   Looks up a localized string similar to プログラムは数秒後に終了する。.
         /// </summary>
         internal static string app_info_1 {
             get {
@@ -106,7 +106,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CpyFcDel.NET ディレクトリ1 ディレクトリ2 [/DW] [/DR] [/P:passes] [/AE]{0}{0}使用法：{0}  /DW{1}{1}書込みキャッシュオフ{0}  /DR{1}{1}読込みキャッシュオフ{0}  /P:passes{1}実行回数をpasses回にする{0}  /AE{1}{1}自動終了オン{0}{0}例：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}注意：{0}  オプション/AEは、/Pが指定された時だけ有効{0}.
+        ///   Looks up a localized string similar to CpyFcDel.NET ディレクトリ1 ディレクトリ2 [/DW] [/DR] [/P:passes [/AE]]{0}{0}使用法：{0}  /DW{1}{1}書込みキャッシュオフ{0}  /DR{1}{1}読込みキャッシュオフ{0}  /P:passes{1}実行回数をpasses回にする{0}  /AE{1}{1}自動終了オン{0}{0}例：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}注意：{0}  オプション/AEは、/Pが指定された時だけ有効{0}.
         /// </summary>
         internal static string cl_usage {
             get {
@@ -187,7 +187,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ソースディレクトリの名前が存在しないか、ディレクトリではありません.
+        ///   Looks up a localized string similar to ソースディレクトリの名前が存在しないか、ディレクトリではありません。.
         /// </summary>
         internal static string error_info_1_src {
             get {
@@ -196,7 +196,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ターゲットディレクトリの名前が存在しないか、ディレクトリではありません.
+        ///   Looks up a localized string similar to ターゲットディレクトリの名前が存在しないか、ディレクトリではありません。.
         /// </summary>
         internal static string error_info_1_tgt {
             get {
@@ -205,7 +205,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 無効な数字.
+        ///   Looks up a localized string similar to 無効な数字です。.
         /// </summary>
         internal static string error_info_2 {
             get {
@@ -214,7 +214,25 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1以上の整数を入れてください.
+        ///   Looks up a localized string similar to ソースディレクトリにファイルがありません。.
+        /// </summary>
+        internal static string error_info_2_src {
+            get {
+                return ResourceManager.GetString("error_info_2_src", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ターゲットディレクトリがソースディレクトリと別フォルダに指定してください。.
+        /// </summary>
+        internal static string error_info_2_tgt {
+            get {
+                return ResourceManager.GetString("error_info_2_tgt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1以上の整数を入れてください。.
         /// </summary>
         internal static string error_info_3 {
             get {
@@ -331,7 +349,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to スレッド停止がリクエストされた.
+        ///   Looks up a localized string similar to スレッド停止がリクエストされた。.
         /// </summary>
         internal static string thread_terminating {
             get {

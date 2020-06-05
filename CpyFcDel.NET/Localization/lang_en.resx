@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="app_info_1" xml:space="preserve">
-    <value>Program will terminate in a few secs</value>
+    <value>Program will terminate in a few secs.</value>
   </data>
   <data name="auto_exit" xml:space="preserve">
     <value>Auto exit when finished properly</value>
@@ -133,7 +133,7 @@
     <value>Commandline Options</value>
   </data>
   <data name="cl_usage" xml:space="preserve">
-    <value>CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:passes] [/AE]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:passes{1}set the running counter to a certain number{0}  /AE{1}{1}auto exit program on{0}{0}Examples：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention：{0}  option /AE is available only if /P is set{0}</value>
+    <value>CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:passes [/AE]]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:passes{1}set the running counter to a certain number{0}  /AE{1}{1}auto exit program on{0}{0}Examples：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention：{0}  option /AE is available only if /P is set{0}</value>
   </data>
   <data name="compare:" xml:space="preserve">
     <value>Compare:</value>
@@ -160,16 +160,22 @@
     <value>Delete:</value>
   </data>
   <data name="error_info_1_src" xml:space="preserve">
-    <value>No corresponding source directory or invalid name.</value>
+    <value>No corresponding source directory or invalid name exists.</value>
   </data>
   <data name="error_info_1_tgt" xml:space="preserve">
-    <value>No corresponding target directory or invalid name.</value>
+    <value>No corresponding destination directory or invalid name exist.</value>
   </data>
   <data name="error_info_2" xml:space="preserve">
-    <value>Invalid number format</value>
+    <value>Number format is invalid.</value>
+  </data>
+  <data name="error_info_2_src" xml:space="preserve">
+    <value>No file exists in the source directory.</value>
+  </data>
+  <data name="error_info_2_tgt" xml:space="preserve">
+    <value>Source directory and target directory cannot be same.</value>
   </data>
   <data name="error_info_3" xml:space="preserve">
-    <value>the limited pass to be set must great than 0</value>
+    <value>The limited pass to be set must be great than 0.</value>
   </data>
   <data name="error_info_4" xml:space="preserve">
     <value>File verification failed.</value>
@@ -178,7 +184,7 @@
     <value>Error</value>
   </data>
   <data name="if_continue?" xml:space="preserve">
-    <value>Continue ?</value>
+    <value>Do you want to continue ?</value>
   </data>
   <data name="other_settings" xml:space="preserve">
     <value>Settings</value>

@@ -15,7 +15,7 @@ namespace MetroFramework.Forms
 {
     public partial class MetroMessageBoxControl : Form
     {
-        private MetroLocalize metroLocalize = null;
+        private MetroLocalizer metroLocalize = null;
 
         public MetroMessageBoxControl()
         {
@@ -31,7 +31,7 @@ namespace MetroFramework.Forms
             metroButton2.Click += new EventHandler(button_Click);
             metroButton3.Click += new EventHandler(button_Click);
 
-            metroLocalize = new MetroLocalize(this);
+            metroLocalize = new MetroLocalizer(this);
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

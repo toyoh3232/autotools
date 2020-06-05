@@ -196,7 +196,7 @@
     <Compile Include="Interfaces\IMetroForm.cs" />
     <Compile Include="Interfaces\IMetroComponent.cs" />
     <Compile Include="Interfaces\IMetroStyledComponent.cs" />
-    <Compile Include="Localization\MetroLocalize.cs" />
+    <Compile Include="Localization\MetroLocalizer.cs" />
     <Compile Include="Drawing\MetroBrushes.cs" />
     <Compile Include="Drawing\MetroColors.cs" />
     <Compile Include="MetroColorStyle.cs" />
@@ -280,7 +280,6 @@
     <EmbeddedResource Include="Forms\MetroTaskWindow.resx">
       <DependentUpon>MetroTaskWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de\MetroToggle.xml" />
     <EmbeddedResource Include="Forms\MetroMessageBoxControl.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -303,6 +302,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\ja\MetroMessageBoxControl.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\ja\MetroTabPage.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

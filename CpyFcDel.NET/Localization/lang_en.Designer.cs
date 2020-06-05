@@ -61,7 +61,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Program will terminate in a few secs.
+        ///   Looks up a localized string similar to Program will terminate in a few secs..
         /// </summary>
         internal static string app_info_1 {
             get {
@@ -106,7 +106,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:passes] [/AE]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:passes{1}set the running counter to a certain number{0}  /AE{1}{1}auto exit program on{0}{0}Examples：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention：{0}  option /AE is available only if /P is set{0}.
+        ///   Looks up a localized string similar to CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:passes [/AE]]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:passes{1}set the running counter to a certain number{0}  /AE{1}{1}auto exit program on{0}{0}Examples：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention：{0}  option /AE is available only if /P is set{0}.
         /// </summary>
         internal static string cl_usage {
             get {
@@ -187,7 +187,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No corresponding source directory or invalid name..
+        ///   Looks up a localized string similar to No corresponding source directory or invalid name exists..
         /// </summary>
         internal static string error_info_1_src {
             get {
@@ -196,7 +196,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No corresponding target directory or invalid name..
+        ///   Looks up a localized string similar to No corresponding destination directory or invalid name exist..
         /// </summary>
         internal static string error_info_1_tgt {
             get {
@@ -205,7 +205,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid number format.
+        ///   Looks up a localized string similar to Number format is invalid..
         /// </summary>
         internal static string error_info_2 {
             get {
@@ -214,7 +214,25 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the limited pass to be set must great than 0.
+        ///   Looks up a localized string similar to No file exists in the source directory..
+        /// </summary>
+        internal static string error_info_2_src {
+            get {
+                return ResourceManager.GetString("error_info_2_src", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source directory and target directory cannot be same..
+        /// </summary>
+        internal static string error_info_2_tgt {
+            get {
+                return ResourceManager.GetString("error_info_2_tgt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The limited pass to be set must be great than 0..
         /// </summary>
         internal static string error_info_3 {
             get {
@@ -241,7 +259,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Continue ?.
+        ///   Looks up a localized string similar to Do you want to continue ?.
         /// </summary>
         internal static string if_continue_ {
             get {

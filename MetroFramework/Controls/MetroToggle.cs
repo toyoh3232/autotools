@@ -54,7 +54,7 @@ namespace MetroFramework.Controls
             set { displayStatus = value; }
         }
 
-        private readonly MetroLocalize metroLocalize;
+        private readonly MetroLocalizer metroLocalize;
 
         [Browsable(false)]
         public override string Text
@@ -72,7 +72,7 @@ namespace MetroFramework.Controls
             UseStyleColor();
             UseFontStyle();
 
-            metroLocalize = new MetroLocalize(this);
+            metroLocalize = new MetroLocalizer(this);
         }
 
         protected override void OnPaintForeground(PaintEventArgs e)
