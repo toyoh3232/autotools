@@ -36,12 +36,15 @@ namespace CpyFcDel.NET
         {
             InitializeComponent();
 
+            // version number
+            var v = typeof(MainForm).Assembly.GetName().Version;
+            lbProgramName.Text += $" v{v.Major}.{v.Minor}.{v.Build}";
+
             // initialize folderDialog
             folderBrowserDialog = new FolderBrowserDialog
             {
                 ShowNewFolderButton = false
             };
-
             // language localization for each control
             lbcSrcDir.Text = TM.Translate("source_dir");
             lbcTgtDir.Text = TM.Translate("target_dir");
@@ -55,7 +58,7 @@ namespace CpyFcDel.NET
             lbcStartTime.Text = TM.Translate("start_time:");
             lbcPassedTime.Text = TM.Translate("time_duration:");
             lbcLimitCount.Text = TM.Translate("count");
-            lbcCount.Text = TM.Translate("counter");
+            lbcCount.Text = TM.Translate("count");
             ckbCountLimOn.Text = TM.Translate("count_limit_on");
             ckbRCacheOn.Text = TM.Translate("read_cache_on");
             ckbWCacheOn.Text = TM.Translate("write_cache_on");
@@ -184,7 +187,7 @@ namespace CpyFcDel.NET
                      this.BeginInvoke(new Action(() => stoppingTimer.Stop()));
                      this.Invoke(new Action(() => this.Text = appName));
                      this.Invoke(new Action(() => this.Enabled = true));
-                     this.Invoke(new Action(() => UpdateControls(false)));
+                     this.Invoke(new Action(() => UpdateControls(WorkState.WaitingStartForcely)));
                  }).Start();
             }
             else
@@ -265,43 +268,60 @@ namespace CpyFcDel.NET
                 };
                 workingThread.Start(tuple);
                 elapsedTimer.Start();
-                UpdateControls(true);
+                UpdateControls(WorkState.WaitingAbort);
 
             }
         }
 
+        enum WorkState 
+        {
+            WaitingStart,
+            WaitingStartForcely,
+            WaitingAbort,
+            
+        }
+
         // switch controls state 
         // corresponding to working thread
-        private void UpdateControls(bool isThreadStart)
+        private void UpdateControls(WorkState state)
         {
             var ctrls = new Control[] { btSetSrcDir, btSetTgtDir, cbSrcDirs, cbTgtDirs, gbOtherSettings, gbCacheSettings };
-            if (isThreadStart)
+            switch(state)
             {
-                foreach (var ctl in ctrls)
-                {
-                    ctl.Enabled = false;
-                }
-                btStart.Text = TM.Translate("stop");
-                lbCount.ForeColor = Color.Red;
-                lbPassedTime.ForeColor = Color.Red;
-                lbStartTime.Text = DateTime.Now.ToString(timeFormat);
-                lbPassedTime.Text = TimeSpan.FromSeconds(0).ToString();
-
+                case WorkState.WaitingAbort:
+                    foreach (var ctl in ctrls)
+                    {
+                        ctl.Enabled = false;
+                    }
+                    gbTimeInfo.Text = TM.Translate("time_info");
+                    lbcCount.Text = TM.Translate("counter");
+                    btStart.Text = TM.Translate("stop");
+                    lbCount.ForeColor = Color.Red;
+                    lbPassedTime.ForeColor = Color.Red;
+                    lbStartTime.Text = DateTime.Now.ToString(timeFormat);
+                    lbPassedTime.Text = TimeSpan.FromSeconds(0).ToString();
+                    break;
+                case WorkState.WaitingStart:
+                case WorkState.WaitingStartForcely:
+                    if (state == WorkState.WaitingStartForcely)
+                    {
+                        lbCount.Text = (int.Parse(lbCount.Text) - 1).ToString(); 
+                    }
+                    lbcCount.Text = TM.Translate("count");
+                    gbTimeInfo.Text = TM.Translate("time_info_old");
+                    foreach (var ctl in ctrls)
+                    {
+                        ctl.Enabled = Enabled;
+                    }
+                    btStart.Text = TM.Translate("start");
+                    lbStatus.Text = "";
+                    tbStatusInfo.Text = "";
+                    lbCount.ForeColor = Color.Black;
+                    lbPassedTime.ForeColor = Color.Black;
+                    break;
             }
 
-            else
-            {
-                foreach (var ctl in ctrls)
-                {
-                    ctl.Enabled = Enabled;
-                }
-                btStart.Text = TM.Translate("start");
-                lbStatus.Text = "";
-                tbStatusInfo.Text = "";
-                lbCount.ForeColor = Color.Black;
-                lbPassedTime.ForeColor = Color.Black;
-
-            }
+          
 
         }
 
@@ -405,7 +425,7 @@ namespace CpyFcDel.NET
                         else
                         {
                             // prepare ending this thread
-                            this.Invoke(new Action(() => this.UpdateControls(false)));
+                            this.Invoke(new Action(() => this.UpdateControls(WorkState.WaitingStartForcely)));
                             return;
                         }
                     }
@@ -418,7 +438,7 @@ namespace CpyFcDel.NET
             }
             // prepare ending this thread
             this.Invoke(new Action(() => elapsedTimer.Stop()));
-            this.Invoke(new Action(() => this.UpdateControls(false)));
+            this.Invoke(new Action(() => this.UpdateControls(WorkState.WaitingStart)));
 
             // end main thread if necessary
             // COMMENT

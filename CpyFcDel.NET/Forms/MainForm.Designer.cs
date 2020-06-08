@@ -73,9 +73,9 @@
             this.lbProgramName.Location = new System.Drawing.Point(158, 9);
             this.lbProgramName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbProgramName.Name = "lbProgramName";
-            this.lbProgramName.Size = new System.Drawing.Size(140, 13);
+            this.lbProgramName.Size = new System.Drawing.Size(98, 13);
             this.lbProgramName.TabIndex = 1;
-            this.lbProgramName.Text = "CpyFcDel.NET V1.02";
+            this.lbProgramName.Text = "CpyFcDel.NET";
             this.lbProgramName.Click += new System.EventHandler(this.lbProgramName_Click);
             // 
             // lbcSrcDir
@@ -247,9 +247,9 @@
             this.lbcCount.Location = new System.Drawing.Point(447, 248);
             this.lbcCount.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbcCount.Name = "lbcCount";
-            this.lbcCount.Size = new System.Drawing.Size(27, 12);
+            this.lbcCount.Size = new System.Drawing.Size(25, 12);
             this.lbcCount.TabIndex = 13;
-            this.lbcCount.Text = "text:";
+            this.lbcCount.Text = "text";
             // 
             // btStart
             // 
@@ -348,9 +348,9 @@
             // 
             this.gbStatusInfo.Controls.Add(this.tbStatusInfo);
             this.gbStatusInfo.Location = new System.Drawing.Point(230, 167);
-            this.gbStatusInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gbStatusInfo.Margin = new System.Windows.Forms.Padding(2);
             this.gbStatusInfo.Name = "gbStatusInfo";
-            this.gbStatusInfo.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gbStatusInfo.Padding = new System.Windows.Forms.Padding(2);
             this.gbStatusInfo.Size = new System.Drawing.Size(167, 69);
             this.gbStatusInfo.TabIndex = 96;
             this.gbStatusInfo.TabStop = false;
@@ -362,7 +362,7 @@
             this.tbStatusInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbStatusInfo.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.tbStatusInfo.Location = new System.Drawing.Point(4, 16);
-            this.tbStatusInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbStatusInfo.Margin = new System.Windows.Forms.Padding(2);
             this.tbStatusInfo.Multiline = true;
             this.tbStatusInfo.Name = "tbStatusInfo";
             this.tbStatusInfo.ReadOnly = true;

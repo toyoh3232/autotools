@@ -217,10 +217,13 @@
     <value>スレッド停止がリクエストされた。</value>
   </data>
   <data name="time_duration:" xml:space="preserve">
-    <value>試験時間：</value>
+    <value>経過時間：</value>
   </data>
   <data name="time_info" xml:space="preserve">
-    <value>時刻</value>
+    <value>現在試験時刻</value>
+  </data>
+  <data name="time_info_old" xml:space="preserve">
+    <value>前回試験時刻</value>
   </data>
   <data name="write_cache_on" xml:space="preserve">
     <value>書込みキャッシュを有効する</value>

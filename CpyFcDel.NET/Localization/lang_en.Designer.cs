@@ -367,6 +367,15 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Previous Time.
+        /// </summary>
+        internal static string time_info_old {
+            get {
+                return ResourceManager.GetString("time_info_old", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable Write Cache.
         /// </summary>
         internal static string write_cache_on {

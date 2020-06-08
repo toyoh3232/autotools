@@ -73,14 +73,16 @@
             // 
             this.metroTile2.Location = new System.Drawing.Point(23, 171);
             this.metroTile2.Name = "metroTile2";
+            this.metroTile2.PaintTileCount = false;
             this.metroTile2.Size = new System.Drawing.Size(513, 90);
             this.metroTile2.TabIndex = 3;
-            this.metroTile2.Text = "metroTile2";
             // 
             // metroTile1
             // 
+            this.metroTile1.ClickEnabled = false;
             this.metroTile1.Location = new System.Drawing.Point(23, 39);
             this.metroTile1.Name = "metroTile1";
+            this.metroTile1.PaintTileCount = false;
             this.metroTile1.Size = new System.Drawing.Size(513, 74);
             this.metroTile1.TabIndex = 2;
             this.metroTile1.Text = "metroTile1";

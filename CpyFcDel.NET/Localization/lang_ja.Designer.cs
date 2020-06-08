@@ -358,7 +358,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 試験時間：.
+        ///   Looks up a localized string similar to 経過時間：.
         /// </summary>
         internal static string time_duration_ {
             get {
@@ -367,11 +367,20 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 時刻.
+        ///   Looks up a localized string similar to 現在試験時刻.
         /// </summary>
         internal static string time_info {
             get {
                 return ResourceManager.GetString("time_info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 前回試験時刻.
+        /// </summary>
+        internal static string time_info_old {
+            get {
+                return ResourceManager.GetString("time_info_old", resourceCulture);
             }
         }
         

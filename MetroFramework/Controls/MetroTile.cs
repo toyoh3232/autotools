@@ -74,12 +74,14 @@ namespace MetroFramework.Controls
         #region Properties
 
         private bool clickEnabled = true;
+
         [DefaultValue(true)]
-        [Category(MetroDefaults.CatAppearance)]
+        [Category(MetroDefaults.CatAppearance),
+         Description("Indicates whether the click operation is allowed.")]
         public bool ClickEnabled
         {
             get { return clickEnabled; }
-            set { paintTileCount = value; Invalidate(); }
+            set { clickEnabled = value; Invalidate(); }
         }
 
         private bool paintTileCount = true;
@@ -148,14 +150,14 @@ namespace MetroFramework.Controls
 
         void UpdateClientRectangle()
         {
-            Padding = new Padding(ButtonState.IsPressed ? PRESSED_SHRINK : 0);
+            Padding = new Padding((ButtonState.IsPressed && clickEnabled) ? PRESSED_SHRINK : 0);
             PerformLayout();
             Invalidate();
         }
 
         public override Rectangle DisplayRectangle
         {
-            get { var r = base.DisplayRectangle; if (ButtonState.IsPressed) r.Inflate(-PRESSED_SHRINK, -PRESSED_SHRINK); return r; }
+            get { var r = base.DisplayRectangle; if (ButtonState.IsPressed && clickEnabled) r.Inflate(-PRESSED_SHRINK, -PRESSED_SHRINK); return r; }
         }
 
         #region Paint Methods
