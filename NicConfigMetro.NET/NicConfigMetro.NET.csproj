@@ -49,16 +49,19 @@
     <Compile Include="MainFormMetro.Designer.cs">
       <DependentUpon>MainFormMetro.cs</DependentUpon>
     </Compile>
-    <Compile Include="MetroNetworkCardTabPage.cs">
+    <Compile Include="MetroNicTabPage.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MetroNicTabPage.Designer.cs">
+      <DependentUpon>MetroNicTabPage.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainFormMetro.resx">
       <DependentUpon>MainFormMetro.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MetroNetworkCardTabPage.resx">
-      <DependentUpon>MetroNetworkCardTabPage.cs</DependentUpon>
+    <EmbeddedResource Include="MetroNicTabPage.resx">
+      <DependentUpon>MetroNicTabPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

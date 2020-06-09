@@ -35,7 +35,6 @@ namespace CpyFcDel.NET
         public MainForm()
         {
             InitializeComponent();
-
             // version number
             var v = typeof(MainForm).Assembly.GetName().Version;
             lbProgramName.Text += $" v{v.Major}.{v.Minor}.{v.Build}";

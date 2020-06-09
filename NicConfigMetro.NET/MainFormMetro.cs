@@ -15,7 +15,11 @@ namespace NicConfigMetro.NET
         public MainFormMetro()
         {
             InitializeComponent();
-            metroTile1.Text = String.Format("sdsad{0}dsdsd{0}dsds", "\n");
+        }
+
+        private void metroButton1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
