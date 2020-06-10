@@ -32,8 +32,8 @@
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.metroTabPage2 = new MetroFramework.Controls.MetroTabPage();
-            this.metroTile1 = new MetroFramework.Controls.MetroTile();
             this.metroTile2 = new MetroFramework.Controls.MetroTile();
+            this.metroTile1 = new MetroFramework.Controls.MetroTile();
             this.metroTabPage1.SuspendLayout();
             this.metroTabControl1.SuspendLayout();
             this.metroTabPage2.SuspendLayout();
@@ -81,14 +81,6 @@
             this.metroTabPage2.Text = "metroTabPage2";
             this.metroTabPage2.VerticalScrollbarBarColor = true;
             // 
-            // metroTile1
-            // 
-            this.metroTile1.Location = new System.Drawing.Point(124, 119);
-            this.metroTile1.Name = "metroTile1";
-            this.metroTile1.Size = new System.Drawing.Size(75, 23);
-            this.metroTile1.TabIndex = 2;
-            this.metroTile1.Text = "metroTile1";
-            // 
             // metroTile2
             // 
             this.metroTile2.Location = new System.Drawing.Point(328, 118);
@@ -96,6 +88,14 @@
             this.metroTile2.Size = new System.Drawing.Size(75, 23);
             this.metroTile2.TabIndex = 3;
             this.metroTile2.Text = "metroTile2";
+            // 
+            // metroTile1
+            // 
+            this.metroTile1.Location = new System.Drawing.Point(124, 119);
+            this.metroTile1.Name = "metroTile1";
+            this.metroTile1.Size = new System.Drawing.Size(75, 23);
+            this.metroTile1.TabIndex = 2;
+            this.metroTile1.Text = "metroTile1";
             // 
             // MainFormMetro
             // 

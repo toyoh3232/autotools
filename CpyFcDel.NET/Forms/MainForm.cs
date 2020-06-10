@@ -30,7 +30,7 @@ namespace CpyFcDel.NET
 
         private bool hasCommandline = false;
 
-        private delegate int Count();
+        private delegate int CounterDelegate();
 
         public MainForm()
         {
@@ -517,9 +517,9 @@ namespace CpyFcDel.NET
                 updateStsTimer.Start();
         }
 
-        private Count MakeCounter() 
+        private CounterDelegate MakeCounter() 
         {
-            var n = 0; return new Count(() => ++n); 
+            var n = 0; return new CounterDelegate(() => ++n); 
         }
     }
 }

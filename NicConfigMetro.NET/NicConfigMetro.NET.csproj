@@ -60,9 +60,6 @@
     <EmbeddedResource Include="MainFormMetro.resx">
       <DependentUpon>MainFormMetro.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MetroNicTabPage.resx">
-      <DependentUpon>MetroNicTabPage.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

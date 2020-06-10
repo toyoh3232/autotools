@@ -234,6 +234,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Components\MetroComponentBase.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MetroComponentBase.cs</LastGenOutput>
