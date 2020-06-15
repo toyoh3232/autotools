@@ -15,7 +15,7 @@ namespace NicConfigMetro.NET
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainFormMetro());
+            Application.Run(new MetroMainForm());
         }
     }
 }

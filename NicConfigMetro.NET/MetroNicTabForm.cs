@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace NicConfigMetro.NET
 {
-    public partial class MainFormMetro : MetroForm
+    public partial class MetroNicTabForm : MetroForm
     {
-        public MainFormMetro()
+        public MetroNicTabForm()
         {
             InitializeComponent();
         }
