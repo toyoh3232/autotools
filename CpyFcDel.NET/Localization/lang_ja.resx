@@ -133,7 +133,10 @@
     <value>コマンドプロンプト命令</value>
   </data>
   <data name="cl_usage" xml:space="preserve">
-    <value>CpyFcDel.NET ディレクトリ1 ディレクトリ2 [/DW] [/DR] [/P:passes [/AE]]{0}{0}使用法：{0}  /DW{1}{1}書込みキャッシュオフ{0}  /DR{1}{1}読込みキャッシュオフ{0}  /P:passes{1}{1}実行回数をpasses回にする{0}  /AE{1}{1}自動終了オン{0}{0}例：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}注意：{0}  オプション/AEは、/Pが指定された時だけ有効{0}</value>
+    <value>CpyFcDel.NET ディレクトリ1 ディレクトリ2 [/DW] [/DR] [/P:N [/AE]]{0}{0}使用法：{0}  /DW{1}{1}書込みキャッシュオフ{0}  /DR{1}{1}読込みキャッシュオフ{0}  /P:N{1}{1}実行回数をN回にする{0}  /AE{1}{1}自動終了オン{0}{0}例：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}注意：{0}  オプション/AEは、/Pが指定された時だけ有効{0}</value>
+  </data>
+  <data name="cl_usage_1" xml:space="preserve">
+    <value />
   </data>
   <data name="compare:" xml:space="preserve">
     <value>比較：</value>
