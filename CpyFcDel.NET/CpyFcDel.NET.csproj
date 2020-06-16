@@ -122,7 +122,6 @@
     <None Include="app.config" />
     <None Include="Buglist.md" />
     <None Include="Changelog.md" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
