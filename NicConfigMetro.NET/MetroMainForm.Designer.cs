@@ -35,10 +35,10 @@
             // 
             // mtDet
             // 
-            this.mtDet.Location = new System.Drawing.Point(163, 75);
+            this.mtDet.Location = new System.Drawing.Point(144, 75);
             this.mtDet.Name = "mtDet";
-            this.mtDet.Size = new System.Drawing.Size(105, 91);
-            this.mtDet.Style = "Orange";
+            this.mtDet.Size = new System.Drawing.Size(105, 33);
+            this.mtDet.Style = "Blue";
             this.mtDet.TabIndex = 0;
             this.mtDet.Text = "Details";
             this.mtDet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -46,7 +46,7 @@
             // metroLabel1
             // 
             this.metroLabel1.AutoSize = true;
-            this.metroLabel1.Location = new System.Drawing.Point(24, 173);
+            this.metroLabel1.Location = new System.Drawing.Point(24, 208);
             this.metroLabel1.Name = "metroLabel1";
             this.metroLabel1.Size = new System.Drawing.Size(43, 19);
             this.metroLabel1.TabIndex = 1;
@@ -68,7 +68,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(295, 203);
+            this.ClientSize = new System.Drawing.Size(446, 248);
             this.Controls.Add(this.mtSet);
             this.Controls.Add(this.metroLabel1);
             this.Controls.Add(this.mtDet);

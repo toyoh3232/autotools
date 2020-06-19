@@ -33,20 +33,22 @@ namespace NicConfigMetro.NET
 
         private void mtSet_Click(object sender, EventArgs e)
         {
-            
-            new Thread(() =>
-            {
-                var oStyle = mtSet.Style;
-                var oText = mtSet.Text;
-                this.Invoke(new Action(() => mtSet.Style = "Red"));
-                this.Invoke(new Action(() => stoppingTimer.Start()));
-                Thread.Sleep(5000);
-                this.Invoke(new Action(() => stoppingTimer.Stop()));
-                this.Invoke(new Action(() => {
-                    mtSet.Style = oStyle;
-                    mtSet.Text = oText;
-                    }));
-            }).Start();
+            new Thread(Dowork).Start();
+        }
+
+        private void Dowork()
+        {
+            // set ip for each nic if not set
+
+            // reset nic
+
+            // start dhcp server and fill client nic info nic by nic
+
+            // wait until client netshare directory preparation is ready
+
+            // generate temp folders and cpydelfc batch file  
+
+
         }
     }
 }

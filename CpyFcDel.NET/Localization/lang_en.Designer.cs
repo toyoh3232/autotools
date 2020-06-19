@@ -106,7 +106,7 @@ namespace CpyFcDel.NET.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:N [/AE]]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:N{1}{1}set the running counter to N pass(es){0}  /AE{1}{1}auto exit program on{0}{0}Examples：{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention：{0}  option /AE is available only if /P is set{0}.
+        ///   Looks up a localized string similar to CpyFcDel.NET SourceDir TargetDir  [/DW] [/DR] [/P:N [/AE]]{0}{0}Usage:{0}  /DW{1}{1}write-cache off{0}  /DR{1}{1}read-cache off{0}  /P:N{1}{1}set the running counter to N pass(es){0}  /AE{1}{1}auto exit program on{0}{0}Examples:{0}  CpyFcDel.NET C:\Temp1 C:\Temp2{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /DW /DR{0}  CpyFcDel.NET C:\Temp1 C:\Temp2 /P:10 /AE{0}{0}Attention:{0}  option /AE is available only if /P is set{0}.
         /// </summary>
         internal static string cl_usage {
             get {
